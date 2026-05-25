@@ -1,0 +1,82 @@
+<svg viewBox="0 0 700 360" xmlns="http://www.w3.org/2000/svg" font-family="system-ui, -apple-system, sans-serif">
+  <title>Security Audit Compliance — LegalSkillsLATAM</title>
+
+  <rect width="700" height="360" fill="#f8f9fa" rx="12"/>
+  <text x="350" y="30" text-anchor="middle" font-size="13" font-weight="700" fill="#1a1a1a">Security Audit Compliance</text>
+
+  <!-- Audit Cards -->
+  <!-- Trust Hub -->
+  <rect x="24" y="46" width="205" height="56" rx="8" fill="#e8f7ef" stroke="#2DAA6A" stroke-width="1.5"/>
+  <text x="126" y="67" text-anchor="middle" font-size="10" font-weight="700" fill="#1a6b42">Gen Agent Trust Hub</text>
+  <text x="126" y="85" text-anchor="middle" font-size="22">✅</text>
+  <text x="126" y="100" text-anchor="middle" font-size="8.5" fill="#1a6b42" font-weight="600">PASS / SAFE</text>
+
+  <!-- Socket -->
+  <rect x="247" y="46" width="205" height="56" rx="8" fill="#e8f7ef" stroke="#2DAA6A" stroke-width="1.5"/>
+  <text x="349" y="67" text-anchor="middle" font-size="10" font-weight="700" fill="#1a6b42">Socket</text>
+  <text x="349" y="85" text-anchor="middle" font-size="22">✅</text>
+  <text x="349" y="100" text-anchor="middle" font-size="8.5" fill="#1a6b42" font-weight="600">PASS</text>
+
+  <!-- Snyk -->
+  <rect x="470" y="46" width="205" height="56" rx="8" fill="#e8f7ef" stroke="#2DAA6A" stroke-width="1.5"/>
+  <text x="572" y="67" text-anchor="middle" font-size="10" font-weight="700" fill="#1a6b42">Snyk (W011)</text>
+  <text x="572" y="85" text-anchor="middle" font-size="22">✅</text>
+  <text x="572" y="100" text-anchor="middle" font-size="8.5" fill="#1a6b42" font-weight="600">PASS — Parche aplicado</text>
+
+  <!-- Divider -->
+  <line x1="24" y1="114" x2="676" y2="114" stroke="#d0d7e0" stroke-width="1"/>
+
+  <!-- Table header -->
+  <text x="30" y="136" font-size="9" font-weight="700" fill="#333">CHECK DE SEGURIDAD</text>
+  <text x="265" y="136" text-anchor="middle" font-size="9" font-weight="700" fill="#333">Trust Hub</text>
+  <text x="395" y="136" text-anchor="middle" font-size="9" font-weight="700" fill="#333">Socket</text>
+  <text x="565" y="136" text-anchor="middle" font-size="9" font-weight="700" fill="#333">Snyk W011</text>
+
+  <!-- Rows -->
+  <rect x="24" y="142" width="652" height="22" rx="3" fill="#f0f4f8"/>
+  <text x="30" y="157" font-size="8.5" fill="#444">Ejecución de comandos del sistema</text>
+  <text x="265" y="157" text-anchor="middle" font-size="11">✅</text>
+  <text x="395" y="157" text-anchor="middle" font-size="9" fill="#aaa">—</text>
+  <text x="565" y="157" text-anchor="middle" font-size="9" fill="#aaa">—</text>
+
+  <text x="30" y="179" font-size="8.5" fill="#444">Descargas o instalaciones externas</text>
+  <text x="265" y="179" text-anchor="middle" font-size="11">✅</text>
+  <text x="395" y="179" text-anchor="middle" font-size="9" fill="#aaa">—</text>
+  <text x="565" y="179" text-anchor="middle" font-size="9" fill="#aaa">—</text>
+
+  <rect x="24" y="186" width="652" height="22" rx="3" fill="#f0f4f8"/>
+  <text x="30" y="201" font-size="8.5" fill="#444">Exposición de credenciales o secretos</text>
+  <text x="265" y="201" text-anchor="middle" font-size="9" fill="#aaa">—</text>
+  <text x="395" y="201" text-anchor="middle" font-size="11">✅</text>
+  <text x="565" y="201" text-anchor="middle" font-size="9" fill="#aaa">—</text>
+
+  <text x="30" y="223" font-size="8.5" fill="#444">Código ofuscado o hidden</text>
+  <text x="265" y="223" text-anchor="middle" font-size="9" fill="#aaa">—</text>
+  <text x="395" y="223" text-anchor="middle" font-size="11">✅</text>
+  <text x="565" y="223" text-anchor="middle" font-size="9" fill="#aaa">—</text>
+
+  <rect x="24" y="230" width="652" height="22" rx="3" fill="#f0f4f8"/>
+  <text x="30" y="245" font-size="8.5" fill="#444">Exfiltración de datos del usuario</text>
+  <text x="265" y="245" text-anchor="middle" font-size="9" fill="#aaa">—</text>
+  <text x="395" y="245" text-anchor="middle" font-size="11">✅</text>
+  <text x="565" y="245" text-anchor="middle" font-size="9" fill="#aaa">—</text>
+
+  <text x="30" y="267" font-size="8.5" fill="#444">Autonomía excesiva del agente</text>
+  <text x="265" y="267" text-anchor="middle" font-size="11">✅</text>
+  <text x="395" y="267" text-anchor="middle" font-size="11">✅</text>
+  <text x="565" y="267" text-anchor="middle" font-size="9" fill="#aaa">—</text>
+
+  <rect x="24" y="274" width="652" height="22" rx="3" fill="#fff0e8"/>
+  <text x="30" y="289" font-size="8.5" fill="#444">Prompt injection / contenido 3rd party (W011)</text>
+  <text x="265" y="289" text-anchor="middle" font-size="9" fill="#aaa">—</text>
+  <text x="395" y="289" text-anchor="middle" font-size="9" fill="#aaa">—</text>
+  <rect x="510" y="277" width="120" height="16" rx="4" fill="#e8f7ef"/>
+  <text x="570" y="289" text-anchor="middle" font-size="8.5" fill="#1a6b42" font-weight="600">✅ Content Isolation</text>
+
+  <!-- Divider -->
+  <line x1="24" y1="308" x2="676" y2="308" stroke="#d0d7e0" stroke-width="1"/>
+
+  <!-- Footer -->
+  <text x="30" y="325" font-size="8.5" font-weight="700" fill="#555">Parche W011:</text>
+  <text x="30" y="340" font-size="8" fill="#666">skills/privacy-check/SKILL.md y skills/clasificar-datos/SKILL.md — sección "Reglas de Aislamiento de Contenido" agregada</text>
+</svg>

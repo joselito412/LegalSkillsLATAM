@@ -1,0 +1,59 @@
+<svg viewBox="0 0 560 340" xmlns="http://www.w3.org/2000/svg" font-family="'Courier New', Courier, monospace">
+  <title>LegalSkillsLATAM — Risk Score Output Demo</title>
+
+  <rect width="560" height="340" fill="#1a1a2e" rx="12"/>
+
+  <!-- Terminal dots -->
+  <circle cx="24" cy="22" r="6" fill="#ff5f57"/>
+  <circle cx="44" cy="22" r="6" fill="#febc2e"/>
+  <circle cx="64" cy="22" r="6" fill="#28c840"/>
+  <text x="280" y="27" text-anchor="middle" font-size="11" fill="#888">legalskills-latam — risk-score</text>
+
+  <!-- Box top -->
+  <text x="50" y="60" font-size="13" fill="#00d4aa">╔══════════════════════════════════════════════════════╗</text>
+  <text x="50" y="78" font-size="13" fill="#00d4aa">║</text>
+  <text x="66" y="78" font-size="13" fill="#ffffff">     🔍 LegalSkillsLATAM — Risk Score           </text>
+  <text x="490" y="78" font-size="13" fill="#00d4aa">║</text>
+  <text x="50" y="96" font-size="13" fill="#00d4aa">╠══════════════════════════════════════════════════════╣</text>
+
+  <!-- Project info -->
+  <text x="50" y="114" font-size="13" fill="#00d4aa">║</text>
+  <text x="66" y="114" font-size="13" fill="#aaaaaa">  Proyecto : </text>
+  <text x="178" y="114" font-size="13" fill="#ffffff">SaaS de Telemedicina          </text>
+  <text x="490" y="114" font-size="13" fill="#00d4aa">║</text>
+
+  <text x="50" y="132" font-size="13" fill="#00d4aa">║</text>
+  <text x="66" y="132" font-size="13" fill="#aaaaaa">  País(es) : </text>
+  <text x="178" y="132" font-size="13" fill="#ffffff">Colombia 🇨🇴, México 🇲🇽        </text>
+  <text x="490" y="132" font-size="13" fill="#00d4aa">║</text>
+
+  <text x="50" y="150" font-size="13" fill="#00d4aa">║</text>
+  <text x="66" y="150" font-size="13" fill="#aaaaaa">  Dato +   : </text>
+  <text x="178" y="150" font-size="13" fill="#ff6b6b">Datos de Salud (Sensible)      </text>
+  <text x="490" y="150" font-size="13" fill="#00d4aa">║</text>
+
+  <text x="50" y="168" font-size="13" fill="#00d4aa">╠══════════════════════════════════════════════════════╣</text>
+
+  <!-- Score -->
+  <text x="50" y="186" font-size="13" fill="#00d4aa">║                                                      ║</text>
+  <text x="280" y="206" text-anchor="middle" font-size="22" font-weight="bold" fill="#ff4444">87 / 100</text>
+  <text x="50" y="214" font-size="13" fill="#00d4aa">║                                                      ║</text>
+
+  <!-- Face -->
+  <text x="280" y="236" text-anchor="middle" font-size="24">🚨</text>
+  <text x="280" y="256" text-anchor="middle" font-size="13" fill="#ff4444" font-weight="bold">RIESGO ALTO</text>
+  <text x="50" y="264" font-size="13" fill="#00d4aa">║                                                      ║</text>
+
+  <text x="50" y="282" font-size="13" fill="#00d4aa">╠══════════════════════════════════════════════════════╣</text>
+
+  <!-- Penalizers -->
+  <text x="50" y="300" font-size="13" fill="#00d4aa">║</text>
+  <text x="66" y="300" font-size="13" fill="#febc2e">  ⚠  Datos de menores posibles    +30 pts</text>
+  <text x="490" y="300" font-size="13" fill="#00d4aa">║</text>
+
+  <text x="50" y="318" font-size="13" fill="#00d4aa">║</text>
+  <text x="66" y="318" font-size="13" fill="#febc2e">  ⚠  Sin consentimiento granular  +15 pts</text>
+  <text x="490" y="318" font-size="13" fill="#00d4aa">║</text>
+
+  <text x="50" y="336" font-size="13" fill="#00d4aa">╚══════════════════════════════════════════════════════╝</text>
+</svg>
