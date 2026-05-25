@@ -1,0 +1,116 @@
+{
+  "$schema": "https://legalskills-latam.dev/schemas/country-rules.v1.json",
+  "country": "Colombia",
+  "iso_code": "CO",
+  "flag": "🇨🇴",
+  "version": "1.0.0",
+  "last_reviewed": "2026-01-01",
+  "editorial_note": "Revisado por equipo editorial LegalSkillsLATAM. No constituye asesoría jurídica.",
+
+  "primary_law": {
+    "name": "Ley Estatutaria 1581 de 2012",
+    "full_name": "Ley de Protección de Datos Personales",
+    "enacted": "2012-10-17",
+    "regulator": {
+      "name": "Superintendencia de Industria y Comercio",
+      "acronym": "SIC",
+      "url": "https://www.sic.gov.co"
+    },
+    "implementing_decrees": ["Decreto 1377 de 2013", "Decreto 1074 de 2015"]
+  },
+
+  "data_categories": {
+    "public": {
+      "definition": "Datos destinados al conocimiento del público en general y pueden ser conocidos y consultados por cualquier persona.",
+      "examples": ["nombre de persona jurídica", "registro mercantil", "datos en registros públicos"]
+    },
+    "semi_private": {
+      "definition": "Datos que no tienen naturaleza íntima, reservada ni pública y cuyo conocimiento o divulgación puede interesar a su titular y a cierto sector.",
+      "examples": ["datos laborales", "datos sobre comportamiento comercial"]
+    },
+    "private": {
+      "definition": "Datos cuya naturaleza es íntima o reservada y cuyo conocimiento solo incumbe al titular.",
+      "examples": ["historia clínica parcial", "datos bancarios"]
+    },
+    "sensitive": {
+      "definition": "Datos que afectan la intimidad del titular o cuyo uso puede generar discriminación.",
+      "examples": [
+        "origen racial o étnico",
+        "orientación política",
+        "convicciones religiosas o filosóficas",
+        "pertenencia a sindicatos u organizaciones",
+        "datos de salud",
+        "vida sexual",
+        "datos biométricos"
+      ],
+      "legal_ref": "Art. 5, Ley 1581/2012"
+    }
+  },
+
+  "consent": {
+    "form": "Previo, expreso e informado",
+    "granularity": "Por finalidad declarada en la autorización",
+    "valid_for": "Cada finalidad del tratamiento",
+    "minors": {
+      "age_threshold": 18,
+      "requirement": "Autorización del representante legal",
+      "legal_ref": "Art. 7, Ley 1581/2012"
+    },
+    "withdrawal": "El titular puede revocar en cualquier momento",
+    "legal_ref": "Art. 9, Ley 1581/2012"
+  },
+
+  "data_subject_rights": {
+    "access": { "available": true, "deadline_days": 15, "deadline_type": "hábiles" },
+    "rectification": { "available": true, "deadline_days": 15, "deadline_type": "hábiles" },
+    "erasure": { "available": true, "deadline_days": 15, "deadline_type": "hábiles" },
+    "objection": { "available": true },
+    "portability": { "available": false, "note": "No contemplada en Ley 1581/2012" },
+    "legal_ref": "Art. 14-15, Ley 1581/2012"
+  },
+
+  "sanctions": {
+    "max_fine": "2000 SMLMV",
+    "approximate_usd": 600000,
+    "note": "Aproximación basada en SMLMV 2025. Verificar valor vigente.",
+    "authority": "SIC",
+    "legal_ref": "Art. 23, Ley 1581/2012"
+  },
+
+  "dpo_requirement": {
+    "required": false,
+    "recommended": true,
+    "note": "No es obligatorio por ley, pero la SIC recomienda designar un responsable de protección de datos"
+  },
+
+  "international_transfer": {
+    "allowed": true,
+    "conditions": [
+      "El país receptor debe tener nivel adecuado de protección",
+      "O contar con cláusulas contractuales equivalentes",
+      "El titular debe ser informado"
+    ],
+    "legal_ref": "Art. 26, Ley 1581/2012"
+  },
+
+  "breach_notification": {
+    "to_authority": {
+      "required": true,
+      "deadline": "Tan pronto como sea posible (no especificado en días)",
+      "authority": "SIC"
+    },
+    "to_data_subjects": {
+      "required": true,
+      "condition": "Si el incidente puede afectar significativamente los derechos de los titulares"
+    },
+    "legal_ref": "Circular Única SIC"
+  },
+
+  "rigor_level": "standard",
+  "notes_for_developers": [
+    "Colombia es el punto de partida regulatorio más común para startups LATAM.",
+    "La SIC es activa en investigaciones; tener política de privacidad publicada es prioritario.",
+    "El contrato de tratamiento de datos con terceros (similar al DPA) es obligatorio.",
+    "Registrar las bases de datos ante la SIC es obligatorio para responsables (no aplica a encargados)."
+  ]
+}

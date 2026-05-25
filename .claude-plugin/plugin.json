@@ -1,0 +1,18 @@
+{
+  "name": "legalskills-latam",
+  "version": "0.1.0",
+  "description": "Estándar abierto de cumplimiento legal para desarrolladores en Latinoamérica. Clasifica datos, evalúa riesgo normativo y compara leyes LATAM vs GDPR/CCPA.",
+  "author": {
+    "name": "LegalSkillsLATAM Editorial Team",
+    "url": "https://github.com/legalskills-latam"
+  },
+  "license": "MIT",
+  "keywords": ["privacy", "compliance", "latam", "gdpr", "lgpd", "data-protection"],
+  "skills": [
+    "clasificar-datos",
+    "privacy-check",
+    "risk-score",
+    "matriz-normativa",
+    "derechos-usuario"
+  ]
+}

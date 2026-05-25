@@ -1,0 +1,133 @@
+{
+  "$schema": "https://legalskills-latam.dev/schemas/score-formula.v1.json",
+  "version": "1.0.0",
+  "description": "Motor de cálculo del Legal Risk Score para LegalSkillsLATAM",
+  "disclaimer": "Este motor es una herramienta de orientación. No constituye asesoría jurídica.",
+
+  "data_categories": {
+    "public": {
+      "label": "Dato Público",
+      "description": "Información que no identifica a una persona o que es de acceso público por ley",
+      "examples": ["nombre de empresa", "registro mercantil", "estadísticas agregadas"],
+      "base_score": 10
+    },
+    "personal_general": {
+      "label": "Dato Personal General",
+      "description": "Información que permite identificar directa o indirectamente a una persona natural",
+      "examples": ["email", "teléfono", "IP", "nombre completo", "dirección", "cookie ID", "credenciales"],
+      "base_score": 40
+    },
+    "sensitive": {
+      "label": "Dato Sensible",
+      "description": "Datos que por su naturaleza pueden generar discriminación o riesgo especial al titular",
+      "examples": [
+        "datos de salud", "biometría", "huella dactilar", "reconocimiento facial",
+        "orientación sexual", "opinión política", "religión", "origen étnico",
+        "datos de menores de edad", "antecedentes penales"
+      ],
+      "base_score": 80
+    }
+  },
+
+  "penalizers": [
+    {
+      "id": "no_granular_consent",
+      "label": "Falta de consentimiento inequívoco y granular",
+      "description": "El sistema usa un solo botón 'Acepto todo' sin toggles por finalidad",
+      "score": 15,
+      "legal_refs": ["LGPD Art. 8", "GDPR Art. 7", "Ley 1581 Art. 9"]
+    },
+    {
+      "id": "minors_data",
+      "label": "Tratamiento de datos de menores de edad",
+      "description": "El sistema puede recibir o procesar datos de personas menores de 18 años",
+      "score": 30,
+      "legal_refs": ["LGPD Art. 14", "GDPR Art. 8", "Ley 1581 Art. 7"]
+    },
+    {
+      "id": "non_adequate_servers",
+      "label": "Servidores fuera de jurisdicción adecuada",
+      "description": "Los servidores o proveedores cloud no están certificados bajo régimen de protección adecuado",
+      "score": 20,
+      "legal_refs": ["LGPD Cap. V", "GDPR Cap. V", "Ley 1581 Art. 26"]
+    },
+    {
+      "id": "unstructured_international_transfer",
+      "label": "Transferencia internacional de datos no estructurada",
+      "description": "Datos se envían a terceros países o empresas sin DPA ni cláusulas contractuales estándar",
+      "score": 15,
+      "legal_refs": ["LGPD Art. 33", "GDPR Art. 46", "Ley 1581 Art. 26"]
+    },
+    {
+      "id": "no_privacy_policy",
+      "label": "Sin política de privacidad publicada",
+      "description": "No existe una política de tratamiento de datos accesible para los usuarios",
+      "score": 10,
+      "legal_refs": ["LGPD Art. 23", "GDPR Art. 13-14", "Ley 1581 Art. 15"]
+    },
+    {
+      "id": "no_arco_procedure",
+      "label": "Sin procedimiento documentado de derechos ARCO",
+      "description": "No existe un mecanismo para que los titulares ejerzan sus derechos",
+      "score": 10,
+      "legal_refs": ["LGPD Art. 18", "GDPR Art. 15-22", "Ley 1581 Art. 14"]
+    }
+  ],
+
+  "rigor_factors": {
+    "latam_standard": {
+      "label": "Régimen estándar LATAM (CO, MX, CL, AR, PE, EC)",
+      "multiplier": 1.00,
+      "trigger": "El mercado objetivo no incluye Brasil ni ningún país de la UE/EEA"
+    },
+    "strict_regime": {
+      "label": "Régimen estricto — Brasil (LGPD) o Europa (GDPR)",
+      "multiplier": 1.25,
+      "trigger": "El mercado objetivo incluye Brasil o cualquier país de la UE/EEA"
+    }
+  },
+
+  "formula": {
+    "description": "Risk Score = min(100, (C_base + sum(penalizers)) × F_rigor)",
+    "pseudocode": [
+      "c_base = data_categories[highest_category].base_score",
+      "penalizers_sum = sum(p.score for p in active_penalizers)",
+      "f_rigor = rigor_factors[applicable_regime].multiplier",
+      "raw_score = (c_base + penalizers_sum) * f_rigor",
+      "final_score = min(100, raw_score)"
+    ]
+  },
+
+  "risk_levels": {
+    "low": {
+      "range": [0, 30],
+      "label": "🟢 Riesgo Bajo",
+      "emoji_face": "😎",
+      "description": "El proyecto maneja información básica o pública. Apto para autogestión con LegalSkillsLATAM.",
+      "action": "Sigue los checklists y documenta tus decisiones."
+    },
+    "medium": {
+      "range": [31, 70],
+      "label": "🟡 Riesgo Medio",
+      "emoji_face": "😬",
+      "description": "Manejo de datos personales generales. Implementación estricta de medidas técnicas requerida.",
+      "action": "Implementa las acciones prioritarias antes de lanzar."
+    },
+    "high": {
+      "range": [71, 100],
+      "label": "🔴 Riesgo Alto",
+      "emoji_face": "🚨",
+      "description": "Captura de datos sensibles, menores o alcance bajo estándares estrictos.",
+      "action": "Auditoría legal humana obligatoria. Detente y busca un abogado experto."
+    }
+  },
+
+  "emoji_face_scale": [
+    { "range": [0, 20],   "face": "😎", "label": "Todo en orden" },
+    { "range": [21, 30],  "face": "🙂", "label": "Bien, pequeños ajustes" },
+    { "range": [31, 50],  "face": "😐", "label": "Atención requerida" },
+    { "range": [51, 70],  "face": "😬", "label": "Riesgo real, actúa pronto" },
+    { "range": [71, 85],  "face": "😰", "label": "Riesgo alto" },
+    { "range": [86, 100], "face": "🚨", "label": "Detente y busca un abogado" }
+  ]
+}
