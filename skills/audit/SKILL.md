@@ -113,7 +113,9 @@ Risk Score = min(100, (C_base + Σ penalizadores) × F_rigor)
 
 ## Paso 3: Priorización de hallazgos
 
-De todos los penalizadores activos, seleccionar los **3 de mayor impacto** (mayor puntaje primero). En caso de empate, priorizar en este orden:
+Mostrar **todos los penalizadores activos** en el box, ordenados de mayor a menor impacto. Si hay más de 5, agrupar los de menor puntaje en una línea "🟢 Otros (+X pts)" para mantener el box legible. Esto garantiza que el Σ visible siempre cuadre con el número mostrado en la fórmula.
+
+En caso de empate de puntaje, priorizar en este orden:
 1. Menores de edad (+30)
 2. Sin base legal documentada (+20)
 3. Servidores sin garantías (+20)
