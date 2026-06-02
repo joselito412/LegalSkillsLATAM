@@ -48,21 +48,26 @@ Tomar el puntaje del dato de **mayor sensibilidad** presente en el sistema:
 
 ### B. Penalizadores de Contexto (sumar al C_base)
 
-| Condición | Penalización |
-|---|---|
-| Falta de consentimiento inequívoco y granular | +15 pts |
-| Tratamiento de datos de menores de edad | +30 pts |
-| Servidores fuera de jurisdicción adecuada | +20 pts |
-| Transferencia internacional de datos sin estructurar | +15 pts |
-| Sin política de privacidad publicada | +10 pts |
-| Sin procedimiento documentado de derechos ARCO | +10 pts |
+| Condición | Penalización | Aplica en |
+|---|---|---|
+| Sin consentimiento inequívoco y granular por finalidad | +15 pts | Todos los países |
+| Datos de menores de edad sin proceso verificado | +30 pts | Todos los países |
+| Servidores fuera de jurisdicción sin garantías adecuadas | +20 pts | Todos los países |
+| Transferencia internacional sin cláusulas contractuales | +15 pts | Todos los países |
+| Sin política de privacidad publicada | +10 pts | Todos los países |
+| Sin procedimiento documentado de derechos ARCO/ARSOP | +10 pts | Todos los países |
+| Sin DPO/Encarregado designado y publicado | +15 pts | 🇧🇷 Brasil (LGPD Art. 41) y 🇪🇺 GDPR (Art. 37) cuando aplica |
+| Sin base legal documentada por finalidad de tratamiento | +20 pts | 🇧🇷 Brasil (LGPD Art. 7/11) y 🇪🇺 GDPR (Art. 6/9) — un consentimiento genérico no es suficiente |
+| Sin plan de respuesta a brechas de seguridad | +15 pts | 🇧🇷 Brasil (LGPD Art. 48), 🇪🇨 Ecuador (LOPDP), 🇪🇺 GDPR (Art. 33) |
+
+> **Nota:** Los penalizadores de DPO y base legal por finalidad solo suman si el sistema opera en Brasil o bajo GDPR. Para regímenes estándar LATAM (CO/MX/CL/AR/PE/EC), son buenas prácticas recomendadas pero no generan penalización automática.
 
 ### C. Factor de Rigor Normativo (F_rigor)
 
-| Mercado objetivo | Multiplicador |
-|---|---|
-| Solo régimen estándar LATAM (CO, MX, CL, AR, PE, EC) | × 1.00 |
-| Incluye Brasil (LGPD) o Europa (GDPR) | × 1.25 |
+| Mercado objetivo | Multiplicador | Razón |
+|---|---|---|
+| Solo régimen estándar LATAM (CO, MX, CL, AR, PE, EC) | × 1.00 | Marco regulatorio de primera generación |
+| Incluye 🇧🇷 Brasil (LGPD), 🇪🇨 Ecuador (LOPDP) o 🇪🇺 Europa (GDPR) | × 1.25 | Marco de segunda generación, alineado a GDPR, sanciones más altas |
 
 ### D. Fórmula Final
 

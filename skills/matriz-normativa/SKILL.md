@@ -20,71 +20,217 @@ Genera una tabla comparativa de legislaciones de protección de datos para una d
 - `/matriz-normativa consentimiento`
 - `/matriz-normativa "derechos del titular"`
 - `/matriz-normativa sanciones --paises CO,BR,EU`
-- `/matriz-normativa "transferencia internacional de datos"`
+- `/matriz-normativa "transferencia internacional"`
 - `/matriz-normativa DPO`
+- `/matriz-normativa menores`
 
 ## Dimensiones disponibles
 
 | Dimensión | Descripción |
 |---|---|
 | `consentimiento` | Requisitos para obtener autorización válida del titular |
-| `derechos` | Derechos ARCO y equivalentes (portabilidad, olvido) |
+| `derechos` | Derechos ARCO y equivalentes (portabilidad, olvido, no-automatización) |
 | `sanciones` | Multas máximas y autoridades regulatorias |
-| `dpo` | Requisito de Delegado de Protección de Datos |
+| `dpo` | Requisito de Delegado/Encarregado de Protección de Datos |
 | `transferencia` | Reglas para transferir datos fuera del país |
 | `notificacion-brecha` | Plazos y obligaciones ante incidentes de seguridad |
 | `bases-legales` | Bases legales válidas para el tratamiento |
 | `menores` | Protección especial para datos de niños y adolescentes |
 
-## Proceso
+---
 
-1. Identificar la dimensión solicitada.
-2. Consultar las reglas en `rules/countries/` y `rules/international/` para cada jurisdicción.
-3. Generar la tabla comparativa con impacto técnico para el desarrollador.
+## Conocimiento curado por dimensión
+
+### CONSENTIMIENTO
+
+**Qué significa para el desarrollador:** ¿Qué tan granular y explícito debe ser el "Acepto" del usuario?
+
+| Aspecto | 🇨🇴 CO | 🇲🇽 MX | 🇧🇷 BR | 🇨🇱 CL | 🇦🇷 AR | 🇵🇪 PE | 🇪🇨 EC | 🇪🇺 GDPR | 🇺🇸 CCPA |
+|---|---|---|---|---|---|---|---|---|---|
+| Forma requerida | Previo, expreso e informado | Expreso (sensibles: escrito); tácito válido para datos no sensibles | Libre, informado, inequívoco, específico por finalidad | Previo e informado | Informado | Expreso e informado | Libre, específico, informado e inequívoco | Libre, específico, informado e inequívoco — acción afirmativa | Opt-out para datos no sensibles; opt-in para datos sensibles |
+| ¿Vale un solo "Acepto" para todo? | No — debe ser por finalidad | No para datos sensibles; parcialmente para no sensibles | ❌ No — cada finalidad requiere base legal o consentimiento separado | Parcialmente | Parcialmente | No | ❌ No | ❌ No — granular por finalidad | No para datos sensibles |
+| ¿Casillas pre-marcadas válidas? | No | No | ❌ No | No | No | No | ❌ No | ❌ Explícitamente prohibido (Considerando 32) | No |
+| Revocación | Sí, en cualquier momento | Sí — tan sencillo como otorgarlo | Sí — tan sencillo como otorgarlo | Sí | Sí | Sí | Sí | Sí — tan fácil como otorgarlo | Sí |
+| Referencia | Art. 9, Ley 1581 | Arts. 8-9, LFPDPPP | Arts. 7-8, LGPD | Ley 19.628 | Ley 25.326 | Ley 29733 | Art. 7, LOPDP | Arts. 4(11), 7, GDPR | Cal. Civ. Code § 1798 |
+
+**Impacto técnico:**
+- Brasil y GDPR requieren una **Consent Management Platform (CMP)** con toggles individuales por finalidad — no basta un checkbox único
+- La revocación debe ser tan fácil como el otorgamiento — si se consintió con un click, la revocación debe ser también un click
+- Registrar qué versión del aviso estaba vigente cuando se otorgó cada consentimiento (tabla `user_consents` con `notice_version`)
+
+**Discriminadores de rigor (activan ×1.25):** Brasil (LGPD) y GDPR exigen granularidad por finalidad y registro demostrable del consentimiento.
+
+---
+
+### DERECHOS DEL TITULAR
+
+**Qué significa para el desarrollador:** ¿Qué acciones debe poder ejecutar el usuario sobre sus datos?
+
+| Derecho | 🇨🇴 CO | 🇲🇽 MX | 🇧🇷 BR | 🇨🇱 CL | 🇦🇷 AR | 🇵🇪 PE | 🇪🇨 EC | 🇪🇺 GDPR | 🇺🇸 CCPA |
+|---|---|---|---|---|---|---|---|---|---|
+| Acceso | ✅ 10 días háb. | ✅ 20 días háb. | ✅ ~15 días | ✅ 2+5 días háb. | ✅ 30 días háb. | ✅ 20 días háb. | ✅ 15 días háb. | ✅ 30 días | ✅ 45 días |
+| Rectificación | ✅ 15 días háb. | ✅ 20 días háb. | ✅ ~15 días | ✅ 5 días háb. | ✅ 5 días háb. | ✅ 20 días háb. | ✅ 15 días háb. | ✅ 30 días | ✅ 45 días |
+| Supresión / Olvido | ✅ 15 días háb. | ✅ (Cancelación) | ✅ ~15 días | ✅ 5 días háb. | ✅ 5 días háb. | ✅ 20 días háb. | ✅ 15 días háb. | ✅ 30 días (Art. 17) | ✅ 45 días |
+| Oposición | ✅ | ✅ (O en ARCO) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ Absoluta para marketing directo (Art. 21) | ✅ Opt-out de venta |
+| Portabilidad | ❌ | ❌ | ✅ (Art. 18 VI) | ❌ | ❌ | ❌ | ✅ (LOPDP) | ✅ (Art. 20) | ✅ implícita |
+| Limitación / Bloqueo | Parcial | Bloqueo durante cancelación | ✅ (Art. 18 IV) | Parcial | Parcial | Parcial | ✅ | ✅ (Art. 18) | Parcial |
+| No-decisión automatizada | ❌ | ❌ | ✅ (Art. 20) | ❌ | ❌ | ❌ | ✅ | ✅ (Art. 22) | Parcial (CPRA) |
+| Info sobre compartición | ❌ | Parcial | ✅ (Art. 18 VII) | ❌ | ❌ | ❌ | Parcial | ✅ (Art. 15) | ✅ |
+
+**Impacto técnico:**
+- Implementar un **endpoint de exportación** de todos los datos del usuario en JSON estructurado (necesario para portabilidad en BR/EC/GDPR/CCPA)
+- El borrado debe ser **físico** (DELETE real), no solo lógico (`is_deleted = true`) — LGPD y GDPR exigen borrado efectivo
+- Para Brasil y GDPR: necesitas lógica para **suspender** el tratamiento de un usuario sin eliminar sus datos (limitación)
+- Para Brasil y GDPR: si usas algoritmos de scoring o decisiones automatizadas, implementar flujo de **revisión humana** a pedido del usuario
+
+---
+
+### SANCIONES
+
+**Qué significa para el desarrollador:** ¿Cuánto puede costar un incumplimiento?
+
+| País | Autoridad | Multa máxima | Base de cálculo | Sanciones penales |
+|---|---|---|---|---|
+| 🇨🇴 Colombia | SIC | 2,000 SMLMV | ~USD 600K (valor aproximado 2025) | No |
+| 🇲🇽 México | INAI | 320,000 días de SMG | ~MXN 34M (~USD 1.7M aprox.) | Sí — Art. 67: 3-6 años por datos sensibles con ánimo de lucro |
+| 🇧🇷 Brasil | ANPD | 2% facturación Brasil | Límite R$ 50M por infracción | No (por ahora) |
+| 🇨🇱 Chile | CPLT / futuro Consejo | En actualización (nueva ley) | — | No |
+| 🇦🇷 Argentina | AAIP | ARS 3M (en revisión) | — | No |
+| 🇵🇪 Perú | ANPD Perú | 100 UIT | ~USD 120K | No |
+| 🇪🇨 Ecuador | Autoridad de Protección | 1% ingresos (leve) hasta 10% (grave) | Por tipo de infracción | No |
+| 🇪🇺 GDPR | DPA nacional | €20M o 4% facturación global | Lo que sea mayor (Tier 2) | Varía por Estado miembro |
+| 🇺🇸 CCPA | California AG / CPPA | USD 7,500 por violación intencional | Por acto | No federal |
+
+**Impacto técnico:**
+- GDPR y LGPD activan el multiplicador ×1.25 en el Risk Score por el volumen potencial de sanciones
+- México tiene sanciones **penales** que afectan a personas físicas (no solo a la empresa) — factor de riesgo adicional para CTOs y fundadores
+- Un solo incidente de seguridad en Brasil puede costar R$ 50M — justifica inversión en cifrado y plan de respuesta a brechas
+
+---
+
+### DPO / DELEGADO DE PROTECCIÓN DE DATOS
+
+**Qué significa para el desarrollador:** ¿Necesitas designar formalmente a alguien responsable de privacidad?
+
+| País | ¿Obligatorio? | Título local | Condición | Publicación pública | Referencia |
+|---|---|---|---|---|---|
+| 🇨🇴 Colombia | ❌ No | Responsable de datos | Recomendado por SIC | No obligatoria | — |
+| 🇲🇽 México | ❌ No | Departamento de Datos Personales | Sí — designar área o persona para ARCO | Nombre/contacto en aviso de privacidad | Art. 30, LFPDPPP |
+| 🇧🇷 Brasil | ✅ Sí | Encarregado de Dados | Todo controlador (excepciones para micro/EPP por ANPD) | Sí — nombre y contacto públicos | Art. 41, LGPD |
+| 🇨🇱 Chile | ❌ No | — | Nueva ley en implementación | — | — |
+| 🇦🇷 Argentina | ❌ No | — | Recomendado | — | — |
+| 🇵🇪 Perú | ❌ No | — | Recomendado | — | — |
+| 🇪🇨 Ecuador | ⚠️ Parcial | Delegado de Protección | Para tratamiento a gran escala o datos sensibles | Sí | LOPDP |
+| 🇪🇺 GDPR | ⚠️ Condicional | Delegado de Protección de Datos (DPD) | Obligatorio si: autoridad pública / monitoreo sistemático a gran escala / datos sensibles a gran escala | Sí — publicar y notificar a la DPA | Arts. 37-39, GDPR |
+| 🇺🇸 CCPA | ❌ No | — | No requerido | — | — |
+
+**Impacto técnico:**
+- Para Brasil: designar el Encarregado **antes del lanzamiento**, publicar nombre y email de contacto en la política de privacidad y en el sitio web
+- Para GDPR: si tu app monitorea usuarios sistemáticamente (analytics, perfilado) o trata datos sensibles a escala, el DPO es obligatorio aunque no seas autoridad pública
+- En ambos casos: el DPO/Encarregado necesita acceso de solo lectura a los sistemas para poder responder a la ANPD/DPA — incluir este rol en el diseño de permisos del sistema
+
+---
+
+### TRANSFERENCIA INTERNACIONAL DE DATOS
+
+**Qué significa para el desarrollador:** ¿Puedes almacenar datos en AWS us-east-1 si tus usuarios son de Brasil?
+
+| País | ¿Permitida? | Mecanismos válidos | Países con nivel adecuado | Referencia |
+|---|---|---|---|---|
+| 🇨🇴 Colombia | ✅ Con condiciones | País con nivel adecuado OR cláusulas contractuales | Lista SIC (incluye UE, Canadá, algunos) | Art. 26, Ley 1581 |
+| 🇲🇽 México | ✅ Con consentimiento | Consentimiento del titular OR contrato OR ley | No hay lista oficial | Arts. 36-37, LFPDPPP |
+| 🇧🇷 Brasil | ✅ Con garantías | País adecuado OR SCCs OR BCRs OR consentimiento específico | ANPD aún no publicó lista — usar referencia GDPR | Arts. 33-36, LGPD |
+| 🇪🇨 Ecuador | ✅ Con garantías | País adecuado OR SCCs OR consentimiento | Países reconocidos por LOPDP | LOPDP Art. 37+ |
+| 🇪🇺 GDPR | ✅ Con mecanismo | Decisión de adecuación OR SCCs (2021) OR BCRs OR certificaciones | Lista oficial CE (incluye AR, UY, UK, Suiza, Japón, EE.UU. bajo DPF) | Arts. 44-49, GDPR |
+
+**Impacto técnico para AWS/GCP/Azure:**
+- **us-east-1 (Virginia)** → Sin mecanismo adicional: problemático para BR (LGPD) y GDPR. Con SCCs firmadas con AWS: válido
+- **sa-east-1 (São Paulo)** → Datos en Brasil → sin problemas para LGPD
+- **eu-west-1 (Irlanda)** → Datos en UE → válido para GDPR; requiere SCCs para exportar de regreso a LATAM
+- Todos los proveedores cloud enterprise (AWS, GCP, Azure) ofrecen DPA/SCCs — firmarlos es el paso mínimo
+
+---
+
+### NOTIFICACIÓN DE BRECHAS DE SEGURIDAD
+
+**Qué significa para el desarrollador:** ¿A quién llamas primero cuando hay un data breach?
+
+| País | Notificar a autoridad | Plazo | Notificar a afectados | Condición | Referencia |
+|---|---|---|---|---|---|
+| 🇨🇴 Colombia | ✅ SIC | Sin plazo explícito (tan pronto sea posible) | ✅ Si afecta derechos significativamente | Brecha con riesgo para titulares | Circular SIC |
+| 🇲🇽 México | ✅ INAI | Sin plazo explícito ("a la brevedad") | ✅ Si hay riesgo patrimonial o moral | Vulneración de seguridad significativa | Art. 20, LFPDPPP |
+| 🇧🇷 Brasil | ✅ ANPD | ~72 horas (referencia operativa — no en texto LGPD) | ✅ Si hay riesgo relevante | Incidente con riesgo para titulares | Art. 48, LGPD |
+| 🇨🇱 Chile | ✅ CPLT | En actualización (nueva ley) | ✅ | — | Ley en reforma |
+| 🇦🇷 Argentina | ✅ AAIP | Sin plazo explícito | ✅ | — | Disposición AAIP |
+| 🇵🇪 Perú | ✅ ANPD | Sin plazo explícito | ✅ | — | Ley 29733 |
+| 🇪🇨 Ecuador | ✅ Autoridad | 72 horas | ✅ Si hay alto riesgo | Todo incidente | LOPDP |
+| 🇪🇺 GDPR | ✅ DPA nacional | **72 horas** (plazo legal explícito) | ✅ Si hay alto riesgo | Toda brecha con riesgo para derechos | Art. 33-34, GDPR |
+| 🇺🇸 CCPA | ✅ AG California | Variable por tipo | ✅ (ley de brechas de CA) | Datos específicos expuestos | Cal. Civ. Code § 1798.82 |
+
+**Impacto técnico:**
+- **El estándar de diseño es 72 horas** — aunque solo GDPR y Ecuador lo tienen explícito, es la práctica de mercado global
+- El plan de respuesta a incidentes debe incluir: árbol de decisión de notificación, plantillas de email, contactos de cada DPA, y lista de qué datos afectados activan notificación obligatoria
+- Los logs de acceso a datos sensibles deben conservarse para poder determinar el alcance del breach
+
+---
+
+### BASES LEGALES PARA EL TRATAMIENTO
+
+**Qué significa para el desarrollador:** ¿Con qué justificación legal procesas los datos de tu usuario más allá del "nos dio permiso"?
+
+| Base legal | 🇨🇴 CO | 🇲🇽 MX | 🇧🇷 BR | 🇪🇨 EC | 🇪🇺 GDPR | Notas |
+|---|---|---|---|---|---|---|
+| Consentimiento | ✅ | ✅ | ✅ (Art. 7 I) | ✅ | ✅ (Art. 6.1.a) | Universal, pero la más frágil — se puede revocar |
+| Contrato | ✅ implícito | ✅ | ✅ (Art. 7 V) | ✅ | ✅ (Art. 6.1.b) | Solo para datos necesarios para ejecutar el contrato |
+| Obligación legal | ✅ | ✅ | ✅ (Art. 7 II) | ✅ | ✅ (Art. 6.1.c) | Ej: datos fiscales, SARLAFT en CO, AML en general |
+| Interés vital | ✅ | ✅ | ✅ (Art. 7 IV) | ✅ | ✅ (Art. 6.1.d) | Solo para proteger la vida del titular o de un tercero |
+| Interés legítimo | Parcial | ✅ | ✅ (Art. 7 IX) | ✅ | ✅ (Art. 6.1.f) | No disponible frente a derechos fundamentales del titular |
+| Interés público | Parcial | ✅ | ✅ (Art. 7 III) | ✅ | ✅ (Art. 6.1.e) | Para entidades públicas principalmente |
+| Protección del crédito | No aplica | No aplica | ✅ (Art. 7 X) | No aplica | No aplica | Exclusivo de LGPD — permite tratar datos para análisis de crédito |
+| Tutela de la salud | No explícita | No explícita | ✅ (Art. 11 VIII) | ✅ | ✅ (Art. 9.2.h) | Para datos de salud — solo profesionales/entidades de salud |
+
+**Impacto técnico:**
+- En Brasil y bajo GDPR: **documentar la base legal de cada finalidad** no es opcional — es un requisito auditables
+- El interés legítimo requiere un **test de balance** documentado (¿el interés del responsable supera los derechos del titular?)
+- El consentimiento es la base más fácil de obtener pero la más fácil de perder — si es revocable, necesitas lógica para cesar el tratamiento
+
+---
+
+### DATOS DE MENORES DE EDAD
+
+**Qué significa para el desarrollador:** ¿Cómo sabes si tu usuario es menor, y qué cambia si lo es?
+
+| Aspecto | 🇨🇴 CO | 🇲🇽 MX | 🇧🇷 BR | 🇨🇱 CL | 🇦🇷 AR | 🇵🇪 PE | 🇪🇨 EC | 🇪🇺 GDPR | 🇺🇸 CCPA |
+|---|---|---|---|---|---|---|---|---|---|
+| Umbral de edad | 18 años | 18 años | 18 años | 18 años | 18 años | 18 años | 18 años | 13-16 años (según Estado miembro) | 16 años (CCPA) / 13 (COPPA federal) |
+| Quién consiente | Representante legal | Padre/tutor | Al menos un padre/responsable legal | Representante legal | Representante legal | Representante legal | Representante legal | Titular de patria potestad o tutela | Padre/tutor |
+| ¿Publicidad permitida? | No para datos sensibles | No sin consentimiento tutor | ❌ Prohibida expresamente | Restringida | Restringida | Restringida | Restringida | ❌ Muy restringida | ❌ Prohibida bajo COPPA para < 13 |
+| Referencia | Art. 7, Ley 1581 | LFPDPPP + Ley Morelos | Art. 14, LGPD | Ley 19.628 | Ley 25.326 | Ley 29733 | LOPDP | Art. 8, GDPR | CCPA + COPPA |
+
+**Impacto técnico:**
+- En Brasil: prohibición explícita de publicidad a menores en el Art. 14 LGPD — si tu plataforma puede tener menores, deshabilita cualquier motor de publicidad personalizada para ese segmento
+- Bajo GDPR: el umbral puede variar entre 13 y 16 años según el país de la UE donde opere tu servicio — implementar lógica por país
+- El consentimiento parental debe quedar **registrado y auditable** — quién consintió, cuándo, y con qué versión del aviso
+
+---
 
 ## Formato de Output
+
+Al generar la respuesta para el usuario, usa este formato:
 
 ```markdown
 ## 🌎 Matriz Normativa: [Dimensión]
 
-| Aspecto | CO 🇨🇴 | MX 🇲🇽 | BR 🇧🇷 | CL 🇨🇱 | AR 🇦🇷 | PE 🇵🇪 | EC 🇪🇨 | EU GDPR 🇪🇺 | US CCPA 🇺🇸 |
-|---|---|---|---|---|---|---|---|---|---|
-| [aspecto 1] | | | | | | | | | |
-| [aspecto 2] | | | | | | | | | |
+[Tabla comparativa de la dimensión solicitada, filtrada a los países relevantes]
 
-### 🔴 Discriminadores de Rigor (qué activa el multiplicador ×1.25)
-[Listado de diferencias que hacen que Brasil o Europa sean más exigentes]
+### 🔴 Discriminadores de Rigor
+[Qué diferencias activan el multiplicador ×1.25 — Brasil, Ecuador, GDPR]
 
 ### 💡 Impacto Técnico para el Desarrollador
-[Traducción práctica: qué cambios de código o arquitectura implica cada diferencia]
+[Traducción práctica: qué cambios de código o arquitectura implica]
 
-### Referencias Normativas
-- [Ley] Art. [X] — [descripción]
+### 📚 Referencias Normativas
+[Artículos exactos de cada ley citada]
 ```
 
-## Datos curados por dimensión
-
-### CONSENTIMIENTO
-- **LATAM estándar (CO/MX/CL/AR/PE/EC):** Previo, expreso e informado. Generalmente aceptan un checkbox con enlace a política de privacidad.
-- **Brasil (LGPD):** Debe ser específico para cada finalidad. Un solo "Acepto" no es suficiente si hay múltiples usos. Art. 8 LGPD.
-- **GDPR:** Específico, informado, libre e inequívoco. Granular por finalidad. Tan fácil revocar como otorgar. Art. 7 GDPR.
-- **Impacto técnico:** Requiere UI con toggles individuales por finalidad, no un único botón.
-
-### DERECHOS DEL TITULAR
-- **LATAM estándar:** Derechos ARCO (Acceso, Rectificación, Cancelación/Supresión, Oposición).
-- **Brasil (LGPD):** ARCO + Portabilidad + Información sobre compartición con terceros + Revisión de decisiones automatizadas. Art. 18 LGPD.
-- **GDPR:** ARCO + Portabilidad + Olvido (supresión definitiva) + Limitación del tratamiento + No ser objeto de decisiones automatizadas. Art. 15-22 GDPR.
-- **Impacto técnico:** Requiere API de exportación en JSON estructurado y script de borrado físico de registros (no solo soft delete).
-
-### SANCIONES
-- **Colombia:** Hasta 2.000 SMLMV (~USD 600K). Autoridad: SIC.
-- **México:** Hasta 32 millones MXN (~USD 1.6M). Autoridad: INAI.
-- **Brasil:** Hasta 2% de la facturación en Brasil, límite 50M BRL (~USD 10M). Autoridad: ANPD.
-- **GDPR:** Hasta 4% de la facturación global anual o 20M EUR (lo que sea mayor). Autoridad: DPA nacional.
-- **Impacto técnico:** El GDPR y LGPD activan el multiplicador ×1.25 por el riesgo financiero corporativo.
-
-### DPO / DELEGADO
-- **LATAM estándar:** Generalmente recomendado, no siempre obligatorio (varía por sector).
-- **Brasil (LGPD):** Obligatorio para responsables (art. 41 LGPD). Puede ser persona física o jurídica.
-- **GDPR:** Obligatorio si: autoridad pública, monitoreo sistemático a gran escala, o tratamiento a gran escala de datos sensibles. Art. 37 GDPR.
-- **Impacto técnico:** Requiere asignar rol en el sistema con permisos de auditoría y punto de contacto con autoridad regulatoria.
+Si el usuario pide `--paises CO,BR,EU`, filtrar la tabla a esas tres columnas solamente.

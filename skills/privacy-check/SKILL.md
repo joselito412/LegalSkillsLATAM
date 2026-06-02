@@ -92,10 +92,69 @@ Para cada input del usuario, evalúa las siguientes dimensiones:
 
 ## Reglas del Auditor
 
-- Citar siempre el artículo o principio legal específico que se viola (ej: "Art. 4 LGPD — Principio de Necesidad").
+- Citar siempre el artículo o principio legal específico que se viola.
 - No inventar obligaciones que no existan en las leyes aplicables.
 - Si hay ambigüedad legal, señalarlo explícitamente: "La interpretación de este punto puede variar según la autoridad regulatoria."
 - Para severidad ALTA, proponer siempre una solución técnica concreta, no solo describir el problema.
+
+## Referencia Normativa por Dimensión
+
+Usa esta tabla para citar el artículo correcto en cada hallazgo:
+
+### 1. Base Legal del Tratamiento
+
+| Jurisdicción | Artículo | Principio |
+|---|---|---|
+| 🇨🇴 Colombia | Art. 4, Ley 1581/2012 | Principio de finalidad — solo tratar para la finalidad informada |
+| 🇲🇽 México | Art. 12-13, LFPDPPP | Limitación de finalidad — uso secundario requiere nuevo consentimiento |
+| 🇧🇷 Brasil | Art. 6°, IV LGPD | Princípio de finalidade — finalidades legítimas, específicas e explícitas |
+| 🇧🇷 Brasil | Art. 7° y Art. 11 LGPD | Bases legales taxativas — sin base legal = tratamiento ilícito |
+| 🇪🇺 GDPR | Art. 5(1)(b) + Art. 6(1) | Limitación de finalidad + base legal obligatoria para cada tratamiento |
+
+### 2. Minimización de Datos
+
+| Jurisdicción | Artículo | Principio |
+|---|---|---|
+| 🇨🇴 Colombia | Art. 4(d), Ley 1581/2012 | Principio de necesidad |
+| 🇲🇽 México | Art. 11, LFPDPPP | Calidad de los datos — datos pertinentes, correctos y actualizados |
+| 🇧🇷 Brasil | Art. 6°, III LGPD | Princípio da necessidade — mínimo necessário para a finalidade |
+| 🇪🇺 GDPR | Art. 5(1)(c) | Minimización de datos — adecuados, pertinentes y limitados |
+
+### 3. Transferencia a Terceros
+
+| Jurisdicción | Artículo | Requisito |
+|---|---|---|
+| 🇨🇴 Colombia | Art. 25-26, Ley 1581/2012 | Contrato de transmisión de datos + nivel adecuado en el receptor |
+| 🇲🇽 México | Art. 36-37, LFPDPPP | Informar en aviso de privacidad + receptor asume mismas obligaciones |
+| 🇧🇷 Brasil | Art. 33-36, LGPD | País receptor con nivel adecuado O garantías contractuales (SCCs) |
+| 🇪🇺 GDPR | Art. 44-49, GDPR | Decisión de adecuación O cláusulas contractuales tipo (SCCs) O BCRs |
+
+### 4. Seguridad Técnica
+
+| Jurisdicción | Artículo | Obligación |
+|---|---|---|
+| 🇨🇴 Colombia | Art. 4(g) + Circular SIC | Medidas administrativas, humanas y técnicas adecuadas |
+| 🇲🇽 México | Art. 19-20, LFPDPPP | Medidas administrativas, físicas y técnicas proporcionales al riesgo |
+| 🇧🇷 Brasil | Art. 46-49, LGPD | Medidas de segurança técnicas e administrativas + notificação de incidentes |
+| 🇪🇺 GDPR | Art. 25 + Art. 32, GDPR | Privacy by Design + Privacy by Default + medidas técnicas y organizativas |
+
+### 5. Derechos del Titular
+
+| Jurisdicción | Artículo | Plazo de respuesta |
+|---|---|---|
+| 🇨🇴 Colombia | Art. 14-16, Ley 1581/2012 | Consultas: 10 días hábiles / Reclamos: 15 días hábiles |
+| 🇲🇽 México | Art. 22-36, LFPDPPP | 20 días hábiles para responder + 15 hábiles para hacer efectiva la respuesta |
+| 🇧🇷 Brasil | Art. 18-20, LGPD | ~15 días (Resolução ANPD) — incluye revisión de decisión automatizada |
+| 🇪🇺 GDPR | Art. 15-22, GDPR | 30 días corridos (extensible +60) — incluye portabilidad y no-automatización |
+
+### 6. Datos de Menores
+
+| Jurisdicción | Artículo | Requisito |
+|---|---|---|
+| 🇨🇴 Colombia | Art. 7, Ley 1581/2012 | Autorización del representante legal — menores de 18 |
+| 🇲🇽 México | Art. 9, LFPDPPP (aplicación práctica) | Consentimiento expreso del padre/tutor |
+| 🇧🇷 Brasil | Art. 14, LGPD | Consentimiento específico de al menos un padre/responsable — sin publicidad |
+| 🇪🇺 GDPR | Art. 8, GDPR | Consentimiento del titular de la patria potestad — umbral entre 13-16 años según Estado |
 
 ---
 

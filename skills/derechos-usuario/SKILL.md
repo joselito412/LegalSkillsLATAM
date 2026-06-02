@@ -23,14 +23,16 @@ Genera el protocolo técnico y operativo para responder una solicitud de derecho
 
 ## Tipos de solicitudes reconocidas
 
-| Derecho | Nombre LATAM | Nombre GDPR/LGPD | Descripción |
-|---|---|---|---|
-| Acceso | Derecho de Acceso | Right of Access | El usuario quiere saber qué datos tienes de él |
-| Rectificación | Rectificación | Rectification | El usuario quiere corregir un dato incorrecto |
-| Cancelación/Supresión | Cancelación | Erasure / Derecho al Olvido | El usuario quiere que borres sus datos |
-| Oposición | Oposición | Objection | El usuario se opone a un uso específico de sus datos |
-| Portabilidad | *(no en todos los países)* | Portability | El usuario quiere llevarse sus datos a otro servicio |
-| Limitación | *(no en todos los países)* | Restriction | El usuario pide suspender el tratamiento temporalmente |
+| Derecho | Nombre LATAM | Nombre GDPR/LGPD | Disponibilidad | Descripción |
+|---|---|---|---|---|
+| Acceso | Derecho de Acceso / Consulta | Right of Access | Todos los países | El usuario quiere saber qué datos tienes de él |
+| Rectificación | Rectificación | Rectification | Todos los países | El usuario quiere corregir un dato incorrecto |
+| Cancelación/Supresión | Cancelación / Supresión | Erasure / Right to be Forgotten | Todos los países | El usuario quiere que borres sus datos |
+| Oposición | Oposición / Revocación | Objection | Todos los países | El usuario se opone a un uso específico de sus datos |
+| Portabilidad | *(no en LATAM estándar)* | Portability | 🇧🇷 Brasil, 🇪🇨 Ecuador, 🇪🇺 GDPR, 🇺🇸 CCPA | El usuario quiere llevarse sus datos a otro servicio en formato estructurado |
+| Limitación / Bloqueo | Bloqueo temporal | Restriction | 🇧🇷 Brasil, 🇪🇨 Ecuador, 🇪🇺 GDPR | El usuario pide suspender el tratamiento sin eliminar los datos |
+| Revisión de decisión automatizada | *(no en LATAM estándar)* | Right not to be subject to automated decisions | 🇧🇷 Brasil (Art. 20 LGPD), 🇪🇨 Ecuador, 🇪🇺 GDPR (Art. 22) | El usuario pide revisión humana de decisiones tomadas por algoritmos (scoring crediticio, perfilado) |
+| Información sobre compartición | *(no en LATAM estándar)* | Information on recipients | 🇧🇷 Brasil (Art. 18 VII LGPD) | El usuario quiere saber con qué entidades se compartieron sus datos |
 
 ## Proceso de Respuesta
 
@@ -49,17 +51,19 @@ Solicitar documento que acredite la identidad sin exigir información excesiva. 
 
 ### Paso 3: Plazos por Jurisdicción
 
-| País | Plazo de Respuesta | Posible Prórroga | Autoridad |
-|---|---|---|---|
-| 🇨🇴 Colombia | 10 días hábiles para confirmar; 15 días hábiles para resolver | 8 días hábiles adicionales con aviso | SIC |
-| 🇲🇽 México | 20 días hábiles | 20 días hábiles adicionales con justificación | INAI |
-| 🇧🇷 Brasil | 15 días corridos | No especificada (buena fe) | ANPD |
-| 🇨🇱 Chile | 2 días hábiles para confirmar; plazo razonable para resolver | — | CPLT / futuro Consejo |
-| 🇦🇷 Argentina | 5 días hábiles | — | AAIP |
-| 🇵🇪 Perú | 20 días hábiles | 20 días hábiles adicionales | ANPD Perú |
-| 🇪🇨 Ecuador | 15 días | — | ANPD Ecuador |
-| 🇪🇺 GDPR | 30 días corridos | +60 días con aviso motivado | DPA nacional |
-| 🇺🇸 CCPA | 10 días hábiles para confirmar; 45 días corridos para resolver | +45 días con aviso | State AG |
+| País | Plazo de Respuesta | Posible Prórroga | Autoridad | Referencia |
+|---|---|---|---|---|
+| 🇨🇴 Colombia | **Consultas (Acceso):** 10 días hábiles. **Reclamos (Rectificación/Cancelación/Oposición):** 15 días hábiles | Consultas: +5 hábiles con aviso. Reclamos: +8 hábiles con aviso | SIC | Arts. 14-16, Ley 1581/2012 |
+| 🇲🇽 México | 20 días hábiles para responder | +20 días hábiles con justificación. Luego 15 días hábiles adicionales para hacer efectiva la respuesta | INAI | Art. 32, LFPDPPP |
+| 🇧🇷 Brasil | 15 días (referencia operativa — la LGPD no fija plazo en días en su texto base; el estándar de 15 días proviene de la Resolução CD/ANPD) | No especificada en la ley | ANPD | Art. 18, LGPD + Resolução CD/ANPD |
+| 🇨🇱 Chile | 2 días hábiles para confirmar recepción; plazo razonable para resolver (ley en actualización) | — | CPLT / futuro Consejo de Protección | Ley 19.628 (en reforma) |
+| 🇦🇷 Argentina | 5 días hábiles | — | AAIP | Art. 14, Ley 25.326 |
+| 🇵🇪 Perú | 20 días hábiles | +20 días hábiles con aviso motivado | ANPD Perú | Art. 22, Ley 29733 |
+| 🇪🇨 Ecuador | 15 días **hábiles** | — | Autoridad de Protección de Datos (DINARDAP transitoriamente) | Art. 24, LOPDP 2021 |
+| 🇪🇺 GDPR | 30 días corridos | +60 días corridos con aviso motivado antes de vencer el primer mes | Autoridad de Control nacional (AEPD, CNIL, etc.) | Art. 12(3), GDPR |
+| 🇺🇸 CCPA | 10 días hábiles para confirmar recepción; 45 días corridos para resolver | +45 días corridos con aviso | California AG / CPPA | Cal. Civ. Code § 1798.130 |
+
+> ⚠️ **Regla práctica:** Diseña tu sistema de DSAR con el plazo más corto como estándar (10 días hábiles de Colombia/acceso). Así cumples con todas las jurisdicciones simultáneamente.
 
 ### Paso 4: Acciones Técnicas Requeridas
 
@@ -123,8 +127,28 @@ Solicitar documento que acredite la identidad sin exigir información excesiva. 
 [Si no se puede cumplir en todo o en parte, base legal para la negativa]
 ```
 
+**Para solicitud de REVISIÓN DE DECISIÓN AUTOMATIZADA (🇧🇷 Brasil Art. 20 LGPD / 🇪🇺 GDPR Art. 22):**
+```
+□ Confirmar que la decisión fue tomada exclusivamente por medios automatizados (sin intervención humana)
+□ Confirmar que la decisión produce efectos jurídicos o afecta significativamente al titular
+□ Asignar un revisor humano con autoridad para modificar o revertir la decisión
+□ Documentar los criterios utilizados por el algoritmo para esa decisión específica
+□ Notificar al usuario el resultado de la revisión humana
+□ Si la decisión se mantiene: explicar la lógica aplicada de forma comprensible
+```
+
+**Para solicitud de INFORMACIÓN SOBRE COMPARTICIÓN (🇧🇷 Brasil Art. 18 VII LGPD):**
+```
+□ Identificar TODOS los terceros que recibieron datos del usuario (sub-procesadores, socios, APIs)
+□ Listar: nombre del tercero, categoría de datos compartidos, finalidad del compartimiento
+□ Indicar si la transferencia fue nacional o internacional
+□ Entregar en formato claro y comprensible (no en jerga técnica)
+```
+
 ## Casos Especiales
 
 - **Si el usuario es menor de edad:** La solicitud debe tramitarla su representante legal. Verificar tutela/custodia.
 - **Si hay litigio activo:** Consultar con abogado antes de borrar datos que puedan ser prueba.
 - **Si el dato está en backups cifrados de larga retención:** Documentar la imposibilidad técnica de borrado inmediato y establecer mecanismo para cuando el backup expire.
+- **Si opera en Brasil (LGPD) y el usuario pide revisión de scoring o decisión automatizada:** Es un derecho independiente al de acceso — tramitar por separado con revisor humano designado.
+- **Si opera en GDPR y el usuario invoca Art. 21 (oposición al marketing directo):** La oposición es absoluta — no requiere justificación del usuario y no puede negarse.

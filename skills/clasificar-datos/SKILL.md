@@ -33,8 +33,11 @@ Si el usuario no especificó país, pregunta: "¿En qué país(es) opera el sist
 | Categoría | Criterio | Ejemplos | Puntaje base |
 |---|---|---|---|
 | **Público** | Información que no identifica a una persona o que es de acceso público por ley | Nombre de empresa, registro mercantil, estadísticas agregadas | 10 pts |
-| **Personal General** | Cualquier información que permite identificar directa o indirectamente a una persona natural | Email, teléfono, IP, nombre completo, dirección, cookie ID, credenciales | 40 pts |
-| **Sensible** | Datos que por su naturaleza pueden generar discriminación o riesgo especial a su titular | Datos de salud, biometría, orientación sexual/política/religiosa, datos de menores, origen étnico, antecedentes penales | 80 pts |
+| **Personal General** | Cualquier información que permite identificar directa o indirectamente a una persona natural | Email, teléfono, IP, nombre completo, dirección, cookie ID, credenciales, fecha de nacimiento | 40 pts |
+| **Sensible** | Datos que por su naturaleza pueden generar discriminación o riesgo especial a su titular | Datos de salud, biometría, orientación sexual/política/religiosa, datos de menores, origen étnico, datos genéticos | 80 pts |
+| **Penal / Criminal** *(categoría especial — GDPR Art. 10)* | Datos relativos a condenas e infracciones penales o medidas de seguridad conexas | Antecedentes penales, historial judicial, condenas, procesos en curso | 80 pts — restricciones adicionales bajo GDPR |
+
+> **Nota sobre antecedentes penales:** En LATAM (CO, MX, BR, EC, PE) se clasifican dentro de **Sensible**. Bajo el GDPR (Art. 10), son una categoría separada con restricción más estricta: solo tratables bajo control de autoridad pública o autorización legal expresa. Si el sistema opera bajo GDPR y maneja datos penales, escala siempre a revisión legal.
 
 ### Paso 3: Verificar particularidades por jurisdicción
 
@@ -62,6 +65,8 @@ Si el usuario no especificó país, pregunta: "¿En qué país(es) opera el sist
 
 **Ecuador (LOPDP 2021):**
 - Datos sensibles: origen étnico/racial, situación migratoria, religión, ideología, filiación política, datos judiciales, salud, vida/orientación sexual, biometría, genética.
+- ⚠️ **Particularidad única en la región:** Ecuador es el único país LATAM que incluye explícitamente la **situación migratoria** como dato sensible. Si tu sistema registra si un usuario es migrante, refugiado, o su estatus migratorio, aplica protección de dato sensible solo por operar en Ecuador.
+- La LOPDP 2021 está fuertemente alineada al GDPR — aplica el factor de rigor × 1.25.
 
 **GDPR (Referente global):**
 - Agrega "datos relativos a condenas e infracciones penales" como categoría especial.
