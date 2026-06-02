@@ -8,6 +8,11 @@
 [![Security: Snyk](https://img.shields.io/badge/Snyk%20W011-PASS-brightgreen)](docs/SECURITY.md)
 [![Version](https://img.shields.io/badge/version-0.1.0-blue)](docs/ROADMAP.md)
 
+<p align="center">
+    <img src="assets/architecture.svg" alt="Arquitectura del repositorio LegalSkillsLATAM" width="48%">
+    <img src="assets/risk-score-demo.svg" alt="Demo visual del Legal Risk Score" width="48%">
+</p>
+
 > ⚠️ Este proyecto es una guía metodológica y operativa. No constituye ni suplanta asesoría jurídica profesional. Consulta siempre con un abogado experto ante dudas legales específicas.
 
 ---
