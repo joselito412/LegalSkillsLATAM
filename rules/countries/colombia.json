@@ -61,12 +61,27 @@
   },
 
   "data_subject_rights": {
-    "access": { "available": true, "deadline_days": 15, "deadline_type": "hábiles" },
-    "rectification": { "available": true, "deadline_days": 15, "deadline_type": "hábiles" },
-    "erasure": { "available": true, "deadline_days": 15, "deadline_type": "hábiles" },
+    "access": {
+      "available": true,
+      "deadline_days": 10,
+      "deadline_type": "hábiles",
+      "note": "Consultas (Art. 14): 10 días hábiles. Prorrogable 5 días más, informando al titular el motivo antes de vencer el plazo inicial."
+    },
+    "rectification": {
+      "available": true,
+      "deadline_days": 15,
+      "deadline_type": "hábiles",
+      "note": "Reclamos (Art. 15): 15 días hábiles. Prorrogable 8 días más, informando al titular antes de vencer el plazo inicial."
+    },
+    "erasure": {
+      "available": true,
+      "deadline_days": 15,
+      "deadline_type": "hábiles",
+      "note": "Sigue el mismo procedimiento de reclamos del Art. 15."
+    },
     "objection": { "available": true },
     "portability": { "available": false, "note": "No contemplada en Ley 1581/2012" },
-    "legal_ref": "Art. 14-15, Ley 1581/2012"
+    "legal_ref": "Arts. 14-16, Ley 1581/2012"
   },
 
   "sanctions": {

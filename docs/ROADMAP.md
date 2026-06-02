@@ -13,23 +13,45 @@
 
 ---
 
-## Fase 1 — Fundación (Actual) ✅
+## Fase 1 — Fundación ✅ MVP COMPLETO
 
 **Objetivo:** Establecer la base de conocimiento y el plugin de Claude.
 
+### Entregables MVP (v0.1.0) — Completados
+
 - [x] Arquitectura del repositorio definida
 - [x] `score-formula.json` — motor de riesgo documentado
-- [x] `colombia.json` — primer país completo (plantilla para los demás)
 - [x] `country-rules.schema.json` — esquema de validación JSON
 - [x] 5 Skills de Claude: `clasificar-datos`, `privacy-check`, `risk-score`, `matriz-normativa`, `derechos-usuario`
-- [x] `checklist-startup.md` — primer checklist accionable
+- [x] `rules/countries/colombia.json` — plantilla base
+- [x] `rules/countries/brasil.json` — techo regulatorio LATAM (LGPD)
+- [x] `rules/countries/mexico.json` — segunda economía LATAM (LFPDPPP)
+- [x] `rules/international/gdpr.json` — referente global
 - [x] `comparativa-consentimiento.md` — primera matriz comparativa
-- [ ] Completar `rules/countries/` para los 7 países LATAM
-- [ ] Completar `rules/international/gdpr.json` y `ccpa.json`
-- [ ] Completar matrices: `comparativa-derechos.md`, `comparativa-sanciones.md`, `comparativa-dpo.md`
-- [ ] Completar checklists: `checklist-api-design.md`, `checklist-datos-sensibles.md`
-- [ ] `prompts/auditor-privacidad.md` — system prompt para uso directo con cualquier LLM
-- [ ] Publicar en GitHub con README completo
+- [x] `comparativa-derechos.md` — derechos del titular en 9 jurisdicciones
+- [x] `checklist-startup.md` — checklist de lanzamiento
+- [x] `checklist-datos-sensibles.md` — checklist para salud, biometría y menores
+- [x] `prompts/auditor-privacidad.md` — system prompt para cualquier LLM
+- [x] Assets visuales (architecture.svg, risk-score-demo.svg, security-audits.svg)
+- [x] Publicado en GitHub con README completo y badges de seguridad
+
+### Países en pausa — Backlog v0.2.0
+
+Los siguientes países tienen cobertura referencial en las skills y matrices, pero aún no tienen su archivo `rules/countries/` completo. Están en pausa hasta la siguiente iteración editorial con revisión legal.
+
+| País | Archivo | Estado | Prioridad |
+|---|---|---|---|
+| 🇨🇱 Chile | `rules/countries/chile.json` | ⏸️ En pausa | Alta — nueva Ley 21.719 (2026) en vigencia |
+| 🇦🇷 Argentina | `rules/countries/argentina.json` | ⏸️ En pausa | Media — reconocimiento adecuación UE |
+| 🇵🇪 Perú | `rules/countries/peru.json` | ⏸️ En pausa | Media |
+| 🇪🇨 Ecuador | `rules/countries/ecuador.json` | ⏸️ En pausa | Alta — LOPDP muy alineada a GDPR |
+| 🇺🇸 CCPA | `rules/international/ccpa.json` | ⏸️ En pausa | Media — para proyectos con usuarios en California |
+
+> **Nota editorial:** Ningún archivo de país se publica sin revisión por un abogado experto en la jurisdicción correspondiente. La pausa es intencional para mantener el estándar de calidad del proyecto.
+
+### Próximo paso obligatorio antes de v0.2.0
+
+**Auditoría editorial de contenido** — Revisión por abogado experto de los archivos ya publicados (`colombia.json`, `brasil.json`, `mexico.json`, `gdpr.json`) para validar exactitud legal antes de continuar expandiendo el proyecto. Ver sección de validación en este documento.
 
 ---
 
@@ -144,6 +166,70 @@ Dashboard web para:
 - Alertas automáticas cuando cambia la legislación de un país
 - Reportes de cumplimiento exportables (PDF) para due diligence
 - Módulo de gestión de solicitudes ARCO
+
+---
+
+## Validación de Calidad y Fuentes
+
+Este paso no está en una "fase" porque es transversal a todo el proyecto — debe ocurrir antes de avanzar de una fase a la siguiente y cada vez que se publique contenido nuevo.
+
+### ¿Qué se valida?
+
+| Dimensión | Qué revisar | Quién |
+|---|---|---|
+| **Exactitud legal** | ¿El artículo citado existe y dice lo que el archivo dice que dice? | Abogado experto por jurisdicción |
+| **Vigencia** | ¿La ley citada sigue vigente? ¿Hubo reforma, reglamento nuevo o criterio de autoridad? | Equipo editorial + alertas legales |
+| **Plazos** | ¿Los días hábiles/calendario son correctos según la ley y la doctrina local? | Abogado experto |
+| **Sanciones** | ¿Las multas máximas están actualizadas al año en curso? (cambian con salario mínimo) | Equipo editorial |
+| **Coherencia interna** | ¿Lo que dice `colombia.json` es consistente con lo que dice `comparativa-derechos.md`? | Revisión técnica cruzada |
+| **Cobertura de casos edge** | ¿Los penalizadores cubren los escenarios reales que enfrentan los devs de LATAM? | Comunidad + devs usuarios |
+
+### Proceso de validación editorial (pre-publicación)
+
+```
+1. Claude genera borrador del archivo (JSON o Markdown)
+         ↓
+2. Revisión técnica cruzada (coherencia interna del repositorio)
+         ↓
+3. Revisión por abogado experto en la jurisdicción
+   — Verifica artículos, plazos, sanciones y doctrina local
+   — Firma el archivo con su revisión en el frontmatter
+         ↓
+4. Merge a main con tag de versión
+         ↓
+5. Disclosure en README: "Revisado por [firma] — [fecha]"
+```
+
+### Estado actual de validación (v0.1.0)
+
+| Archivo | Generado | Revisión legal | Validado |
+|---|---|---|---|
+| `rules/countries/colombia.json` | ✅ | ⏳ Pendiente | ❌ |
+| `rules/countries/brasil.json` | ✅ | ⏳ Pendiente | ❌ |
+| `rules/countries/mexico.json` | ✅ | ⏳ Pendiente | ❌ |
+| `rules/international/gdpr.json` | ✅ | ⏳ Pendiente | ❌ |
+| `comparativa-consentimiento.md` | ✅ | ⏳ Pendiente | ❌ |
+| `comparativa-derechos.md` | ✅ | ⏳ Pendiente | ❌ |
+| `checklist-startup.md` | ✅ | ⏳ Pendiente | ❌ |
+| `checklist-datos-sensibles.md` | ✅ | ⏳ Pendiente | ❌ |
+
+> **Hasta que los archivos estén validados, el disclaimer de "guía informativa — no asesoría jurídica" es la única barrera de riesgo.** La validación editorial convierte el proyecto de "útil pero no confiable" a "confiable y citable".
+
+### Fuentes primarias de referencia
+
+Para la validación, las fuentes autoritativas son:
+
+| Jurisdicción | Fuente oficial |
+|---|---|
+| 🇧🇷 Brasil | [planalto.gov.br](https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709.htm) — texto oficial LGPD |
+| 🇨🇴 Colombia | [sic.gov.co](https://www.sic.gov.co) + [normograma.gov.co](https://www.normograma.gov.co) |
+| 🇲🇽 México | [dof.gob.mx](https://www.dof.gob.mx) — DOF oficial + [inai.org.mx](https://home.inai.org.mx) |
+| 🇨🇱 Chile | [bcn.cl](https://www.bcn.cl) — Biblioteca del Congreso Nacional |
+| 🇦🇷 Argentina | [argentina.gob.ar/aaip](https://www.argentina.gob.ar/aaip) |
+| 🇵🇪 Perú | [gacetajuridica.com.pe](https://www.gacetajuridica.com.pe) + ANPD |
+| 🇪🇨 Ecuador | [registroficial.gob.ec](https://www.registroficial.gob.ec) |
+| 🇪🇺 GDPR | [eur-lex.europa.eu](https://eur-lex.europa.eu/legal-content/ES/TXT/?uri=CELEX%3A32016R0679) |
+| 🇺🇸 CCPA | [oag.ca.gov/privacy/ccpa](https://oag.ca.gov/privacy/ccpa) |
 
 ---
 
