@@ -149,13 +149,14 @@ Asignar severidad visual:
 ║              [NIVEL DE RIESGO]                       ║
 ║                                                      ║
 ╠══════════════════════════════════════════════════════╣
-║  Cálculo: [C_base] + [Σ penalizadores] × [F_rigor]  ║
-╠══════════════════════════════════════════════════════╣
-║  Hallazgos principales:                              ║
-║  [emoji] [penalizador #1 — mayor impacto]   +XX pts  ║
-║  [emoji] [penalizador #2]                   +XX pts  ║
+║  Desglose:                                           ║
+║  📦 Base ([categoría del dato])             XX pts   ║
+║  [emoji] [penalizador #1 — mayor impacto]  +XX pts   ║
+║  [emoji] [penalizador #2]                  +XX pts   ║
 ║  [emoji] [penalizador N — todos los activos]+XX pts  ║
-║                              Total Σ =    XX pts     ║
+║  × F_rigor [1.00 / 1.25]                            ║
+║  ─────────────────────────────────────────────────  ║
+║  Total                                    XX pts    ║
 ╠══════════════════════════════════════════════════════╣
 ║  Acción esta semana:                                 ║
 ║    → [acción #1 — específica y accionable]           ║
