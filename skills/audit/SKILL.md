@@ -152,9 +152,10 @@ Asignar severidad visual:
 ║  Cálculo: [C_base] + [Σ penalizadores] × [F_rigor]  ║
 ╠══════════════════════════════════════════════════════╣
 ║  Hallazgos principales:                              ║
-║  [emoji] [descripción hallazgo #1]      +XX pts      ║
-║  [emoji] [descripción hallazgo #2]      +XX pts      ║
-║  [emoji] [descripción hallazgo #3]      +XX pts      ║
+║  [emoji] [penalizador #1 — mayor impacto]   +XX pts  ║
+║  [emoji] [penalizador #2]                   +XX pts  ║
+║  [emoji] [penalizador N — todos los activos]+XX pts  ║
+║                              Total Σ =    XX pts     ║
 ╠══════════════════════════════════════════════════════╣
 ║  Acción esta semana:                                 ║
 ║    → [acción #1 — específica y accionable]           ║
@@ -187,7 +188,7 @@ Asignar severidad visual:
 
 ## Paso 5: Reglas de calidad del output
 
-- **Nunca** listar todos los penalizadores — solo los 3 principales
+- **Siempre** listar todos los penalizadores activos en el box — el Σ visible debe cuadrar con la fórmula. Si hay más de 5, agrupar los menores en "🟢 Otros (+X pts)"
 - **Nunca** generar más de 2 acciones en el output principal
 - **Nunca** repetir información ya presente en el box dentro del texto que sigue
 - **Siempre** que se infiera algo no dicho explícitamente, marcarlo como supuesto
