@@ -117,6 +117,24 @@ Las **6 skills** incluyen la sección `## Reglas de Aislamiento de Contenido` co
 
 **Resultado: PASS (sin W011)**
 
+#### Techo arquitectónico del sistema Markdown-only (decisión documentada)
+
+El enforcement de aislamiento de contenido en este proyecto es **conductual** — son instrucciones al LLM sobre cómo comportarse ante un input malicioso. Este es el límite técnico de un sistema basado exclusivamente en archivos Markdown y JSON sin una capa de código intermedia.
+
+**Vectores no cubiertos por enforcement conductual:**
+- Inyección vía encoding (unicode lookalikes, base64, caracteres homoglifos)
+- Inyección multi-turn (distribuida en múltiples mensajes de conversación)
+- Jailbreaks de baja probabilidad pero alta sofisticación
+
+**Esta limitación es una decisión arquitectónica aceptada**, no un gap silencioso. La resolución está planificada:
+
+| Fase | Solución | Qué resuelve |
+|---|---|---|
+| Fase 2 (CLI) | Validación de input en Node.js antes de invocar el LLM | Encoding, longitud, allowlist de caracteres para campos cerrados |
+| Fase 3 (API) | Capa de sanitización pre-LLM + output validation | Enforcement técnico completo — convierte mitigación conductual en control auditable |
+
+Hasta que Fase 3 esté implementada, el disclaimer "guía informativa — no asesoría jurídica" actúa como la barrera de responsabilidad frente a outputs manipulados por inyección sofisticada.
+
 ---
 
 ## Matriz de Riesgo por Skill
