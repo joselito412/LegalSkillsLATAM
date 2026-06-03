@@ -1,0 +1,124 @@
+name: PR Security Checklist
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+    paths:
+      - 'skills/**/SKILL.md'
+      - 'rules/**/*.json'
+      - '.claude-plugin/plugin.json'
+
+jobs:
+  skill-security-check:
+    name: SKILL.md Security Checks
+    runs-on: ubuntu-latest
+    if: contains(join(github.event.pull_request.changed_files.*.filename, ' '), 'SKILL.md') || true
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check Content Isolation sections
+        run: |
+          echo "Checking Content Isolation sections in all SKILL.md files..."
+          FAILED=0
+          for skill_file in skills/*/SKILL.md; do
+            if ! grep -q "Reglas de Aislamiento de Contenido" "$skill_file"; then
+              echo "❌ MISSING Content Isolation section: $skill_file"
+              FAILED=1
+            else
+              echo "✅ $skill_file"
+            fi
+          done
+          if [ $FAILED -eq 1 ]; then
+            echo ""
+            echo "ERROR: One or more SKILL.md files are missing the Content Isolation section."
+            echo "Add '## Reglas de Aislamiento de Contenido (Content Isolation — Snyk W011)'"
+            echo "See skills/privacy-check/SKILL.md for reference."
+            exit 1
+          fi
+
+      - name: Check English injection patterns
+        run: |
+          echo "Checking English injection patterns in Content Isolation sections..."
+          FAILED=0
+          for skill_file in skills/*/SKILL.md; do
+            if ! grep -q "ignore previous instructions" "$skill_file"; then
+              echo "❌ MISSING English injection patterns: $skill_file"
+              FAILED=1
+            else
+              echo "✅ $skill_file"
+            fi
+          done
+          if [ $FAILED -eq 1 ]; then
+            echo ""
+            echo "ERROR: One or more SKILL.md files are missing English injection patterns."
+            echo "Add 'ignore previous instructions', 'disregard your role', etc. to Rule 2."
+            exit 1
+          fi
+
+      - name: Check for shell commands in SKILL.md
+        run: |
+          echo "Checking for forbidden shell commands in SKILL.md files..."
+          PATTERNS="bash\|#!/\|npm install\|npx \|pip install\|curl \|wget "
+          FAILED=0
+          for skill_file in skills/*/SKILL.md; do
+            # Only check outside code blocks used as examples
+            # Flag if shell commands appear as instructions (not in example blocks)
+            if grep -n "^\`\`\`bash\|^\`\`\`sh\|^\`\`\`shell" "$skill_file" | grep -v "example\|uso\|install" > /dev/null 2>&1; then
+              echo "⚠️  Possible shell block detected in: $skill_file — manual review required"
+            fi
+          done
+
+      - name: Check no external URLs as agent instructions
+        run: |
+          echo "Checking for hardcoded external URLs as agent instructions..."
+          FAILED=0
+          for skill_file in skills/*/SKILL.md; do
+            # Look for URLs that appear as direct instructions (not in examples or references)
+            if grep -Pn "fetch\(|axios\.|XMLHttpRequest|new Request\(" "$skill_file" > /dev/null 2>&1; then
+              echo "❌ External network call detected: $skill_file"
+              FAILED=1
+            fi
+          done
+          if [ $FAILED -eq 1 ]; then exit 1; fi
+          echo "✅ No external network calls detected in SKILL.md files"
+
+  rules-integrity-check:
+    name: Rules File Integrity
+    runs-on: ubuntu-latest
+    if: contains(join(github.event.pull_request.changed_files.*.filename, ' '), 'rules/') || true
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check rules metadata completeness
+        run: |
+          echo "Checking integrity metadata in rules files..."
+          node --input-type=module <<'EOF'
+          import { readFileSync, readdirSync } from 'fs';
+          import { join } from 'path';
+
+          const dirs = ['rules/countries', 'rules/international'];
+          const required = ['version', 'last_reviewed', 'review_status', 'editorial_note'];
+          let failed = false;
+
+          for (const dir of dirs) {
+            let files;
+            try { files = readdirSync(dir); } catch { continue; }
+            for (const f of files) {
+              if (!f.endsWith('.json') || f.startsWith('_')) continue;
+              const path = join(dir, f);
+              const data = JSON.parse(readFileSync(path, 'utf8'));
+              const missing = required.filter(k => !(k in data));
+              if (missing.length > 0) {
+                console.error(`❌ ${path}: missing fields: ${missing.join(', ')}`);
+                failed = true;
+              } else {
+                console.log(`✅ ${path}`);
+              }
+            }
+          }
+          if (failed) process.exit(1);
+          EOF

@@ -1,0 +1,84 @@
+name: Validate JSON Rules
+
+on:
+  pull_request:
+    paths:
+      - 'rules/**/*.json'
+      - 'rules/schema/**'
+      - 'scripts/validate.js'
+      - 'package.json'
+  push:
+    branches: [main]
+    paths:
+      - 'rules/**/*.json'
+
+jobs:
+  validate-schema:
+    name: JSON Schema Validation
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run JSON schema validator
+        run: npm run validate
+
+      - name: Verify integrity metadata
+        run: |
+          echo "Checking required metadata fields in all rules files..."
+          node -e "
+          import { readFileSync, readdirSync } from 'fs';
+          import { join } from 'path';
+
+          const dirs = ['rules/countries', 'rules/international', 'rules/risk-engine'];
+          const required = ['version', 'last_reviewed', 'review_status', 'reviewed_by'];
+          let failed = false;
+
+          for (const dir of dirs) {
+            let files;
+            try { files = readdirSync(dir); } catch { continue; }
+            for (const f of files) {
+              if (!f.endsWith('.json') || f.startsWith('_')) continue;
+              const data = JSON.parse(readFileSync(join(dir, f), 'utf8'));
+              for (const field of required) {
+                if (!(field in data)) {
+                  console.error('MISSING ' + field + ' in ' + dir + '/' + f);
+                  failed = true;
+                }
+              }
+            }
+          }
+          if (failed) process.exit(1);
+          console.log('All files have required metadata fields.');
+          " --input-type=module
+        shell: bash
+
+  audit-dependencies:
+    name: npm audit
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Audit dependencies
+        run: npm audit --audit-level=moderate
