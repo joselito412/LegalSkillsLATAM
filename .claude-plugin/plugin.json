@@ -15,5 +15,54 @@
     "risk-score",
     "matriz-normativa",
     "derechos-usuario"
-  ]
+  ],
+  "security": {
+    "content_isolation": true,
+    "injection_detection": ["es", "en"],
+    "w011_compliant": true
+  },
+  "skill_permissions": {
+    "audit": {
+      "tools": [],
+      "file_access": "none",
+      "network": false,
+      "system_commands": false,
+      "description": "Read-only legal analysis — produces a Risk Score box from user-provided project description. No external calls."
+    },
+    "clasificar-datos": {
+      "tools": [],
+      "file_access": "none",
+      "network": false,
+      "system_commands": false,
+      "description": "Read-only data classification — produces a legal sensitivity table from field or table names. No external calls."
+    },
+    "privacy-check": {
+      "tools": [],
+      "file_access": "none",
+      "network": false,
+      "system_commands": false,
+      "description": "Read-only privacy audit — produces a findings report from code snippets or API descriptions. No external calls."
+    },
+    "risk-score": {
+      "tools": [],
+      "file_access": "none",
+      "network": false,
+      "system_commands": false,
+      "description": "Read-only risk scoring — calculates Legal Risk Score (0-100) from project context questionnaire. No external calls."
+    },
+    "matriz-normativa": {
+      "tools": [],
+      "file_access": "none",
+      "network": false,
+      "system_commands": false,
+      "description": "Read-only regulatory comparison — produces a comparative table from a legal dimension keyword. No external calls."
+    },
+    "derechos-usuario": {
+      "tools": [],
+      "file_access": "none",
+      "network": false,
+      "system_commands": false,
+      "description": "Read-only rights protocol — generates a technical response checklist for ARCO/data subject requests. No external calls."
+    }
+  }
 }

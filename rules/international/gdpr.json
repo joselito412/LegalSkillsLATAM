@@ -1,5 +1,10 @@
 {
   "$schema": "../schema/country-rules.schema.json",
+  "version": "1.0.0",
+  "last_reviewed": "2026-01-01",
+  "review_status": "pending_legal_validation",
+  "reviewed_by": null,
+  "editorial_note": "Generado por equipo editorial LegalSkillsLATAM. Pendiente de validación por abogado experto en GDPR/derecho europeo. No constituye asesoría jurídica.",
   "country": {
     "code": "EU",
     "name": "Unión Europea",
