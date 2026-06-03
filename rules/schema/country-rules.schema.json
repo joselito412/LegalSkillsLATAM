@@ -2,72 +2,98 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://legalskills-latam.dev/schemas/country-rules.v1.json",
   "title": "LegalSkillsLATAM — Country Rules Schema",
-  "description": "Esquema de validación para archivos de reglas por país en LegalSkillsLATAM",
-  "version": "1.0.0",
+  "description": "Esquema de validación para archivos de reglas por país en LegalSkillsLATAM. Acepta formato flat (colombia.json) y formato anidado (brasil.json, gdpr.json).",
+  "version": "1.1.0",
   "type": "object",
-  "required": ["country", "iso_code", "primary_law", "data_categories", "consent", "data_subject_rights", "sanctions", "rigor_level"],
+  "required": ["primary_law"],
+  "additionalProperties": true,
+
   "properties": {
-    "country": { "type": "string" },
+    "version": { "type": "string" },
+    "last_reviewed": { "type": "string" },
+    "review_status": {
+      "type": "string",
+      "enum": ["pending_legal_validation", "under_review", "validated"]
+    },
+    "reviewed_by": { "type": ["string", "null"] },
+    "editorial_note": { "type": "string" },
+
+    "country": {
+      "oneOf": [
+        { "type": "string" },
+        {
+          "type": "object",
+          "required": ["code", "name"],
+          "properties": {
+            "code": { "type": "string", "pattern": "^[A-Z]{2}$" },
+            "name": { "type": "string" },
+            "flag": { "type": "string" },
+            "rigor_level": { "type": "string" },
+            "rigor_factor": { "type": "number" },
+            "note": { "type": "string" }
+          },
+          "additionalProperties": true
+        }
+      ]
+    },
+
     "iso_code": { "type": "string", "pattern": "^[A-Z]{2}$" },
     "flag": { "type": "string" },
-    "version": { "type": "string" },
-    "last_reviewed": { "type": "string", "format": "date" },
-    "editorial_note": { "type": "string" },
+
+    "rigor_level": {
+      "type": "string",
+      "enum": ["standard", "strict", "high", "very_high"]
+    },
 
     "primary_law": {
       "type": "object",
-      "required": ["name", "regulator"],
+      "required": ["name"],
+      "additionalProperties": true,
       "properties": {
         "name": { "type": "string" },
         "full_name": { "type": "string" },
-        "enacted": { "type": "string", "format": "date" },
+        "enacted": { "type": "string" },
         "regulator": {
           "type": "object",
-          "required": ["name", "acronym"],
+          "required": ["name"],
+          "additionalProperties": true,
           "properties": {
             "name": { "type": "string" },
             "acronym": { "type": "string" },
-            "url": { "type": "string", "format": "uri" }
+            "url": { "type": "string" }
           }
-        },
-        "implementing_decrees": { "type": "array", "items": { "type": "string" } }
+        }
       }
     },
 
     "consent": {
       "type": "object",
-      "required": ["form", "legal_ref"],
+      "additionalProperties": true,
       "properties": {
         "form": { "type": "string" },
         "granularity": { "type": "string" },
-        "valid_for": { "type": "string" },
         "withdrawal": { "type": "string" },
+        "legal_ref": { "type": "string" },
         "minors": {
           "type": "object",
-          "properties": {
-            "age_threshold": { "type": "integer" },
-            "requirement": { "type": "string" },
-            "legal_ref": { "type": "string" }
-          }
-        },
-        "legal_ref": { "type": "string" }
+          "additionalProperties": true
+        }
       }
     },
 
     "data_subject_rights": {
       "type": "object",
-      "properties": {
-        "access": { "$ref": "#/$defs/right" },
-        "rectification": { "$ref": "#/$defs/right" },
-        "erasure": { "$ref": "#/$defs/right" },
-        "objection": { "$ref": "#/$defs/right" },
-        "portability": { "$ref": "#/$defs/right" }
-      }
+      "additionalProperties": true
+    },
+
+    "data_categories": {
+      "type": "object",
+      "additionalProperties": true
     },
 
     "sanctions": {
       "type": "object",
-      "required": ["authority"],
+      "additionalProperties": true,
       "properties": {
         "max_fine": { "type": "string" },
         "approximate_usd": { "type": "number" },
@@ -78,17 +104,7 @@
 
     "dpo_requirement": {
       "type": "object",
-      "properties": {
-        "required": { "type": "boolean" },
-        "recommended": { "type": "boolean" },
-        "note": { "type": "string" }
-      }
-    },
-
-    "rigor_level": {
-      "type": "string",
-      "enum": ["standard", "strict"],
-      "description": "standard = multiplicador ×1.00 | strict = multiplicador ×1.25"
+      "additionalProperties": true
     },
 
     "notes_for_developers": {
@@ -100,10 +116,11 @@
   "$defs": {
     "right": {
       "type": "object",
+      "additionalProperties": true,
       "properties": {
         "available": { "type": "boolean" },
         "deadline_days": { "type": "integer" },
-        "deadline_type": { "type": "string", "enum": ["hábiles", "corridos", "calendario"] },
+        "deadline_type": { "type": "string" },
         "note": { "type": "string" },
         "legal_ref": { "type": "string" }
       }
