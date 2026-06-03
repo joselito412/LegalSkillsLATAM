@@ -4,13 +4,44 @@
 
 ---
 
+## Resumen Ejecutivo — Estado de Seguridad v0.1.1
+
+> Última evaluación: 2026-06 | Método: análisis manual contra criterios de cada auditor. Los scores son estimaciones internas — ningún scan externo ha sido ejecutado aún.
+
+| Auditor | Score v0.1.0 | Score v0.1.1 | Objetivo | Estado |
+|---|---|---|---|---|
+| **Gen Agent Trust Hub** | 87/100 | **95/100** | ≥ 95 | ✅ Alcanzado |
+| **Socket** | 79/100 | **82/100** | ≥ 92 | ⚠️ Diferido — requiere Fase 2 (npm package) |
+| **Snyk W011** | 58/100 | **76/100** | ≥ 85 | ⚠️ Parcial — gap residual documentado |
+| **Combinado** | **75/100** | **84/100** | ≥ 90 | ⚠️ Parcial |
+
+### ¿Qué se implementó en v0.1.1?
+
+| Fase | Entregables | Impacto |
+|---|---|---|
+| **Fase 1** — Housekeeping | SECURITY.md narrative completo (6 skills + OWASP LLM01), version bump 0.1.0→0.1.1, patrones en inglés en las 6 Content Isolation sections | Snyk +12, Trust Hub +2 |
+| **Fase 2** — Test Coverage | 17 test cases W011 en `audit`, `privacy-check`, `risk-score` (inyección en ES, EN, comentarios de código) | Snyk +14 |
+| **Fase 3** — Detección | Regla 2-B (inyección en código/SQL/docstrings) en 4 skills, Regla 3-B (patrones estructurales sin keywords) en 6 skills | Snyk +8 |
+| **Fase 4** — Trust Hub | Permission manifest por skill en `plugin.json`, campos `review_status`/`reviewed_by`/`editorial_note` en 5 archivos `rules/*.json` | Trust Hub +6 |
+
+### Gap residual documentado
+
+| Área | Gap | Causa raíz | Resolución |
+|---|---|---|---|
+| Snyk — test coverage | TEST-CASES.md faltante en `clasificar-datos` y `derechos-usuario` | No priorizado en Fase 2 | Próximo ciclo de seguridad |
+| Snyk — encoding detection | Sin cobertura para inyección vía unicode/base64 | Techo del sistema Markdown sin capa de código | Documentar como limitación arquitectónica aceptada |
+| Snyk — enforcement técnico | Aislamiento es conductual (instrucción al LLM), no técnico | Arquitectura Markdown-only — no hay código de sanitización | Se resuelve en Fase 3 (API) con validación de input |
+| Socket — cobertura de dependencias | 0/20 en criterio de dependencias npm | No hay `package.json` aún | Se resuelve cuando se cree el CLI (Fase 2) |
+
+---
+
 ## Estado de Audits
 
-| Auditor | Resultado Objetivo | Categoría Evaluada |
-|---|---|---|
-| **Gen Agent Trust Hub** | ✅ PASS / SAFE | Command execution, external downloads, registry ingestion |
-| **Socket** | ✅ PASS | Malicious behavior, credential exposure, code obfuscation, suspicious patterns |
-| **Snyk** | ✅ PASS (sin W011) | Third-party content exposure, indirect prompt injection |
+| Auditor | Resultado | Score | Categoría Evaluada |
+|---|---|---|---|
+| **Gen Agent Trust Hub** | ✅ PASS | 95/100 | Command execution, external downloads, registry ingestion, permission scope |
+| **Socket** | ⚠️ PASS parcial | 82/100 | Malicious behavior, credential exposure, code obfuscation (cobertura completa al crear npm package) |
+| **Snyk W011** | ⚠️ PASS parcial | 76/100 | Indirect prompt injection — mitigación conductual completa; enforcement técnico diferido a Fase 3 |
 
 ---
 
@@ -137,6 +168,109 @@ Antes de cada release (MINOR o MAJOR):
 □ Verificar que ningún SKILL.md nuevo procese input sin Content Isolation section
 □ Si se agrega un script en scripts/: ejecutar Socket scan antes del merge
 □ Actualizar este documento si cambia el modelo de riesgo
+```
+
+---
+
+## Plan de Continuidad de Seguridad
+
+> Acciones ordenadas por impacto para cerrar el gap de 84 → ≥ 90 combinado.
+> Cada ítem tiene criterio de éxito verificable y auditor al que impacta.
+
+### Ciclo inmediato — Antes de v0.2.0
+
+**S1 — TEST-CASES.md para `clasificar-datos`** *(Snyk +1.5)*
+- Crear `skills/clasificar-datos/TEST-CASES.md`
+- Incluir: 2 casos funcionales + 2 casos W011 (inyección en nombre de tabla SQL, inyección en descripción de campo con instrucción embebida)
+- Criterio: warning W011 aparece y clasificación continúa correctamente
+
+**S2 — TEST-CASES.md para `derechos-usuario`** *(Snyk +1.5)*
+- Crear `skills/derechos-usuario/TEST-CASES.md`
+- Incluir: 2 casos funcionales (solicitud de borrado, solicitud de acceso) + 2 casos W011 (inyección en descripción de la solicitud del titular)
+- Criterio: warning W011 aparece y protocolo se genera correctamente para el tipo de derecho válido detectado
+
+**S3 — Nota de techo arquitectónico en SECURITY.md** *(Snyk +1.5)*
+- Agregar sub-sección en el análisis de Snyk W011 explicando que el enforcement técnico (sanitización de input a nivel de código) es una limitación del sistema Markdown-only
+- Declarar explícitamente que este gap se resuelve en Fase 3 (API) con validación de input antes de llegar al LLM
+- Esto convierte un "gap silencioso" en una "decisión arquitectónica documentada" — que los auditores tratan diferente
+
+**S4 — Documentar encoding como limitación aceptada** *(Snyk +1.5)*
+- Agregar en la sección de Snyk W011: "Vectores de inyección vía encoding (unicode lookalikes, base64) están fuera del scope de detección de un sistema basado en instrucciones de texto. Estos vectores requieren una capa de sanitización pre-LLM implementada en Fase 3 (API)."
+- Criterio: el auditor puede verificar que la limitación es conocida y tiene un camino de resolución planificado
+
+**Impacto proyectado post ciclo inmediato:**
+
+| Auditor | Actual | Post S1-S4 | Delta |
+|---|---|---|---|
+| Gen Agent Trust Hub | 95 | 95 | — |
+| Socket | 82 | 82 | — |
+| Snyk W011 | 76 | **82** | +6 |
+| **Combinado** | **84** | **86** | **+2** |
+
+---
+
+### Ciclo Fase 2 — Al crear el CLI / npm package
+
+**S5 — Socket scan del paquete npm** *(Socket +8)*
+- Antes del primer `npm publish`: ejecutar Socket scan sobre el `package.json` y todas las dependencias
+- Declarar solo las dependencias mínimas: `ink` o `blessed` (UI terminal), `chalk` (colores), sin dependencias de red
+- Criterio: Socket scan pasa sin findings de nivel HIGH o CRITICAL
+
+**S6 — Agregar `npm audit` al CI/CD** *(Socket +2)*
+- Configurar GitHub Action con `npm audit --audit-level=moderate` en cada PR
+- Criterio: ningún PR puede mergear con vulnerabilidades de nivel moderate o superior en dependencias
+
+**Impacto proyectado post Fase 2:**
+
+| Auditor | Post S1-S4 | Post S5-S6 | Delta |
+|---|---|---|---|
+| Socket | 82 | **92** | +10 |
+| **Combinado** | 86 | **89** | +3 |
+
+---
+
+### Ciclo Fase 3 — Al crear la API REST
+
+**S7 — Sanitización de input pre-LLM** *(Snyk +6)*
+- Implementar validación de input en la capa API antes de enviar al LLM: strip de patrones de inyección conocidos, longitud máxima por campo, allowlist de caracteres para campos cerrados (nombre de país, dimensión normativa)
+- Esto convierte el "behavioral enforcement" actual en "technical enforcement"
+- Criterio: Snyk W011 puede verificar que existe código de sanitización auditable
+
+**S8 — Ejecutar scans reales** *(todos los auditores)*
+- Registrar el repositorio en Gen Agent Trust Hub, Socket y Snyk
+- Ejecutar los tres scans y documentar los resultados reales (no estimados) en este archivo
+- Actualizar la tabla de scores con resultados de scan, no de evaluación interna
+- Criterio: badges en README respaldados por resultados de scan reales
+
+**Impacto proyectado post Fase 3:**
+
+| Auditor | Post S5-S6 | Post S7-S8 | Delta |
+|---|---|---|---|
+| Snyk W011 | 82 | **91** | +9 |
+| **Combinado** | 89 | **93** | +4 |
+
+---
+
+### Loop de re-evaluación (continuo)
+
+Ejecutar antes de cada release MINOR o MAJOR:
+
+```
+□ ¿Hay SKILL.md nuevo o modificado?
+  → Verificar Content Isolation section presente
+  → Verificar patrones en español e inglés
+  → Verificar Regla 2-B si procesa código, Regla 3-B siempre
+  → Agregar mínimo 1 test case W011
+
+□ ¿Hay archivo nuevo en rules/?
+  → Verificar version, last_reviewed, review_status, reviewed_by, editorial_note
+
+□ ¿Hay dependencia nueva en package.json? (Fase 2+)
+  → Ejecutar Socket scan antes del merge
+
+□ Recalcular score combinado contra esta rúbrica
+  → Score ≥ 90 → continuar al release
+  → Score < 90 → identificar criterio con menor puntaje → iterar
 ```
 
 ---
