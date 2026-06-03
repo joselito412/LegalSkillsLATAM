@@ -1,6 +1,6 @@
 {
   "name": "legalskills-latam",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Estándar abierto de cumplimiento legal para desarrolladores en Latinoamérica. Clasifica datos, evalúa riesgo normativo y compara leyes LATAM vs GDPR/CCPA.",
   "author": {
     "name": "LegalSkillsLATAM Editorial Team",
