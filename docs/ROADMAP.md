@@ -49,9 +49,58 @@ Los siguientes países tienen cobertura referencial en las skills y matrices, pe
 
 > **Nota editorial:** Ningún archivo de país se publica sin revisión por un abogado experto en la jurisdicción correspondiente. La pausa es intencional para mantener el estándar de calidad del proyecto.
 
-### Próximo paso obligatorio antes de v0.2.0
+### Próximos pasos antes de v0.2.0
 
-**Auditoría editorial de contenido** — Revisión por abogado experto de los archivos ya publicados (`colombia.json`, `brasil.json`, `mexico.json`, `gdpr.json`) para validar exactitud legal antes de continuar expandiendo el proyecto. Ver sección de validación en este documento.
+#### Paso A — Validación editorial de la base de conocimiento ⏳ En curso
+
+Revisión por abogado experto de los archivos ya publicados para confirmar exactitud legal. Ver `docs/SOURCES-VALIDATION.md` para el instrumento de trabajo detallado.
+
+| Archivo | Generado | Revisión legal | Validado |
+|---|---|---|---|
+| `rules/countries/colombia.json` | ✅ | ⏳ Pendiente | ❌ |
+| `rules/countries/brasil.json` | ✅ | ⏳ Pendiente | ❌ |
+| `rules/countries/mexico.json` | ✅ | ⏳ Pendiente | ❌ |
+| `rules/international/gdpr.json` | ✅ | ⏳ Pendiente | ❌ |
+
+Mientras ocurre la validación, el disclaimer "guía informativa — no asesoría jurídica" es la única barrera de riesgo activa. El proceso de validación convierte el proyecto de "útil" a "citable".
+
+#### Paso B — Skill unificada: `/audit` 🔜 Próximo a implementar
+
+**Problema identificado en producción:** La experiencia actual requiere ejecutar 5 skills separadas (`/risk-score`, `/clasificar-datos`, `/privacy-check`, `/matriz-normativa`, `/derechos-usuario`), lo que genera:
+- Output masivo y difícil de consumir
+- Consumo elevado de tokens por conversación
+- Fricción alta para el usuario — flujo fragmentado
+
+**Solución:** Una sola skill `/audit` que funciona como un wizard conversacional eficiente:
+
+```
+Usuario: /audit
+
+Claude: Voy a hacer un análisis legal rápido de tu proyecto.
+        Responde 5 preguntas:
+
+        1. ¿Qué tipo de datos recopila? (email, salud, GPS, etc.)
+        2. ¿En qué países opera?
+        3. ¿Tiene política de privacidad publicada? (sí/no)
+        4. ¿Dónde están los servidores? (país/proveedor)
+        5. ¿Comparte datos con terceros? (analytics, CRM, etc.)
+
+[Claude procesa internamente con toda la lógica de las 5 skills]
+
+→ Output: Risk Score + top 3 hallazgos + acciones priorizadas
+  (no 5 outputs separados — uno solo, conciso y accionable)
+```
+
+**Principios de diseño de la skill `/audit`:**
+- Máximo 5 preguntas — no más
+- Inferencia inteligente: si el usuario dice "usamos Firebase", Claude infiere servidores en EE.UU. sin preguntar
+- Output único: el box de Risk Score + máximo 5 hallazgos priorizados por severidad
+- Al final: rutas de profundización opcionales (`/privacy-check` o `/clasificar-datos` para análisis específico)
+- Token-eficiente: sin repetición de contexto entre dimensiones
+
+**Archivos a crear:**
+- `skills/audit/SKILL.md` — la nueva skill unificada
+- Actualizar `plugin.json` para incluir `audit` en la lista de skills
 
 ---
 
