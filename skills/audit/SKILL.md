@@ -1,10 +1,10 @@
 ---
 name: audit
-description: Auditoría legal rápida y unificada de un proyecto de software. Hace hasta 5 preguntas base, infiere contexto automáticamente, y produce un solo output conciso con el Legal Risk Score (0–100), los hallazgos más críticos y las acciones priorizadas. Úsala como punto de entrada para evaluar cualquier sistema antes de lanzar o internacionalizar. Reemplaza correr /risk-score + /clasificar-datos + /privacy-check en secuencia.
+description: Auditoría legal rápida y unificada de un proyecto de software. Hace hasta 5 preguntas base, infiere contexto automáticamente, y produce un output con dos paneles separados — FRONTEND (consentimiento/UI) y BACKEND (seguridad técnica) — más el Legal Risk Score combinado (0–100) y las acciones priorizadas por pilar. Úsala como punto de entrada para evaluar cualquier sistema antes de lanzar o internacionalizar.
 argument-hint: "[descripción opcional del proyecto — si se omite, la skill hace las preguntas]"
 ---
 
-# /audit — Auditoría Legal Rápida
+# /audit — Auditoría Legal Rápida (v2 — Dual FE/BE)
 
 > ⚠️ Esta skill es una guía informativa. No constituye asesoría jurídica. Ante dudas legales específicas, consulta con un abogado experto.
 
@@ -76,27 +76,33 @@ Escanear la respuesta de Q1 y cualquier descripción del proyecto buscando estas
 
 Si hay al menos un país con F_rigor = 1.25, usar 1.25 para todo el cálculo.
 
-### C. Calcular penalizadores activos (Σ)
+### C. Calcular penalizadores activos — clasificados por pilar
 
-Evaluar cada condición y sumar los puntos que aplican:
+Evaluar cada condición y sumar los puntos que aplican. Cada penalizador tiene asignado su pilar para el output dual.
 
-| Condición | Pts | Cómo detectarla |
-|---|---|---|
-| Sin consentimiento granular por finalidad | +15 | Q3: "acepto todo", "un checkbox", "no definido", o no mencionado |
-| Datos de menores sin proceso verificado | +30 | FLAG_MINORS activo |
-| Servidores fuera de jurisdicción sin garantías | +20 | Firebase/AWS/GCP sin región LATAM/EU mencionada, o no mencionan servidores |
-| Transferencia a terceros sin cláusulas contractuales | +15 | Mixpanel, Segment, Google Analytics, HubSpot, Stripe, login social — si no mencionan DPA firmado |
-| Sin política de privacidad publicada | +10 | Q5 ítem ① ausente o no mencionado |
-| Sin canal ARCO/ARSOP documentado | +10 | Q5 ítem ② ausente o no mencionado |
-| Sin DPO/Encarregado designado | +15 | Solo si F_rigor = 1.25 (Brasil/Ecuador/GDPR) Y Q5 no lo menciona |
-| Sin base legal documentada por finalidad | +20 | Solo si F_rigor = 1.25 Y consentimiento no es granular por finalidad |
-| Sin plan de respuesta a brechas | +15 | Solo si F_rigor = 1.25 Y Q5 ítem ④ ausente |
+| Condición | Pts | Pilar | Cómo detectarla |
+|---|---|---|---|
+| Sin consentimiento granular por finalidad | +15 | **FE** | Q3: "acepto todo", "un checkbox", "no definido", o no mencionado |
+| Sin política de privacidad publicada | +10 | **FE** | Q5 ítem ① ausente o no mencionado |
+| Datos de menores sin proceso verificado | +30 | **BOTH** | FLAG_MINORS activo |
+| Sin canal ARCO/ARSOP documentado | +10 | **BOTH** | Q5 ítem ② ausente o no mencionado |
+| Servidores fuera de jurisdicción sin garantías | +20 | **BE** | Firebase/AWS/GCP sin región LATAM/EU mencionada, o no mencionan servidores |
+| Transferencia a terceros sin cláusulas contractuales | +15 | **BE** | Mixpanel, Segment, Google Analytics, HubSpot, Stripe, login social — si no mencionan DPA firmado |
+| Sin DPO/Encarregado designado | +15 | **BE** | Solo si F_rigor = 1.25 (Brasil/Ecuador/GDPR) Y Q5 no lo menciona |
+| Sin base legal documentada por finalidad | +20 | **BE** | Solo si F_rigor = 1.25 Y consentimiento no es granular por finalidad |
+| Sin plan de respuesta a brechas | +15 | **BE** | Solo si F_rigor = 1.25 Y Q5 ítem ④ ausente |
 
-### D. Fórmula final
+### D. Fórmula final (backward compatible con v1)
 
 ```
-Risk Score = min(100, (C_base + Σ penalizadores) × F_rigor)
+Risk Score = min(100, (C_base + Σ_todos_penalizadores) × F_rigor)
 ```
+
+**Para el desglose dual del output:**
+- `FE_findings` = penalizadores con pilar FE o BOTH
+- `BE_findings` = penalizadores con pilar BE o BOTH + C_base
+
+El score combinado sigue siendo único (no dos scores separados) para mantener compatibilidad con `/risk-score`.
 
 ### E. Tabla de emojis y niveles
 
@@ -111,29 +117,35 @@ Risk Score = min(100, (C_base + Σ penalizadores) × F_rigor)
 
 ---
 
-## Paso 3: Priorización de hallazgos
+## Paso 3: Priorización de hallazgos por pilar
 
-Mostrar **todos los penalizadores activos** en el box, ordenados de mayor a menor impacto. Si hay más de 5, agrupar los de menor puntaje en una línea "🟢 Otros (+X pts)" para mantener el box legible. Esto garantiza que el Σ visible siempre cuadre con el número mostrado en la fórmula.
+Separar los penalizadores activos en dos grupos:
 
-En caso de empate de puntaje, priorizar en este orden:
-1. Menores de edad (+30)
-2. Sin base legal documentada (+20)
-3. Servidores sin garantías (+20)
-4. Transferencia sin DPA (+15)
-5. Sin DPO cuando aplica (+15)
-6. Sin plan de brechas cuando aplica (+15)
-7. Sin consentimiento granular (+15)
-8. Sin política de privacidad (+10)
-9. Sin canal ARCO (+10)
+**FRONTEND** — lo que el usuario ve/toca:
+- Sin consentimiento granular
+- Sin política de privacidad
+- Datos de menores (parte FE: sin flujo de consentimiento parental en UI)
+- Sin canal ARCO visible (parte FE: sin sección en la app)
 
-Asignar severidad visual:
+**BACKEND** — protección técnica interna:
+- Servidores sin garantías
+- Transferencias sin DPA
+- Sin DPO (cuando aplica)
+- Sin base legal documentada
+- Sin plan de brechas
+- Datos de menores (parte BE: sin restricciones técnicas en el sistema)
+- C_base: clasificación del dato (responsabilidad de arquitectura)
+
+Dentro de cada grupo, ordenar de mayor a menor impacto. Si hay más de 3 en un grupo, agrupar los menores en "🟢 Otros (+X pts)".
+
+Severidad visual:
 - Penalizador ≥ 20 pts → 🔴
 - Penalizador 10–19 pts → 🟡
 - Penalizador < 10 pts → 🟢
 
 ---
 
-## Paso 4: Generar output
+## Paso 4: Generar output dual
 
 ### Formato obligatorio
 
@@ -145,27 +157,40 @@ Asignar severidad visual:
 ║  Países: [lista]   |   Ley más exigente: [ley]       ║
 ╠══════════════════════════════════════════════════════╣
 ║                                                      ║
+║  ┌─ 🖥️  FRONTEND — UX / Consentimiento ─────────┐   ║
+║  │ [emoji] [hallazgo FE #1]             +XX pts  │   ║
+║  │ [emoji] [hallazgo FE #2]             +XX pts  │   ║
+║  │ [emoji] Otros FE                     +XX pts  │   ║
+║  └────────────────────────────────────────────┘   ║
+║                                                      ║
+║  ┌─ ⚙️  BACKEND — Seguridad Técnica ─────────────┐   ║
+║  │ 📦 Base ([categoría])                XX pts   │   ║
+║  │ [emoji] [hallazgo BE #1]             +XX pts  │   ║
+║  │ [emoji] [hallazgo BE #2]             +XX pts  │   ║
+║  │ [emoji] Otros BE                     +XX pts  │   ║
+║  └────────────────────────────────────────────┘   ║
+║                                                      ║
+║  × F_rigor [1.00 / 1.25]  ([régimen])               ║
+║  ────────────────────────────────────────────────   ║
+║                                                      ║
 ║              [SCORE] / 100    [EMOJI]                ║
 ║              [NIVEL DE RIESGO]                       ║
 ║                                                      ║
 ╠══════════════════════════════════════════════════════╣
-║  Desglose:                                           ║
-║  📦 Base ([categoría del dato])             XX pts   ║
-║  [emoji] [penalizador #1 — mayor impacto]  +XX pts   ║
-║  [emoji] [penalizador #2]                  +XX pts   ║
-║  [emoji] [penalizador N — todos los activos]+XX pts  ║
-║  × F_rigor [1.00 / 1.25]                            ║
-║  ─────────────────────────────────────────────────  ║
-║  Total                                    XX pts    ║
-╠══════════════════════════════════════════════════════╣
-║  Acción esta semana:                                 ║
-║    → [acción #1 — específica y accionable]           ║
-║  Antes de lanzar:                                    ║
-║    → [acción #2 — específica y accionable]           ║
+║  Acción FE (esta semana):                            ║
+║    → [acción específica en UI/consentimiento]        ║
+║  Acción BE (esta semana):                            ║
+║    → [acción específica en arquitectura/seguridad]   ║
 ╚══════════════════════════════════════════════════════╝
 ```
 
-### Después del box (en texto plano, fuera del box):
+**Casos especiales de formato:**
+
+- Si todos los hallazgos son FE (ej: solo sin consentimiento + sin política): mostrar el panel BE vacío con "✅ Sin hallazgos técnicos detectados"
+- Si todos los hallazgos son BE (ej: solo servidores + DPA): mostrar panel FE vacío con "✅ Sin hallazgos de UI/consentimiento detectados"
+- Si score = 0: mostrar solo "✅ Sin penalizadores activos detectados" en ambos paneles
+
+### Después del box (texto plano):
 
 **Supuestos aplicados** (solo si los hay):
 > *⚠️ Supuesto: [descripción del supuesto aplicado y cómo corregirlo si es incorrecto]*
@@ -175,11 +200,14 @@ Asignar severidad visual:
 
 **Rutas de profundización** (siempre — una línea por opción relevante):
 ```
-¿Necesitas más detalle?
-→ /clasificar-datos [campo] --pais [XX]  para analizar un dato específico
-→ /privacy-check [endpoint o código]    para auditar tu implementación técnica
-→ /derechos-usuario --pais [XX]         para implementar el canal ARCO
-→ /matriz-normativa [dimensión]         para comparar leyes entre países
+¿Necesitas profundizar en un pilar específico?
+→ /frontend-privacy/consentimiento   para auditar tu flujo de consentimiento
+→ /frontend-privacy/transparencia    para verificar política y cookies
+→ /backend-security/data-protection  para protección técnica de datos
+→ /backend-security/access-control   para RBAC y audit logging
+→ /clasificar-datos [campo]          para analizar un dato específico
+→ /derechos-usuario --pais [XX]      para implementar el canal ARCO
+→ /matriz-normativa [dimensión]      para comparar leyes entre países
 ```
 
 **Disclaimer** (siempre — última línea):
@@ -189,12 +217,14 @@ Asignar severidad visual:
 
 ## Paso 5: Reglas de calidad del output
 
-- **Siempre** listar todos los penalizadores activos en el box — el Σ visible debe cuadrar con la fórmula. Si hay más de 5, agrupar los menores en "🟢 Otros (+X pts)"
-- **Nunca** generar más de 2 acciones en el output principal
+- **Siempre** separar hallazgos en paneles FE y BE — el pilar de cada penalizador está definido en el Paso 2C
+- **Siempre** listar todos los penalizadores activos — el Σ visible debe cuadrar con la fórmula. Si hay más de 3 por panel, agrupar los menores en "🟢 Otros (+X pts)"
+- **Nunca** generar más de 2 acciones totales en el output principal (1 FE + 1 BE)
 - **Nunca** repetir información ya presente en el box dentro del texto que sigue
 - **Siempre** que se infiera algo no dicho explícitamente, marcarlo como supuesto
-- **Siempre** que FLAG_MINORS = true, incluirlo como hallazgo aunque no sea el de mayor puntaje (riesgo reputacional)
+- **Siempre** que FLAG_MINORS = true, incluirlo en AMBOS paneles aunque no sea el de mayor puntaje
 - **Siempre** que el input mencione datos de salud + menores, escalar automáticamente aunque el score calculado sea bajo
+- **Siempre** incluir rutas de profundización a las skills especializadas del pilar con mayor puntaje
 
 ---
 
