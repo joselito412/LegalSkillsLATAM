@@ -1,5 +1,13 @@
 # Checklist para Startups — Cumplimiento Mínimo Viable
 
+> 🚧 **ARCHIVO DEPRECADO (v0.3)** — Este checklist fue dividido en dos archivos especializados:
+> - **Frontend (consentimiento, UI, menores):** [pillar-frontend/checklists/checklist-consentimiento.md](../pillar-frontend/checklists/checklist-consentimiento.md)
+> - **Backend (seguridad técnica, proveedores, derechos):** [pillar-backend/checklists/checklist-seguridad-datos.md](../pillar-backend/checklists/checklist-seguridad-datos.md)
+>
+> Este archivo se mantiene por compatibilidad pero **no se actualiza**. Usar los nuevos archivos del pilar correspondiente.
+
+---
+
 > ⚠️ Guía informativa. No constituye asesoría jurídica. Aplica para proyectos de **riesgo bajo a medio (0–70 pts en el Legal Risk Score)**.  
 > Si tu score es 🔴 Alto (>70 pts), necesitas asesoría legal profesional.
 

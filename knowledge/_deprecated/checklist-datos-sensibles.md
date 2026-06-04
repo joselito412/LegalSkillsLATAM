@@ -1,5 +1,13 @@
 # Checklist: Sistemas con Datos Sensibles
 
+> 🚧 **ARCHIVO DEPRECADO (v0.3)** — Este checklist fue dividido en dos archivos especializados:
+> - **Frontend (flujos UX, aviso previo, menores en UI):** [pillar-frontend/checklists/checklist-ux-flujos.md](../pillar-frontend/checklists/checklist-ux-flujos.md)
+> - **Backend (cifrado, control de acceso, retención, transferencias):** [pillar-backend/checklists/checklist-datos-sensibles.md](../pillar-backend/checklists/checklist-datos-sensibles.md)
+>
+> Este archivo se mantiene por compatibilidad pero **no se actualiza**. Usar los nuevos archivos del pilar correspondiente.
+
+---
+
 > **LegalSkillsLATAM** — Guía operativa para devs. No constituye asesoría jurídica.
 > Versión: 1.0.0 | Última actualización: 2026-06-02
 
