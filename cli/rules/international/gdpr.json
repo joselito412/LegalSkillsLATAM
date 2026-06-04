@@ -1,0 +1,392 @@
+{
+  "$schema": "../schema/country-rules.schema.json",
+  "version": "1.0.0",
+  "last_reviewed": "2026-01-01",
+  "review_status": "pending_legal_validation",
+  "reviewed_by": null,
+  "editorial_note": "Generado por equipo editorial LegalSkillsLATAM. Pendiente de validación por abogado experto en GDPR/derecho europeo. No constituye asesoría jurídica.",
+  "country": {
+    "code": "EU",
+    "name": "Unión Europea",
+    "flag": "🇪🇺",
+    "rigor_level": "very_high",
+    "rigor_factor": 1.25,
+    "note": "Referente global de protección de datos. Las leyes LATAM de segunda generación (LGPD, LOPDP Ecuador) están directamente inspiradas en el GDPR."
+  },
+  "primary_law": {
+    "name": "General Data Protection Regulation",
+    "acronym": "GDPR",
+    "number": "Reglamento (UE) 2016/679 del Parlamento Europeo y del Consejo",
+    "effective_date": "2018-05-25",
+    "applies_to": "Toda organización que trate datos de personas en la UE, sin importar dónde esté establecida (principio de extraterritorialidad)",
+    "regulator": {
+      "name": "Autoridades de Control nacionales (coordinadas por el Comité Europeo de Protección de Datos — EDPB)",
+      "website": "https://edpb.europa.eu",
+      "note": "Cada Estado miembro tiene su propia Autoridad de Control (ej: AEPD en España, CNIL en Francia, BfDI en Alemania)"
+    },
+    "extraterritorial": true,
+    "extraterritorial_note": "Si tu producto tiene usuarios en la UE, el GDPR aplica independientemente de dónde esté tu empresa."
+  },
+  "data_categories": {
+    "personal": {
+      "label": "Datos Personales",
+      "description": "Toda información sobre una persona física identificada o identificable (el 'interesado'). Una persona es identificable cuando pueda ser identificada, directa o indirectamente, en particular mediante un identificador (nombre, número de identificación, datos de localización, identificador en línea) o mediante factores específicos.",
+      "examples": [
+        "nombre y apellidos",
+        "dirección de correo electrónico",
+        "dirección IP",
+        "datos de localización",
+        "cookie ID",
+        "número de teléfono",
+        "número de identificación (DNI, pasaporte)",
+        "datos de comportamiento online"
+      ],
+      "base_score": 40,
+      "legal_basis_required": true,
+      "legal_bases": [
+        "consentimiento del interesado (Art. 6.1.a)",
+        "ejecución de un contrato en el que el interesado es parte (Art. 6.1.b)",
+        "cumplimiento de una obligación legal (Art. 6.1.c)",
+        "protección de intereses vitales del interesado o de otra persona física (Art. 6.1.d)",
+        "misión realizada en interés público o en el ejercicio de poderes públicos (Art. 6.1.e)",
+        "intereses legítimos del responsable del tratamiento o de un tercero (Art. 6.1.f)"
+      ]
+    },
+    "sensitive": {
+      "label": "Categorías Especiales de Datos (Art. 9 GDPR)",
+      "description": "Datos que revelan el origen étnico o racial, las opiniones políticas, las convicciones religiosas o filosóficas, la afiliación sindical; datos genéticos; datos biométricos dirigidos a identificar de manera unívoca a una persona física; datos relativos a la salud; datos relativos a la vida sexual o la orientación sexual de una persona física.",
+      "examples": [
+        "origen étnico o racial",
+        "opiniones políticas",
+        "convicciones religiosas o filosóficas",
+        "afiliación sindical",
+        "datos genéticos",
+        "datos biométricos (reconocimiento facial, huella digital)",
+        "datos de salud (diagnósticos, medicación, historial médico)",
+        "vida u orientación sexual"
+      ],
+      "base_score": 80,
+      "legal_basis_required": true,
+      "legal_bases_sensitive": [
+        "consentimiento explícito del interesado (Art. 9.2.a)",
+        "obligaciones y derechos específicos en materia de derecho laboral (Art. 9.2.b)",
+        "intereses vitales cuando el interesado no está en condiciones de dar su consentimiento (Art. 9.2.c)",
+        "tratamiento por fundaciones, asociaciones o entidades sin ánimo de lucro con fines políticos, filosóficos, religiosos o sindicales (Art. 9.2.d)",
+        "datos manifiestamente públicos por el interesado (Art. 9.2.e)",
+        "formulación, ejercicio o defensa de reclamaciones judiciales (Art. 9.2.f)",
+        "interés público esencial (Art. 9.2.g)",
+        "medicina preventiva o laboral, diagnóstico médico, prestación de asistencia sanitaria (Art. 9.2.h)",
+        "interés público en el ámbito de la salud pública (Art. 9.2.i)",
+        "fines de archivo en interés público, investigación científica, histórica o estadística (Art. 9.2.j)"
+      ]
+    },
+    "criminal": {
+      "label": "Datos relativos a condenas e infracciones penales (Art. 10 GDPR)",
+      "description": "Datos sobre condenas e infracciones penales o medidas de seguridad conexas",
+      "base_score": 80,
+      "note": "Solo pueden tratarse bajo control de autoridad pública o cuando lo autorice el Derecho de la UE o de los Estados miembros."
+    },
+    "minors": {
+      "label": "Datos de menores",
+      "description": "Datos de menores de 16 años en servicios de la sociedad de la información (cada Estado miembro puede reducir el umbral hasta 13 años)",
+      "age_threshold_default": 16,
+      "age_threshold_minimum": 13,
+      "base_score": 80,
+      "additional_penalizer": 30,
+      "requirements": [
+        "Consentimiento prestado o autorizado por los titulares de la patria potestad o tutela",
+        "Realizar esfuerzos razonables para verificar la edad",
+        "Privacidad por defecto y por diseño en productos dirigidos a menores"
+      ]
+    }
+  },
+  "consent": {
+    "required_for_sensitive_data": true,
+    "must_be": [
+      "libre",
+      "específico",
+      "informado",
+      "inequívoco (acción afirmativa clara — no vale el silencio ni las casillas pre-marcadas)",
+      "explícito para datos sensibles"
+    ],
+    "granularity": "por finalidad y por categoría de dato — bundled consent no es válido",
+    "revocation": {
+      "allowed": true,
+      "must_be": "tan fácil como otorgarlo",
+      "effect": "el tratamiento anterior al retiro sigue siendo lícito; el posterior no"
+    },
+    "proof": "El responsable debe poder demostrar el consentimiento (quién, cuándo, qué se aceptó — consent management platform recomendada)",
+    "legal_reference": "Arts. 4(11), 6(1)(a), 7 y 9(2)(a) GDPR"
+  },
+  "privacy_notice": {
+    "required": true,
+    "when": "en el momento de recogida de datos (Art. 13) o en el plazo de 1 mes si los datos no se obtienen del interesado (Art. 14)",
+    "must_include": [
+      "identidad y datos de contacto del responsable del tratamiento",
+      "datos de contacto del DPO (si aplica)",
+      "finalidades del tratamiento y base jurídica",
+      "intereses legítimos del responsable (si aplica Art. 6.1.f)",
+      "destinatarios o categorías de destinatarios",
+      "transferencias internacionales y garantías",
+      "plazo de conservación de los datos",
+      "derechos del interesado (acceso, rectificación, supresión, limitación, portabilidad, oposición)",
+      "derecho a retirar el consentimiento en cualquier momento",
+      "derecho a presentar reclamación ante la Autoridad de Control",
+      "si el suministro de datos es obligatorio o voluntario y las consecuencias",
+      "existencia de decisiones automatizadas (incluida elaboración de perfiles)"
+    ],
+    "format": "concisa, transparente, inteligible y de fácil acceso, en lenguaje claro y sencillo",
+    "legal_reference": "Arts. 13 y 14 GDPR"
+  },
+  "data_subject_rights": {
+    "framework": "GDPR Capítulo III (Arts. 15-22)",
+    "response_deadline_days": 30,
+    "extension_allowed_days": 60,
+    "extension_condition": "solicitudes complejas o múltiples — informar al interesado en el primer mes",
+    "rights": [
+      {
+        "name": "Acceso (Art. 15)",
+        "description": "Obtener confirmación de si se tratan sus datos y acceso a los mismos",
+        "deadline_days": 30
+      },
+      {
+        "name": "Rectificación (Art. 16)",
+        "description": "Obtener la rectificación de datos inexactos o incompletos",
+        "deadline_days": 30
+      },
+      {
+        "name": "Supresión / Derecho al olvido (Art. 17)",
+        "description": "Obtener la supresión de sus datos sin dilación indebida",
+        "deadline_days": 30,
+        "exceptions": [
+          "libertad de expresión e información",
+          "cumplimiento de obligación legal",
+          "interés público en salud pública",
+          "fines de archivo, investigación científica/histórica o estadística",
+          "formulación, ejercicio o defensa de reclamaciones"
+        ]
+      },
+      {
+        "name": "Limitación del tratamiento (Art. 18)",
+        "description": "Obtener la limitación del tratamiento en casos específicos",
+        "deadline_days": 30
+      },
+      {
+        "name": "Portabilidad (Art. 20)",
+        "description": "Recibir sus datos en formato estructurado, de uso común y lectura mecánica, y transmitirlos a otro responsable",
+        "deadline_days": 30,
+        "applies_when": "tratamiento basado en consentimiento o contrato, y realizado por medios automatizados"
+      },
+      {
+        "name": "Oposición (Art. 21)",
+        "description": "Oponerse en cualquier momento al tratamiento basado en interés legítimo o misión de interés público",
+        "deadline_days": 30,
+        "note": "Derecho absoluto frente a marketing directo"
+      },
+      {
+        "name": "No ser objeto de decisiones automatizadas (Art. 22)",
+        "description": "No ser objeto de decisiones basadas únicamente en el tratamiento automatizado, incluida la elaboración de perfiles, que produzca efectos jurídicos o le afecte significativamente",
+        "deadline_days": 30
+      }
+    ]
+  },
+  "dpo": {
+    "required_when": [
+      "la autoridad u organismo público (excepto tribunales)",
+      "el responsable o encargado realiza operaciones que requieren observación habitual y sistemática de interesados a gran escala",
+      "el responsable o encargado trata a gran escala categorías especiales de datos (Art. 9) o datos relativos a condenas e infracciones penales (Art. 10)"
+    ],
+    "title": "Delegado de Protección de Datos (DPO)",
+    "qualifications": "Conocimientos especializados del Derecho y la práctica en materia de protección de datos",
+    "independence": "No puede recibir instrucciones sobre el ejercicio de sus funciones",
+    "public_disclosure": "Publicar datos de contacto del DPO y comunicarlos a la Autoridad de Control",
+    "legal_reference": "Arts. 37-39 GDPR"
+  },
+  "international_transfer": {
+    "allowed": true,
+    "mechanisms": [
+      {
+        "name": "Decisión de adecuación",
+        "description": "Transferencia a países con nivel de protección adecuado declarado por la Comisión Europea",
+        "adequate_countries": ["Andorra", "Argentina", "Canadá (organizaciones comerciales)", "Faeroes", "Guernsey", "Israel", "Isla de Man", "Japón", "Jersey", "Nueva Zelanda", "Reino Unido", "Suiza", "Uruguay", "Estados Unidos (Data Privacy Framework)"],
+        "note": "Brasil está en proceso de evaluación de adecuación (inicio 2023)"
+      },
+      {
+        "name": "Cláusulas Contractuales Tipo (SCCs)",
+        "description": "Contratos estándar aprobados por la Comisión Europea entre el exportador e importador de datos",
+        "note": "SCCs actualizadas en 2021 — usar la versión más reciente"
+      },
+      {
+        "name": "Normas Corporativas Vinculantes (BCRs)",
+        "description": "Para transferencias intragrupo — deben ser aprobadas por la Autoridad de Control competente"
+      },
+      {
+        "name": "Códigos de conducta y certificaciones",
+        "description": "Mecanismos aprobados por las Autoridades de Control"
+      }
+    ],
+    "prohibited": "Transferencia a países sin mecanismo de garantía adecuado",
+    "legal_reference": "Arts. 44-49 GDPR"
+  },
+  "breach_notification": {
+    "required": true,
+    "notify_authority": {
+      "deadline_hours": 72,
+      "condition": "cuando sea probable que la violación entrañe un riesgo para los derechos y libertades de las personas",
+      "content": [
+        "naturaleza de la violación, categorías y número aproximado de interesados afectados",
+        "nombre y datos de contacto del DPO o punto de contacto",
+        "consecuencias probables de la violación",
+        "medidas adoptadas o propuestas para remediar la violación y mitigar sus efectos"
+      ]
+    },
+    "notify_subjects": {
+      "required": true,
+      "condition": "cuando sea probable que la violación entrañe un alto riesgo para los derechos y libertades de las personas",
+      "deadline": "sin dilación indebida",
+      "exceptions": [
+        "los datos afectados estaban cifrados o seudonimizados",
+        "se han tomado medidas que eliminen el alto riesgo",
+        "la comunicación individual supusiera un esfuerzo desproporcionado (comunicación pública)"
+      ]
+    },
+    "documentation": "Documentar todas las violaciones (incluso las no notificadas) con descripción de hechos, efectos y medidas",
+    "legal_reference": "Arts. 33 y 34 GDPR"
+  },
+  "sanctions": {
+    "authority": "Autoridad de Control del Estado miembro competente",
+    "tiers": [
+      {
+        "tier": "Nivel 1",
+        "max_fine": "10.000.000 EUR o el 2% del volumen de negocio mundial anual (la cifra mayor)",
+        "applies_to": [
+          "violaciones de obligaciones del responsable y encargado (Arts. 8, 11, 25-39, 42, 43)",
+          "violaciones de obligaciones del organismo de certificación (Arts. 42, 43)",
+          "violaciones de obligaciones del organismo de supervisión (Art. 41)"
+        ]
+      },
+      {
+        "tier": "Nivel 2 (más grave)",
+        "max_fine": "20.000.000 EUR o el 4% del volumen de negocio mundial anual (la cifra mayor)",
+        "applies_to": [
+          "violaciones de principios básicos (Arts. 5, 6, 7, 9)",
+          "violación de derechos de los interesados (Arts. 12-22)",
+          "violaciones de transferencias internacionales (Arts. 44-49)",
+          "incumplimiento de orden de la Autoridad de Control"
+        ]
+      }
+    ],
+    "notable_fines": [
+      "Meta: 1.200 millones EUR (2023, Irlanda) — transferencias a EE.UU.",
+      "Amazon: 746 millones EUR (2021, Luxemburgo) — publicidad personalizada",
+      "WhatsApp: 225 millones EUR (2021, Irlanda) — transparencia"
+    ]
+  },
+  "privacy_by_design": {
+    "required": true,
+    "principles": [
+      "protección de datos desde el diseño (privacy by design)",
+      "protección de datos por defecto (privacy by default — configuración más privada por defecto)",
+      "minimización de datos (solo los necesarios para cada finalidad)",
+      "seudonimización cuando sea posible",
+      "transparencia",
+      "integridad y confidencialidad (seguridad técnica y organizativa)"
+    ],
+    "legal_reference": "Art. 25 GDPR"
+  },
+  "impact_assessment": {
+    "name": "Evaluación de Impacto sobre la Protección de Datos (EIPD / DPIA)",
+    "required_when": [
+      "tratamiento a gran escala de categorías especiales de datos",
+      "evaluación sistemática y exhaustiva de aspectos personales mediante elaboración de perfiles",
+      "observación sistemática a gran escala de zonas de acceso público",
+      "tratamientos que figuren en la lista de la Autoridad de Control nacional"
+    ],
+    "legal_reference": "Art. 35 GDPR"
+  },
+  "record_of_processing": {
+    "required": true,
+    "exceptions": "Organizaciones con menos de 250 empleados, a menos que el tratamiento pueda entrañar un riesgo para los derechos y libertades",
+    "must_include": [
+      "nombre y datos de contacto del responsable",
+      "finalidades del tratamiento",
+      "descripción de las categorías de interesados y de datos",
+      "categorías de destinatarios",
+      "transferencias internacionales y garantías",
+      "plazos de supresión",
+      "descripción general de medidas de seguridad técnicas y organizativas"
+    ],
+    "legal_reference": "Art. 30 GDPR"
+  },
+  "latam_relevance": {
+    "note": "El GDPR aplica directamente a cualquier startup LATAM que tenga usuarios en la UE. Además, es el modelo normativo de referencia para: LGPD (Brasil), LOPDP (Ecuador), la nueva ley de Chile (en trámite), y la modernización de leyes en Argentina, Colombia y México.",
+    "gdpr_inspired_laws": ["LGPD Brasil", "LOPDP Ecuador", "Ley 21.719 Chile (2026)"],
+    "expansión_europa": "Si tu producto quiere expandirse a Europa, cumplir LGPD es el mejor punto de partida — es la ley LATAM más cercana al GDPR."
+  },
+  "penalizers": [
+    {
+      "id": "gdpr_no_legal_basis",
+      "description": "Tratamiento sin base legal documentada bajo Art. 6 GDPR",
+      "score": 20,
+      "applies_when": "el responsable no identificó ni documentó la base legal para cada finalidad de tratamiento",
+      "pillar": "both"
+    },
+    {
+      "id": "gdpr_no_explicit_consent",
+      "description": "Consentimiento no libre, específico, informado e inequívoco",
+      "score": 20,
+      "applies_when": "uso de checkboxes pre-marcados, consentimiento bundled, o consentimiento implícito para tratamientos que lo requieren",
+      "pillar": "frontend"
+    },
+    {
+      "id": "gdpr_no_privacy_notice",
+      "description": "Aviso de privacidad ausente o sin los elementos exigidos por Arts. 13-14",
+      "score": 15,
+      "applies_when": "política de privacidad inexistente, incompleta o sin los requisitos del Art. 13/14 GDPR",
+      "pillar": "frontend"
+    },
+    {
+      "id": "gdpr_no_dpo",
+      "description": "DPO requerido por ley no designado o no comunicado a la autoridad",
+      "score": 15,
+      "applies_when": "el responsable realiza tratamiento a gran escala de categorías especiales o hace monitoreo sistemático y no tiene DPO designado",
+      "pillar": "backend"
+    },
+    {
+      "id": "gdpr_minors_data",
+      "description": "Datos de menores sin consentimiento parental verificado (menores de 16/13 años)",
+      "score": 30,
+      "applies_when": "el servicio puede tener usuarios menores de 16 años (o el umbral nacional si es menor) sin mecanismo de verificación de consentimiento parental",
+      "pillar": "both"
+    },
+    {
+      "id": "gdpr_no_breach_notification_plan",
+      "description": "Sin plan de notificación de brechas en 72 horas a la autoridad supervisora",
+      "score": 20,
+      "applies_when": "ausencia de procedimiento documentado para detectar, contener y notificar violaciones de seguridad en el plazo de 72 horas",
+      "pillar": "backend"
+    },
+    {
+      "id": "gdpr_uncontrolled_transfer",
+      "description": "Transferencia internacional sin mecanismo de garantía (adecuación, SCCs, BCRs)",
+      "score": 25,
+      "applies_when": "datos transferidos a países fuera del EEE sin decisión de adecuación, SCCs vigentes o BCRs aprobadas",
+      "pillar": "backend"
+    },
+    {
+      "id": "gdpr_no_dpia",
+      "description": "Evaluación de Impacto (DPIA) obligatoria no realizada",
+      "score": 15,
+      "applies_when": "el tratamiento es de alto riesgo (Art. 35 GDPR) y no se ha realizado DPIA antes de iniciar el tratamiento",
+      "pillar": "backend"
+    }
+  ],
+
+  "metadata": {
+    "version": "1.0.0",
+    "last_updated": "2026-06-04",
+    "penalizers_added": "2026-06-04",
+    "legal_review_pending": true,
+    "note": "Este archivo es una guía informativa comparativa. No constituye ni sustituye asesoría jurídica especializada."
+  }
+}

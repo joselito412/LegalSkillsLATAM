@@ -1,4 +1,6 @@
 import { loadFormula, isStrictRegime } from "./rules.js";
+import { getFrontendPenalizers } from "./frontend-scorer.js";
+import { getBackendPenalizers } from "./backend-scorer.js";
 
 export type DataCategory = "public" | "personal_general" | "sensitive";
 
@@ -22,6 +24,12 @@ export interface PenalizerResult {
   label: string;
   score: number;
   active: boolean;
+  pillar?: "frontend" | "backend" | "both";
+}
+
+export interface DualScoreResult extends ScoreResult {
+  fePenalizers: PenalizerResult[];
+  bePenalizers: PenalizerResult[];
 }
 
 export interface ScoreResult {
@@ -41,6 +49,14 @@ export interface ScoreResult {
   isStrictRegime: boolean;
 }
 
+/**
+ * Calculates the Legal Risk Score for a project.
+ *
+ * Formula: min(100, (C_base + ΣPenalizers) × F_rigor)
+ * - C_base: base score from data category (public=10, personal=40, sensitive=80)
+ * - Penalizers: additive points for each missing compliance control
+ * - F_rigor: 1.25× multiplier for strict-regime jurisdictions (BR, EU, EC)
+ */
 export function calculateScore(input: AuditInput): ScoreResult {
   const formula = loadFormula();
   const strict = isStrictRegime(input.countries);
@@ -55,60 +71,70 @@ export function calculateScore(input: AuditInput): ScoreResult {
       label: "Sin consentimiento granular por finalidad",
       score: 15,
       active: !input.hasGranularConsent,
+      pillar: "frontend",
     },
     {
       id: "minors_data",
       label: "Datos de menores de edad sin proceso verificado",
       score: 30,
       active: input.hasMinors,
+      pillar: "both",
     },
     {
       id: "non_adequate_servers",
       label: "Servidores fuera de jurisdicción sin garantías",
       score: 20,
       active: input.serverRegion !== "adequate",
+      pillar: "backend",
     },
     {
       id: "unstructured_international_transfer",
       label: "Transferencia a terceros sin cláusulas contractuales",
       score: 15,
       active: input.thirdPartyTransfers,
+      pillar: "backend",
     },
     {
       id: "no_privacy_policy",
       label: "Sin política de privacidad publicada",
       score: 10,
       active: !input.hasPrivacyPolicy,
+      pillar: "frontend",
     },
     {
       id: "no_arco_procedure",
       label: "Sin canal ARCO/ARSOP documentado",
       score: 10,
       active: !input.hasArcoProcedure,
+      pillar: "both",
     },
     {
       id: "no_dpo",
       label: "Sin DPO/Encarregado designado (LGPD/GDPR)",
       score: 15,
       active: strict && input.hasDpo === false,
+      pillar: "backend",
     },
     {
       id: "no_legal_basis",
       label: "Sin base legal documentada por finalidad",
       score: 20,
       active: strict && input.hasLegalBasisPerPurpose === false,
+      pillar: "backend",
     },
     {
       id: "no_breach_plan",
       label: "Sin plan de respuesta a brechas de seguridad",
       score: 15,
       active: strict && input.hasBreachResponsePlan === false,
+      pillar: "backend",
     },
   ];
 
   const activePenalizers = penalizerResults.filter((p) => p.active);
   const penalizersSum = activePenalizers.reduce((sum, p) => sum + p.score, 0);
-  const fRigor = strict ? 1.25 : 1.0;
+  const rigorKey = strict ? "strict_regime" : "latam_standard";
+  const fRigor = formula.rigor_factors[rigorKey]?.multiplier ?? (strict ? 1.25 : 1.0);
   const rawScore = (cBase + penalizersSum) * fRigor;
   const finalScore = Math.min(100, Math.round(rawScore));
 
@@ -148,5 +174,23 @@ export function calculateScore(input: AuditInput): ScoreResult {
     emoji,
     action,
     isStrictRegime: strict,
+  };
+}
+
+/**
+ * Calculates the dual-pillar score, splitting findings into FE and BE panels.
+ * Combined score is backward-compatible with calculateScore().
+ */
+export function calculateDualScore(input: AuditInput): DualScoreResult {
+  const base = calculateScore(input);
+  const strict = isStrictRegime(input.countries);
+
+  const fePenalizers = getFrontendPenalizers(input);
+  const bePenalizers = getBackendPenalizers(input, strict);
+
+  return {
+    ...base,
+    fePenalizers,
+    bePenalizers,
   };
 }

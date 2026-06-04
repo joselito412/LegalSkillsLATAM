@@ -1,10 +1,11 @@
-import { select, input, checkbox, confirm } from "@inquirer/prompts";
+import { input, checkbox, confirm } from "@inquirer/prompts";
 import { readFileSync, existsSync } from "fs";
 import { resolve } from "path";
 import chalk from "chalk";
-import { calculateScore, type AuditInput, type DataCategory } from "../engine/scorer.js";
+import { calculateDualScore, type AuditInput, type DataCategory } from "../engine/scorer.js";
 import { classifyText } from "../engine/classifier.js";
-import { renderScoreBox } from "../ui/box.js";
+import { COUNTRIES, isStrictRegime } from "../engine/rules.js";
+import { renderDualScoreBox } from "../ui/box.js";
 
 interface ConfigFile {
   project_name?: string;
@@ -21,17 +22,7 @@ interface ConfigFile {
   has_breach_response_plan?: boolean;
 }
 
-const COUNTRY_CHOICES = [
-  { name: "🇨🇴 Colombia", value: "CO" },
-  { name: "🇲🇽 México", value: "MX" },
-  { name: "🇧🇷 Brasil (LGPD — régimen estricto)", value: "BR" },
-  { name: "🇨🇱 Chile", value: "CL" },
-  { name: "🇦🇷 Argentina", value: "AR" },
-  { name: "🇵🇪 Perú", value: "PE" },
-  { name: "🇪🇨 Ecuador (LOPDP — régimen estricto)", value: "EC" },
-  { name: "🇪🇺 Europa / GDPR (régimen estricto)", value: "EU" },
-  { name: "🇺🇸 EE.UU. / CCPA", value: "US" },
-];
+const COUNTRY_CHOICES = COUNTRIES.map((c) => ({ name: c.label, value: c.code }));
 
 function inferCategoryFromDataTypes(dataTypes: string[]): DataCategory {
   const text = dataTypes.join(" ");
@@ -128,8 +119,8 @@ export async function runAuditWizard(options: { config?: boolean; json?: boolean
     configData.has_arco_procedure ??
     (await confirm({ message: "¿Tienen canal documentado para solicitudes ARCO/derechos de datos?", default: false }));
 
-  // Strict regime extras (BR, EU, EC)
-  const isStrict = countries.some((c) => ["BR", "EU", "EC"].includes(c));
+  // Strict regime extras (BR, EU, EC) — derived from COUNTRIES catalogue, not a hardcoded list
+  const isStrict = isStrictRegime(countries);
   let hasDpo: boolean | undefined;
   let hasLegalBasisPerPurpose: boolean | undefined;
   let hasBreachResponsePlan: boolean | undefined;
@@ -161,12 +152,12 @@ export async function runAuditWizard(options: { config?: boolean; json?: boolean
     hasBreachResponsePlan,
   };
 
-  const result = calculateScore(auditInput);
+  const result = calculateDualScore(auditInput);
 
   if (options.json) {
     console.log(JSON.stringify(result, null, 2));
   } else {
-    console.log("\n" + renderScoreBox(result) + "\n");
+    console.log("\n" + renderDualScoreBox(result) + "\n");
 
     if (result.finalScore >= 71) {
       console.log(chalk.red.bold("🔴 Auditoría legal obligatoria.") + " Este nivel de riesgo supera lo que una guía automatizada puede gestionar de forma segura. Contacta un abogado especialista en protección de datos.\n");
@@ -176,9 +167,20 @@ export async function runAuditWizard(options: { config?: boolean; json?: boolean
       console.log(chalk.green("🟢 Proyecto de bajo riesgo.") + " Sigue los checklists de LegalSkillsLATAM para mantener este nivel.\n");
     }
 
-    console.log(chalk.dim("→ /clasificar-datos <campo>    para analizar un dato específico"));
-    console.log(chalk.dim("→ /derechos-usuario --pais XX  para implementar canal ARCO"));
-    console.log(chalk.dim("→ /matriz-normativa consentimiento  para comparar leyes entre países\n"));
+    const feActive = result.fePenalizers.filter((p) => p.active);
+    const beActive = result.bePenalizers.filter((p) => p.active);
+
+    console.log(chalk.bold("Profundizar por pilar:"));
+    if (feActive.length > 0) {
+      console.log(chalk.dim("  → /frontend-privacy/consentimiento   auditoría de consentimiento y UI"));
+      console.log(chalk.dim("  → /frontend-privacy/transparencia     política de privacidad y cookies"));
+    }
+    if (beActive.length > 0) {
+      console.log(chalk.dim("  → /backend-security/data-protection   cifrado, retención y DPA"));
+      console.log(chalk.dim("  → /backend-security/access-control    RBAC y audit logging"));
+    }
+    console.log(chalk.dim("  → /clasificar-datos <campo>           analizar un dato específico"));
+    console.log(chalk.dim("  → /derechos-usuario --pais XX         implementar canal ARCO\n"));
     console.log(chalk.dim("⚠️  Este análisis es orientativo. No constituye asesoría jurídica. Ver DISCLAIMER.md\n"));
   }
 

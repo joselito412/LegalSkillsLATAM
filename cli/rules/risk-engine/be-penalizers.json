@@ -1,0 +1,74 @@
+{
+  "$schema": "https://legalskills-latam.dev/schemas/score-formula.v1.json",
+  "version": "1.0.0",
+  "last_reviewed": "2026-06-04",
+  "review_status": "pending_legal_validation",
+  "reviewed_by": null,
+  "editorial_note": "Catálogo de penalizadores del Pilar Backend (Seguridad Técnica/Arquitectura). Máximo 50 puntos de este pilar. Generado 2026-06-04.",
+  "pillar": "backend",
+  "max_score": 50,
+  "description": "Penalizadores aplicables al Pilar Backend — protección técnica y arquitectónica de datos. Owner: CTO + Security Lead. Validación: Abogado de data governance.",
+
+  "penalizers": [
+    {
+      "id": "be_no_encryption_at_rest",
+      "label": "Datos sensibles sin cifrado en reposo",
+      "description": "Campos con datos sensibles (salud, biometría, credenciales financieras) almacenados en texto plano en la base de datos",
+      "score": 15,
+      "pillar": "backend",
+      "legal_refs": ["LGPD Art. 46", "GDPR Art. 32.1.a", "LFPDPPP Art. 19"],
+      "applies_when": "datos clasificados como sensibles no tienen cifrado a nivel de columna (AES-256 o equivalente) en la base de datos de producción"
+    },
+    {
+      "id": "be_no_dpa_with_processors",
+      "label": "Sin DPA firmado con procesadores de datos",
+      "description": "El sistema envía datos de usuarios a terceros (AWS, GCP, Stripe, analytics, CRM) sin tener un Data Processing Agreement firmado con cada procesador",
+      "score": 15,
+      "pillar": "backend",
+      "legal_refs": ["LGPD Arts. 39-46", "GDPR Arts. 28-29", "Ley 1581 Art. 26", "LFPDPPP Arts. 36-37"],
+      "applies_when": "existen integraciones con proveedores cloud o servicios externos que procesan datos de usuarios sin DPA formal"
+    },
+    {
+      "id": "be_no_incident_response_plan",
+      "label": "Sin plan documentado de respuesta a incidentes",
+      "description": "No existe un procedimiento documentado para detectar, contener y notificar brechas de datos en los plazos exigidos por ley",
+      "score": 10,
+      "pillar": "backend",
+      "legal_refs": ["LGPD Art. 48", "GDPR Arts. 33-34", "LFPDPPP Art. 20", "Circular SIC Colombia"],
+      "applies_when": "el equipo no tiene un plan de respuesta a incidentes documentado, probado y conocido por los responsables"
+    },
+    {
+      "id": "be_uncontrolled_international_transfer",
+      "label": "Transferencia internacional sin base legal documentada",
+      "description": "Datos de usuarios se transfieren a servidores o proveedores en países sin nivel de protección adecuado y sin SCCs, BCRs u otro mecanismo de garantía",
+      "score": 15,
+      "pillar": "backend",
+      "legal_refs": ["LGPD Arts. 33-36", "GDPR Arts. 44-49", "Ley 1581 Art. 26"],
+      "applies_when": "el sistema usa proveedores con servidores en EEUU u otros países sin adecuación formal, y no tiene SCCs u otro mecanismo documentado para las jurisdicciones aplicables"
+    },
+    {
+      "id": "be_no_rbac",
+      "label": "Sin control de acceso basado en roles (RBAC)",
+      "description": "Todos los miembros del equipo tienen el mismo nivel de acceso a los datos de usuarios en producción, o la aplicación usa el usuario root/admin de la base de datos",
+      "score": 10,
+      "pillar": "backend",
+      "legal_refs": ["LGPD Art. 6.VII", "GDPR Art. 32.1.b", "LFPDPPP Art. 19"],
+      "applies_when": "no hay diferenciación de roles de acceso, o el equipo entero puede leer datos sensibles de usuarios en producción sin restricción ni auditoría"
+    },
+    {
+      "id": "be_no_data_lifecycle_policy",
+      "label": "Sin política de retención y purga de datos",
+      "description": "Los datos de usuarios se conservan indefinidamente sin política de retención documentada, ni proceso automático de purga o anonimización",
+      "score": 10,
+      "pillar": "backend",
+      "legal_refs": ["LGPD Art. 16", "GDPR Art. 5.1.e (limitación del plazo de conservación)", "LFPDPPP Art. 11"],
+      "applies_when": "no existe política interna de retención de datos, ni job de purga automática configurado"
+    }
+  ],
+
+  "scoring_rules": {
+    "max_total": 50,
+    "note": "La suma de penalizadores BE activos se cap a 50 puntos. Se combina con el score FE para el riesgo total.",
+    "cap_behavior": "min(sum_active_be_penalizers, 50)"
+  }
+}

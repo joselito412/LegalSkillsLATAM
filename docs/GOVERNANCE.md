@@ -18,9 +18,14 @@ Abogado Experto   →   Reglas en JSON/MD   →   IA aplica las reglas   →   D
 ## Roles
 
 ### Equipo Editorial (Abogados)
-- **Responsabilidad:** Redactar, validar y actualizar el contenido legal de `rules/`, `matrices/` y `checklists/`
-- **Gatekeeping:** Ningún archivo en `rules/countries/` ni `rules/international/` puede ser publicado sin su revisión
+- **Responsabilidad:** Redactar, validar y actualizar el contenido legal de `cli/rules/`, `knowledge/pillar-frontend/` y `knowledge/pillar-backend/`
+- **Gatekeeping:** Ningún archivo en `cli/rules/countries/` ni `cli/rules/international/` puede ser publicado sin su revisión
 - **Periodicidad de revisión:** Al menos cada 6 meses por país, o ante cambio normativo relevante
+
+**Separación por pilar (v0.3+):**
+- **Abogado de privacidad** → valida `knowledge/pillar-frontend/` (consentimiento, transparencia, UI)
+- **Abogado de data governance** → valida `knowledge/pillar-backend/` (cifrado, transferencias, ciclo de vida)
+- **Ambos** → validan `cli/rules/countries/` y skills que cubran los dos pilares (`skills/audit/`)
 
 ### Colaboradores Técnicos (Devs)
 - **Responsabilidad:** Infraestructura del repositorio, CLI, API, tests de schema JSON

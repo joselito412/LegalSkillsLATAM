@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "validate": "node scripts/validate.js",
-    "validate:watch": "nodemon --watch rules/ --ext json --exec 'npm run validate'"
+    "validate:watch": "nodemon --watch cli/rules/ --ext json --exec 'npm run validate'"
   },
   "devDependencies": {
     "ajv": "^8.17.1",

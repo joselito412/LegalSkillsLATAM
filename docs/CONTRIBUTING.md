@@ -14,10 +14,23 @@ Gracias por tu interés en contribuir. Este proyecto une expertise legal y técn
 - Traducciones al inglés o portugués
 
 ### Contribuciones de Contenido (requieren revisión editorial)
-- Nuevas reglas o correcciones en `rules/countries/` o `rules/international/`
-- Nuevas matrices en `matrices/`
+- Nuevas reglas o correcciones en `cli/rules/countries/` o `cli/rules/international/`
+- Nuevas matrices en `knowledge/pillar-frontend/matrices/` o `knowledge/pillar-backend/matrices/`
+- Nuevos checklists en `knowledge/pillar-frontend/checklists/` o `knowledge/pillar-backend/checklists/`
+- Nuevos patrones en `knowledge/pillar-frontend/patterns/`
+- Nuevas arquitecturas de referencia en `knowledge/pillar-backend/architecture/`
 - Modificaciones a las skills en `skills/`
-- Cambios en la fórmula del `score-formula.json`
+- Cambios en la fórmula del `cli/rules/risk-engine/score-formula.json` o `score-formula-v2.json`
+
+### Dónde vive cada tipo de contenido (v0.3+)
+
+| Tipo | Pilar | Ruta |
+|---|---|---|
+| Consentimiento, UI, cookies, menores (UX) | Frontend | `knowledge/pillar-frontend/` |
+| Cifrado, RBAC, retención, DPA, transferencias | Backend | `knowledge/pillar-backend/` |
+| Skills de auditoría FE | Frontend | `skills/frontend-privacy/` |
+| Skills de auditoría BE | Backend | `skills/backend-security/` |
+| Reglas JSON por país | Ambos | `cli/rules/countries/` (campo `pillar` en cada penalizador) |
 
 ---
 

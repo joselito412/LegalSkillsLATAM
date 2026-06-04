@@ -140,6 +140,94 @@ procedimiento ARCO ni contratos con proveedores."
 
 ---
 
+---
+
+## T6 — Solo hallazgos Frontend (panel BE vacío)
+
+**Input de prueba:**
+```
+/audit "Landing page de SaaS B2B. Solo recopila email para demo request.
+Opera en México. Servidores en AWS sa-east-1 (no aplica transferencia).
+DPA firmado con AWS. Plan de brechas documentado. Sin política de privacidad
+publicada. El formulario de contacto tiene un solo checkbox 'Acepto todo'."
+```
+
+**Cálculo esperado:**
+- C_base = 40 (email)
+- FE penalizers: sin consentimiento granular (+15), sin política (+10) = +25 FE
+- BE penalizers: ninguno (AWS sa-east-1 = OK, DPA OK, plan de brechas OK) = 0 BE
+- F_rigor = 1.00 (MX)
+- Raw = (40 + 25) × 1.00 = 65 → **Score: 65**
+
+**Verificación de output dual:**
+- Panel FE: 🟡 Sin consentimiento granular (+15) / 🟡 Sin política de privacidad (+10)
+- Panel BE: ✅ Sin hallazgos técnicos detectados
+- Acción FE: Publicar política de privacidad y separar consentimiento por finalidades
+- Acción BE: (ausente o genérica — no hay hallazgos)
+
+**Cara esperada:** 😬 | **Nivel:** 🟡 MEDIO-ALTO
+
+**Nota de validación:** Verifica que el panel BE muestre el mensaje de "sin hallazgos" en lugar de estar vacío o mostrar errores. Las rutas de profundización deben apuntar a skills FE.
+
+---
+
+## T7 — Solo hallazgos Backend (panel FE vacío)
+
+**Input de prueba:**
+```
+/audit "API interna de analytics que procesa comportamiento de navegación.
+Opera en Colombia. Firebase us-central1. Política de privacidad publicada
+y accesible. Consentimiento granular implementado con toggles por finalidad.
+Canal ARCO documentado. Sin DPA firmado con Firebase. Sin plan de brechas."
+```
+
+**Cálculo esperado:**
+- C_base = 40 (datos de comportamiento/navegación = personal general)
+- FE penalizers: ninguno (política OK, consentimiento granular OK, ARCO OK) = 0 FE
+- BE penalizers: servidores EE.UU. sin DPA mencionado (+20), sin plan de brechas asumido (F_rigor=1.00, no activa) ... espera: transferencia Stripe sin DPA (+15) aplica para Firebase sin DPA (+20)
+- F_rigor = 1.00 (CO)
+- Raw = (40 + 20) × 1.00 = 60 → **Score: 60**
+
+**Verificación de output dual:**
+- Panel FE: ✅ Sin hallazgos de UI/consentimiento detectados
+- Panel BE: 🔴 Servidores Firebase en EE.UU. sin DPA/garantías documentadas (+20)
+- Acción BE: Firmar DPA con Google (Firebase) o configurar region sa-east-1
+
+**Cara esperada:** 😬 | **Nivel:** 🟡 MEDIO-ALTO
+
+**Nota de validación:** Verifica que el panel FE muestre el mensaje "sin hallazgos" y que las rutas de profundización apunten a skills BE.
+
+---
+
+## T8 — Hallazgos balanceados FE + BE
+
+**Input de prueba:**
+```
+/audit "App de fitness que registra peso, actividad física y datos de salud.
+Opera en Brasil. AWS us-east-1. Sin política de privacidad. Sin DPO designado.
+El registro usa un checkbox genérico 'Acepto términos y condiciones'.
+No tenemos DPA con AWS ni plan de respuesta a incidentes."
+```
+
+**Cálculo esperado:**
+- C_base = 80 (salud)
+- FE penalizers: sin consentimiento granular (+15), sin política (+10) = +25 FE
+- BE penalizers: servidores EE.UU. sin DPA (+20), sin DPO LGPD (+15), sin base legal LGPD (+20), sin plan brechas LGPD (+15) = +70 BE
+- F_rigor = 1.25 (Brasil)
+- Raw = (80 + 25 + 70) × 1.25 = 218.75 → **Score: 100**
+
+**Verificación de output dual:**
+- Panel FE: 🟡 Sin consentimiento granular (+15) / 🟡 Sin política (+10)
+- Panel BE: 🔴 Sin base legal LGPD (+20) / 🔴 Servidores sin DPA (+20) / 🟡 Sin DPO LGPD (+15) / 🟡 Sin plan brechas (+15)
+- Acción FE: Separar consentimiento por finalidades (el "acepto todo" es inválido bajo LGPD)
+- Acción BE: Documentar base legal para cada finalidad de tratamiento + firmar DPA con AWS
+
+**Cara esperada:** 🚨 | **Nivel:** 🔴 CRÍTICO
+
+**Nota de validación:** Verifica que el panel BE tiene más hallazgos que el FE, que el multiplicador ×1.25 aparece en el desglose, y que las rutas de profundización incluyen tanto skills FE como BE. El Score combinado debe ser 100 (capped).
+
+---
+
 ## Criterio de éxito global
 
 La skill `/audit` pasa el testing si:

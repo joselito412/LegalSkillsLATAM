@@ -1,0 +1,128 @@
+{
+  "$schema": "https://legalskills-latam.dev/schemas/score-formula.v1.json",
+  "version": "2.0.0",
+  "last_reviewed": "2026-06-04",
+  "review_status": "pending_legal_validation",
+  "reviewed_by": null,
+  "editorial_note": "Fórmula dual de scoring v2 con separación de pilares Frontend y Backend. Compatible con score-formula.json v1 (backward compat). Generado 2026-06-04.",
+  "description": "Motor de cálculo del Legal Risk Score v2 para LegalSkillsLATAM — separado por pilares Frontend y Backend con combinación ponderada.",
+  "disclaimer": "Este motor es una herramienta de orientación. No constituye asesoría jurídica.",
+
+  "backward_compatibility": {
+    "note": "La fórmula v2 es compatible con la v1. El score combinado (0-100) es equivalente al score v1.",
+    "v1_formula": "score-formula.json",
+    "migration": "scorer.ts puede usar esta fórmula directamente; frontend-scorer.ts y backend-scorer.ts la implementan de forma separada"
+  },
+
+  "data_categories": {
+    "public": {
+      "label": "Dato Público",
+      "base_score": 10
+    },
+    "personal_general": {
+      "label": "Dato Personal General",
+      "base_score": 40
+    },
+    "sensitive": {
+      "label": "Dato Sensible",
+      "base_score": 80
+    },
+    "minors_additional_penalizer": {
+      "label": "Penalizador adicional por menores",
+      "additional_score": 30,
+      "note": "Se suma al base_score de la categoría del dato cuando el dato pertenece a un menor"
+    }
+  },
+
+  "frontend_score": {
+    "description": "Score del Pilar Frontend — UX/UI/Consentimiento/Transparencia",
+    "max_score": 50,
+    "penalizers_source": "fe-penalizers.json",
+    "formula": {
+      "description": "FE_score = min(50, sum(active_fe_penalizers.score) × F_rigor)",
+      "pseudocode": [
+        "fe_penalizers = load_penalizers('fe-penalizers.json')",
+        "active_fe = [p for p in fe_penalizers if is_active(p, context)]",
+        "fe_raw = sum(p.score for p in active_fe)",
+        "fe_score = min(50, fe_raw * rigor_factor)"
+      ]
+    },
+    "risk_levels": {
+      "low":    { "range": [0, 15],  "label": "🟢 FE Bajo",   "description": "Consentimiento e UI en buen estado" },
+      "medium": { "range": [16, 35], "label": "🟡 FE Medio",  "description": "Hay gaps de consentimiento o transparencia que corregir" },
+      "high":   { "range": [36, 50], "label": "🔴 FE Alto",   "description": "Consentimiento inválido o política ausente — riesgo activo" }
+    }
+  },
+
+  "backend_score": {
+    "description": "Score del Pilar Backend — Seguridad Técnica/Arquitectura de Datos",
+    "max_score": 50,
+    "penalizers_source": "be-penalizers.json",
+    "formula": {
+      "description": "BE_score = min(50, (C_base + sum(active_be_penalizers.score)) × F_rigor)",
+      "pseudocode": [
+        "c_base = data_categories[highest_category].base_score",
+        "be_penalizers = load_penalizers('be-penalizers.json')",
+        "active_be = [p for p in be_penalizers if is_active(p, context)]",
+        "be_raw = c_base + sum(p.score for p in active_be)",
+        "be_score = min(50, be_raw * rigor_factor)"
+      ],
+      "note": "El score base del dato (C_base) se asigna al pilar Backend porque la clasificación y protección del dato es responsabilidad de arquitectura"
+    },
+    "risk_levels": {
+      "low":    { "range": [0, 15],  "label": "🟢 BE Bajo",   "description": "Protección técnica adecuada para el tipo de dato" },
+      "medium": { "range": [16, 35], "label": "🟡 BE Medio",  "description": "Gaps de seguridad técnica que resolver antes del lanzamiento" },
+      "high":   { "range": [36, 50], "label": "🔴 BE Alto",   "description": "Datos sin protección técnica adecuada — riesgo activo" }
+    }
+  },
+
+  "combined_score": {
+    "description": "Score combinado 0-100 — equivalente al score v1 para backward compatibility",
+    "max_score": 100,
+    "formula": {
+      "description": "combined = min(100, fe_score + be_score)",
+      "note": "La suma directa es la fórmula base. Puede aplicarse ponderación si se desea dar más peso a un pilar.",
+      "pseudocode": [
+        "fe_score = calculate_frontend_score(context)",
+        "be_score = calculate_backend_score(context)",
+        "combined_score = min(100, fe_score + be_score)"
+      ]
+    },
+    "risk_levels": {
+      "low":    { "range": [0, 30],   "label": "🟢 Riesgo Bajo",   "emoji": "😎", "action": "Sigue los checklists y documenta tus decisiones." },
+      "medium": { "range": [31, 70],  "label": "🟡 Riesgo Medio",  "emoji": "😬", "action": "Implementa las acciones prioritarias antes de lanzar." },
+      "high":   { "range": [71, 100], "label": "🔴 Riesgo Alto",   "emoji": "🚨", "action": "Auditoría legal humana obligatoria. Busca un abogado experto." }
+    }
+  },
+
+  "rigor_factors": {
+    "latam_standard": {
+      "label": "Régimen estándar LATAM (CO, MX, CL, AR, PE, EC)",
+      "multiplier": 1.00
+    },
+    "strict_regime": {
+      "label": "Régimen estricto — Brasil (LGPD) o Europa (GDPR)",
+      "multiplier": 1.25,
+      "trigger": "El mercado objetivo incluye Brasil o cualquier país de la UE/EEA"
+    }
+  },
+
+  "output_format": {
+    "description": "Formato de output para el CLI — paneles separados FE y BE con score combinado",
+    "template": {
+      "header": "🔍 Auditoría Legal — [Proyecto]",
+      "fe_panel": {
+        "title": "FRONTEND — UX/UI/Consentimiento",
+        "shows": ["fe_score", "fe_risk_level", "active_fe_penalizers", "top_fe_actions"]
+      },
+      "be_panel": {
+        "title": "BACKEND — Seguridad Técnica",
+        "shows": ["be_score", "be_risk_level", "active_be_penalizers", "top_be_actions"]
+      },
+      "combined": {
+        "title": "RIESGO COMBINADO",
+        "shows": ["combined_score", "combined_risk_level", "priority_action_1", "priority_action_2"]
+      }
+    }
+  }
+}
