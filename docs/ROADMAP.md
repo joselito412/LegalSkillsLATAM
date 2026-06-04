@@ -1,279 +1,270 @@
 # ROADMAP — LegalSkillsLATAM
-
-> Documento vivo. Actualizado por el Equipo Editorial.
+**Documento vivo. Actualizado por el Equipo Editorial.**
 
 ---
 
 ## Visión a Largo Plazo
 
 ```
-[Repositorio GitHub] → [Plugin de Claude] → [CLI Tool] → [API / SaaS]
-      Fase 1               Fase 2            Fase 3        Fase 4
+  v0.1            v0.2            v0.3            v0.4          v1.0
+Fundación  →   CLI Tool   →   Pilares FE/BE  →  Expansión  →  API / SaaS
+  ✅              ✅               ✅            En curso        🔮
 ```
 
 ---
 
-## Fase 1 — Fundación ✅ MVP COMPLETO
+## v0.1.0 — Fundación ✅ Completo
 
 **Objetivo:** Establecer la base de conocimiento y el plugin de Claude.
 
-### Entregables MVP (v0.1.0) — Completados
+### Entregables
 
-- [x] Arquitectura del repositorio definida
-- [x] `score-formula.json` — motor de riesgo documentado
-- [x] `country-rules.schema.json` — esquema de validación JSON
-- [x] 5 Skills de Claude: `clasificar-datos`, `privacy-check`, `risk-score`, `matriz-normativa`, `derechos-usuario`
-- [x] `rules/countries/colombia.json` — plantilla base
-- [x] `rules/countries/brasil.json` — techo regulatorio LATAM (LGPD)
-- [x] `rules/countries/mexico.json` — segunda economía LATAM (LFPDPPP)
-- [x] `rules/international/gdpr.json` — referente global
-- [x] `comparativa-consentimiento.md` — primera matriz comparativa
-- [x] `comparativa-derechos.md` — derechos del titular en 9 jurisdicciones
-- [x] `checklist-startup.md` — checklist de lanzamiento
-- [x] `checklist-datos-sensibles.md` — checklist para salud, biometría y menores
+- [x] 5 skills de Claude: `clasificar-datos`, `privacy-check`, `risk-score`, `matriz-normativa`, `derechos-usuario`
+- [x] `cli/rules/countries/colombia.json`, `brasil.json`, `mexico.json`
+- [x] `cli/rules/international/gdpr.json`
+- [x] `cli/rules/risk-engine/score-formula.json` — motor de riesgo v1
+- [x] `cli/rules/schema/country-rules.schema.json` — esquema de validación
+- [x] `knowledge/checklists/checklist-startup.md` (movido a `_deprecated/` en v0.3)
+- [x] `knowledge/checklists/checklist-datos-sensibles.md` (movido a `_deprecated/` en v0.3)
+- [x] `knowledge/matrices/` — comparativas de consentimiento y derechos
 - [x] `prompts/auditor-privacidad.md` — system prompt para cualquier LLM
-- [x] Assets visuales (architecture.svg, risk-score-demo.svg, security-audits.svg)
-- [x] Publicado en GitHub con README completo y badges de seguridad
-
-### Países en pausa — Backlog v0.2.0
-
-Los siguientes países tienen cobertura referencial en las skills y matrices, pero aún no tienen su archivo `rules/countries/` completo. Están en pausa hasta la siguiente iteración editorial con revisión legal.
-
-| País | Archivo | Estado | Prioridad |
-|---|---|---|---|
-| 🇨🇱 Chile | `rules/countries/chile.json` | ⏸️ En pausa | Alta — nueva Ley 21.719 (2026) en vigencia |
-| 🇦🇷 Argentina | `rules/countries/argentina.json` | ⏸️ En pausa | Media — reconocimiento adecuación UE |
-| 🇵🇪 Perú | `rules/countries/peru.json` | ⏸️ En pausa | Media |
-| 🇪🇨 Ecuador | `rules/countries/ecuador.json` | ⏸️ En pausa | Alta — LOPDP muy alineada a GDPR |
-| 🇺🇸 CCPA | `rules/international/ccpa.json` | ⏸️ En pausa | Media — para proyectos con usuarios en California |
-
-> **Nota editorial:** Ningún archivo de país se publica sin revisión por un abogado experto en la jurisdicción correspondiente. La pausa es intencional para mantener el estándar de calidad del proyecto.
-
-### Próximos pasos antes de v0.2.0
-
-#### Paso A — Validación editorial de la base de conocimiento ⏳ En curso
-
-Revisión por abogado experto de los archivos ya publicados para confirmar exactitud legal. Ver `docs/SOURCES-VALIDATION.md` para el instrumento de trabajo detallado.
-
-| Archivo | Generado | Revisión legal | Validado |
-|---|---|---|---|
-| `rules/countries/colombia.json` | ✅ | ⏳ Pendiente | ❌ |
-| `rules/countries/brasil.json` | ✅ | ⏳ Pendiente | ❌ |
-| `rules/countries/mexico.json` | ✅ | ⏳ Pendiente | ❌ |
-| `rules/international/gdpr.json` | ✅ | ⏳ Pendiente | ❌ |
-
-Mientras ocurre la validación, el disclaimer "guía informativa — no asesoría jurídica" es la única barrera de riesgo activa. El proceso de validación convierte el proyecto de "útil" a "citable".
-
-#### Paso B — Skill unificada: `/audit` 🔜 Próximo a implementar
-
-**Problema identificado en producción:** La experiencia actual requiere ejecutar 5 skills separadas (`/risk-score`, `/clasificar-datos`, `/privacy-check`, `/matriz-normativa`, `/derechos-usuario`), lo que genera:
-- Output masivo y difícil de consumir
-- Consumo elevado de tokens por conversación
-- Fricción alta para el usuario — flujo fragmentado
-
-**Solución:** Una sola skill `/audit` que funciona como un wizard conversacional eficiente:
-
-```
-Usuario: /audit
-
-Claude: Voy a hacer un análisis legal rápido de tu proyecto.
-        Responde 5 preguntas:
-
-        1. ¿Qué tipo de datos recopila? (email, salud, GPS, etc.)
-        2. ¿En qué países opera?
-        3. ¿Tiene política de privacidad publicada? (sí/no)
-        4. ¿Dónde están los servidores? (país/proveedor)
-        5. ¿Comparte datos con terceros? (analytics, CRM, etc.)
-
-[Claude procesa internamente con toda la lógica de las 5 skills]
-
-→ Output: Risk Score + top 3 hallazgos + acciones priorizadas
-  (no 5 outputs separados — uno solo, conciso y accionable)
-```
-
-**Principios de diseño de la skill `/audit`:**
-- Máximo 5 preguntas — no más
-- Inferencia inteligente: si el usuario dice "usamos Firebase", Claude infiere servidores en EE.UU. sin preguntar
-- Output único: el box de Risk Score + máximo 5 hallazgos priorizados por severidad
-- Al final: rutas de profundización opcionales (`/privacy-check` o `/clasificar-datos` para análisis específico)
-- Token-eficiente: sin repetición de contexto entre dimensiones
-
-**Archivos a crear:**
-- `skills/audit/SKILL.md` — la nueva skill unificada
-- Actualizar `plugin.json` para incluir `audit` en la lista de skills
+- [x] README + DISCLAIMER + assets visuales
 
 ---
 
-## Fase 2 — CLI Tool (Próxima) 🔜
+## v0.2.0 — CLI Tool ✅ Completo
 
-**Objetivo:** Crear una herramienta de línea de comandos que replique la experiencia de herramientas como `react-doctor` o `npx audit` — con output visual en terminal.
+**Objetivo:** Herramienta de línea de comandos con output visual en terminal.
 
-### Concepto de UX (inspirado en React Doctor)
+### Entregables
 
-La herramienta debe correr con un solo comando y mostrar en la terminal:
+- [x] `cli/src/` — engine TypeScript (scorer, classifier, rules)
+- [x] `cli/src/commands/audit.ts` — wizard interactivo de 5 preguntas
+- [x] `cli/src/ui/` — box renderer con chalk + progress bar
+- [x] `skill /audit` unificada — reemplaza el flujo de 5 skills separadas
+- [x] `legalskills.config.json` — configuración de proyecto para CI/CD
+- [x] `npx legalskills-latam audit --config` — modo no-interactivo
+- [x] `--fail-on <score>` — integración con pipelines CI/CD
+
+**Output del CLI (v0.2):**
 
 ```
-$ npx legalskills-latam audit
-
 ╔══════════════════════════════════════════════════════╗
 ║       🔍 LegalSkillsLATAM — Legal Risk Audit         ║
 ╠══════════════════════════════════════════════════════╣
 ║  Proyecto : Mi Startup App                           ║
 ║  País(es) : Colombia 🇨🇴, México 🇲🇽                  ║
-║  Datos    : Personal General (email, IP, nombre)     ║
 ╠══════════════════════════════════════════════════════╣
-║                                                      ║
-║                    67 / 100                          ║
-║                                                      ║
-║                      😬                             ║
-║                   RIESGO MEDIO                      ║
-║                                                      ║
-║  ████████████████░░░░░░░  67%                       ║
+║              67 / 100    😬  RIESGO MEDIO            ║
+║  ████████████████░░░░░░░  67%                        ║
 ╠══════════════════════════════════════════════════════╣
-║  PENALIZADORES ACTIVOS                               ║
-║  ⚠️  Sin consentimiento granular        +15 pts       ║
-║  ⚠️  Servidor fuera de jurisdicción     +20 pts       ║
-║  ✅  Política de privacidad presente    +0 pts        ║
-╠══════════════════════════════════════════════════════╣
-║  ACCIONES PRIORITARIAS                               ║
-║  1. Implementar toggles de consentimiento por fin.   ║
-║  2. Migrar servidor a región con nivel adecuado      ║
-║  3. Publicar política de cookies                     ║
+║  📦 Base (Personal General)          40 pts          ║
+║  ⚠️  Sin consentimiento granular     +15 pts          ║
+║  ⚠️  Servidor fuera de jurisdicción  +20 pts          ║
 ╚══════════════════════════════════════════════════════╝
-
-  ℹ️  Ejecuta `legalskills-latam explain consentimiento` para más detalles.
-  ℹ️  Guía completa: https://github.com/legalskills-latam
-```
-
-### Implementación técnica (Fase 2)
-
-- **Runtime:** Node.js (npm package, ejecutable vía `npx`)
-- **Input:** Archivo de configuración `legalskills.config.json` en el proyecto, o wizard interactivo en terminal
-- **Librería de UI:** `ink` (React para terminal) o `blessed` para los boxes y colores
-- **Colores:** `chalk` para el semáforo de colores (verde/amarillo/rojo)
-- **Barra de progreso:** Calculada en ASCII con `█` y `░`
-- **Cara dinámica:** Emoji desde el `score-formula.json` según rango de score
-
-### Archivo de configuración del proyecto
-
-```json
-// legalskills.config.json (en el root del proyecto del usuario)
-{
-  "project_name": "Mi Startup App",
-  "countries": ["CO", "MX"],
-  "data_types": ["email", "phone", "ip_address"],
-  "has_minors": false,
-  "server_region": "us-east-1",
-  "third_parties": ["google_analytics", "hubspot"],
-  "has_granular_consent": false,
-  "has_privacy_policy": true,
-  "has_arco_procedure": false
-}
 ```
 
 ---
 
-## Fase 3 — API REST 🔮
+## v0.3.0 — Separación de Pilares FE/BE ✅ Completo (2026-06-04)
 
-**Objetivo:** Exponer el motor de riesgo como un servicio consumible por pipelines CI/CD y herramientas de desarrollo.
+**Objetivo:** Reducir complejidad cognitiva separando el conocimiento en dos pilares explícitos con propietarios, responsabilidades y scores diferenciados.
 
-### Endpoints planeados
+**Problema que resolvió:** Un dev que preguntaba "¿qué consentimiento debo implementar?" recibía 1,176 líneas mezclando UI y arquitectura sin jerarquía. Sin árbol de decisión. Sin claridad de quién decide qué.
+
+### Los dos pilares
+
+| Pilar | Scope | Owner | Score |
+|---|---|---|---|
+| **Frontend** — UX / Consentimiento / Transparencia | Lo que el usuario ve, toca o decide | PM + UX + Abogado de privacidad | 0–50 pts |
+| **Backend** — Seguridad Técnica / Arquitectura | Protección interna de datos | CTO + Security Lead + Abogado de data governance | 0–50 pts |
+
+### Fase A — Documentación conceptual ✅
+
+- [x] `architecture/PILLAR-SEPARATION.md` — definición de cada pilar con ejemplos concretos
+- [x] `architecture/CONTENT-MAP.md` — inventario de archivos y rutas de migración
+- [x] `architecture/INTEGRATION-POINTS.md` — 7 eventos de sincronización obligatoria FE↔BE
+- [x] `skills/_SKILLS-INDEX.md` — árbol de decisión y tabla de skills por caso de uso
+
+### Fase B — Refactoring de contenido ✅
+
+- [x] 8 checklists especializados en `knowledge/pillar-frontend/` y `knowledge/pillar-backend/`
+- [x] 4 patrones reutilizables de UI en `knowledge/pillar-frontend/patterns/`
+- [x] 4 arquitecturas de referencia en `knowledge/pillar-backend/architecture/`
+- [x] 4 matrices + 2 índices de navegación (`_index.md` por pilar)
+- [x] Campo `pillar` agregado a penalizadores de los 4 archivos de reglas JSON
+- [x] `fe-penalizers.json`, `be-penalizers.json`, `score-formula-v2.json`
+- [x] Archivos originales movidos a `knowledge/_deprecated/` con aviso de redirección
+
+### Fase C — Refactoring de Skills y CLI ✅
+
+- [x] `skills/audit/SKILL.md` v2 — output dual con paneles FE y BE separados
+- [x] `skills/frontend-privacy/consentimiento/` — nueva skill con 5 TEST-CASES
+- [x] `skills/frontend-privacy/transparencia/` — nueva skill con 4 TEST-CASES
+- [x] `skills/frontend-privacy/user-controls/` — nueva skill con 5 TEST-CASES
+- [x] `skills/backend-security/data-protection/` — nueva skill con 6 TEST-CASES
+- [x] `skills/backend-security/access-control/` — nueva skill con 5 TEST-CASES
+- [x] `skills/backend-security/data-lifecycle/` — nueva skill con 5 TEST-CASES
+- [x] `skills/_routing.md` — árbol de decisión de skills
+- [x] CLI: `frontend-scorer.ts`, `backend-scorer.ts`, `frontend-report.ts`, `backend-report.ts`
+- [x] `scorer.ts` + `classifier.ts` + `box.ts` + `audit.ts` — actualizados para output dual
+
+**Output del CLI (v0.3):**
+
+```
+╔══════════════════════════════════════════════════════╗
+║         🔍 LegalSkillsLATAM — Auditoría Dual FE/BE   ║
+╠══════════════════════════════════════════════════════╣
+║  ┌─ 🖥️  FRONTEND — UX / Consentimiento ─────────┐   ║
+║  │ ⚠️  Sin consentimiento granular    +15 pts    │   ║
+║  │ ⚠️  Sin política de privacidad     +10 pts    │   ║
+║  └────────────────────────────────────────────┘   ║
+║  ┌─ ⚙️  BACKEND — Seguridad Técnica ─────────────┐   ║
+║  │ 📦 Base (Personal General)         40 pts     │   ║
+║  │ ⚠️  Servidores sin garantías        +20 pts    │   ║
+║  └────────────────────────────────────────────┘   ║
+║             62 / 100    😬  RIESGO MEDIO            ║
+║  🖥️  FE → Implementar toggles de consentimiento    ║
+║  ⚙️  BE → Firmar DPA con AWS                       ║
+╚══════════════════════════════════════════════════════╝
+```
+
+### Métricas de éxito de v0.3
+
+| Métrica | Antes (v0.2) | Después (v0.3) |
+|---|---|---|
+| Líneas de output por auditoría | ~200 (todo mezclado) | ~40 (FE panel + BE panel) |
+| Skills para auditar solo consentimiento | 1 skill de 1,176 líneas | 1 skill de 176 líneas |
+| Claridad de responsabilidades | No definida | Matriz Owner/Reviewer/Validador |
+| Directorios afectados por cambio en consentimiento | 6 | 1 (`pillar-frontend/`) |
+| Test cases totales | 8 | 38 (por skill) |
+
+### Gobernanza de pilares
+
+**Pilar Frontend:**
+- Owner: PM + UX Designer
+- Validación legal: Abogado de privacidad (consentimiento, transparencia, menores)
+- Cadencia: Ad-hoc con cambios de producto + revisión anual
+
+**Pilar Backend:**
+- Owner: CTO + Security Lead
+- Validación legal: Abogado de data governance (cifrado, transferencias, ciclo de vida)
+- Cadencia: Trimestral (estándares técnicos) + ad-hoc al agregar proveedores
+
+**Sincronización:** Cuando un pilar cambia, revisar si el otro debe actualizarse. Ver [`architecture/INTEGRATION-POINTS.md`](../architecture/INTEGRATION-POINTS.md).
+
+---
+
+## v0.4.0 — Consolidación y Expansión 🔜 Próximo
+
+**Objetivo:** Validar legalmente el contenido, expandir cobertura de países y formalizar la transición de skills legacy.
+
+### Bloque 1 — Validación legal (prioridad máxima)
+
+El contenido actual es generado y revisado editorialmente, pero no validado por abogados expertos en cada jurisdicción. La validación es lo que convierte el proyecto de "útil" a "citable".
+
+| Archivo | Generado | Revisión legal | Validado |
+|---|---|---|---|
+| `cli/rules/countries/colombia.json` | ✅ | ⏳ Pendiente | ❌ |
+| `cli/rules/countries/brasil.json` | ✅ | ⏳ Pendiente | ❌ |
+| `cli/rules/countries/mexico.json` | ✅ | ⏳ Pendiente | ❌ |
+| `cli/rules/international/gdpr.json` | ✅ | ⏳ Pendiente | ❌ |
+| `knowledge/pillar-frontend/` (8 checklists) | ✅ | ⏳ Pendiente | ❌ |
+| `knowledge/pillar-backend/` (9 checklists/arch) | ✅ | ⏳ Pendiente | ❌ |
+| Skills v0.3 (6 skills nuevas) | ✅ | ⏳ Pendiente | ❌ |
+
+### Bloque 2 — Países pendientes
+
+| País | Archivo | Prioridad | Razón |
+|---|---|---|---|
+| 🇪🇨 Ecuador | `cli/rules/countries/ecuador.json` | Alta | LOPDP muy alineada a GDPR — régimen estricto |
+| 🇨🇱 Chile | `cli/rules/countries/chile.json` | Alta | Ley 21.719 en vigencia desde 2026 |
+| 🇦🇷 Argentina | `cli/rules/countries/argentina.json` | Media | Reconocimiento adecuación UE en proceso |
+| 🇵🇪 Perú | `cli/rules/countries/peru.json` | Media | Ley 29733 + nueva reglamentación |
+| 🇺🇸 CCPA | `cli/rules/international/ccpa.json` | Media | Para proyectos con usuarios en California |
+
+### Bloque 3 — Deprecación formal de skills legacy
+
+| Skill | Acción |
+|---|---|
+| `skills/privacy-check/` | Mover a `skills/_deprecated/`, aviso → `/frontend-privacy/consentimiento` + `/backend-security/data-protection` |
+| `skills/risk-score/` | Mover a `skills/_deprecated/`, aviso → `/audit` |
+
+### Bloque 4 — Formalización
+
+- [ ] TEST-CASES.md en formato formal para todas las skills (actualmente inline en SKILL.md para skills v0.3)
+- [ ] `plugin.json` actualizado con nuevas skills del namespace `frontend-privacy/` y `backend-security/`
+- [ ] `cli/rules/countries/_template.json` — guía de autor para nuevos países
+
+---
+
+## v0.5+ — API REST y SaaS 🔮
+
+### API REST
+
+Exponer el motor de riesgo como servicio consumible por pipelines CI/CD:
 
 ```
 POST /api/v1/score
   Body: { countries, data_types, context_flags }
-  Response: { score, level, penalizers, actions }
+  Response: { fe_score, be_score, combined_score, penalizers_fe, penalizers_be }
 
 GET /api/v1/rules/countries/{iso_code}
-  Response: country-rules JSON completo
-
-GET /api/v1/matrices/{dimension}
-  Response: tabla comparativa en JSON
-
-POST /api/v1/audit/code
-  Body: { code_snippet, language, countries }
-  Response: { findings, severity, legal_refs }
+POST /api/v1/audit/code  →  { findings, severity, pillar, legal_refs }
 ```
 
-### Integración en CI/CD (visión)
-
 ```yaml
-# .github/workflows/legal-audit.yml
+# Integración CI/CD (visión)
 - name: LegalSkillsLATAM Audit
   uses: legalskills-latam/audit-action@v1
   with:
     config: legalskills.config.json
-    fail_on_score: 71  # Falla el build si el score es Alto
+    fail_on_score: 71
 ```
 
----
+### SaaS / Dashboard
 
-## Fase 4 — SaaS / Dashboard 🔮
-
-Dashboard web para:
-- Tracking histórico del score del proyecto a lo largo del tiempo
-- Alertas automáticas cuando cambia la legislación de un país
+- Tracking histórico del score a lo largo del tiempo
+- Alertas cuando cambia la legislación de un país
 - Reportes de cumplimiento exportables (PDF) para due diligence
 - Módulo de gestión de solicitudes ARCO
 
 ---
 
-## Validación de Calidad y Fuentes
+## Proceso de validación editorial
 
-Este paso no está en una "fase" porque es transversal a todo el proyecto — debe ocurrir antes de avanzar de una fase a la siguiente y cada vez que se publique contenido nuevo.
-
-### ¿Qué se valida?
-
-| Dimensión | Qué revisar | Quién |
-|---|---|---|
-| **Exactitud legal** | ¿El artículo citado existe y dice lo que el archivo dice que dice? | Abogado experto por jurisdicción |
-| **Vigencia** | ¿La ley citada sigue vigente? ¿Hubo reforma, reglamento nuevo o criterio de autoridad? | Equipo editorial + alertas legales |
-| **Plazos** | ¿Los días hábiles/calendario son correctos según la ley y la doctrina local? | Abogado experto |
-| **Sanciones** | ¿Las multas máximas están actualizadas al año en curso? (cambian con salario mínimo) | Equipo editorial |
-| **Coherencia interna** | ¿Lo que dice `colombia.json` es consistente con lo que dice `comparativa-derechos.md`? | Revisión técnica cruzada |
-| **Cobertura de casos edge** | ¿Los penalizadores cubren los escenarios reales que enfrentan los devs de LATAM? | Comunidad + devs usuarios |
-
-### Proceso de validación editorial (pre-publicación)
+Transversal a todas las versiones — debe ocurrir antes de publicar contenido nuevo:
 
 ```
-1. Claude genera borrador del archivo (JSON o Markdown)
+1. Borrador generado (Claude o equipo editorial)
          ↓
 2. Revisión técnica cruzada (coherencia interna del repositorio)
          ↓
 3. Revisión por abogado experto en la jurisdicción
    — Verifica artículos, plazos, sanciones y doctrina local
-   — Firma el archivo con su revisión en el frontmatter
+   — Firma en el frontmatter: reviewed_by + last_reviewed
          ↓
-4. Merge a main con tag de versión
+4. Merge a main con tag de versión semántica
          ↓
-5. Disclosure en README: "Revisado por [firma] — [fecha]"
+5. Actualizar tabla de validación en este ROADMAP
 ```
 
-### Estado actual de validación (v0.1.0)
-
-| Archivo | Generado | Revisión legal | Validado |
-|---|---|---|---|
-| `rules/countries/colombia.json` | ✅ | ⏳ Pendiente | ❌ |
-| `rules/countries/brasil.json` | ✅ | ⏳ Pendiente | ❌ |
-| `rules/countries/mexico.json` | ✅ | ⏳ Pendiente | ❌ |
-| `rules/international/gdpr.json` | ✅ | ⏳ Pendiente | ❌ |
-| `comparativa-consentimiento.md` | ✅ | ⏳ Pendiente | ❌ |
-| `comparativa-derechos.md` | ✅ | ⏳ Pendiente | ❌ |
-| `checklist-startup.md` | ✅ | ⏳ Pendiente | ❌ |
-| `checklist-datos-sensibles.md` | ✅ | ⏳ Pendiente | ❌ |
-
-> **Hasta que los archivos estén validados, el disclaimer de "guía informativa — no asesoría jurídica" es la única barrera de riesgo.** La validación editorial convierte el proyecto de "útil pero no confiable" a "confiable y citable".
+| Dimensión | Qué revisar | Quién |
+|---|---|---|
+| Exactitud legal | ¿El artículo citado dice lo que el archivo dice? | Abogado experto |
+| Vigencia | ¿La ley sigue vigente? ¿Hubo reforma? | Equipo editorial + alertas |
+| Plazos | ¿Los días hábiles/calendario son correctos? | Abogado experto |
+| Sanciones | ¿Las multas están actualizadas al año? | Equipo editorial |
+| Coherencia interna | ¿Lo que dice el JSON es consistente con los Markdown? | Revisión cruzada |
 
 ### Fuentes primarias de referencia
 
-Para la validación, las fuentes autoritativas son:
-
 | Jurisdicción | Fuente oficial |
 |---|---|
-| 🇧🇷 Brasil | [planalto.gov.br](https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709.htm) — texto oficial LGPD |
+| 🇧🇷 Brasil | [planalto.gov.br](https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709.htm) — LGPD |
 | 🇨🇴 Colombia | [sic.gov.co](https://www.sic.gov.co) + [normograma.gov.co](https://www.normograma.gov.co) |
-| 🇲🇽 México | [dof.gob.mx](https://www.dof.gob.mx) — DOF oficial + [inai.org.mx](https://home.inai.org.mx) |
-| 🇨🇱 Chile | [bcn.cl](https://www.bcn.cl) — Biblioteca del Congreso Nacional |
+| 🇲🇽 México | [dof.gob.mx](https://www.dof.gob.mx) + [inai.org.mx](https://home.inai.org.mx) |
+| 🇨🇱 Chile | [bcn.cl](https://www.bcn.cl) — Biblioteca del Congreso |
 | 🇦🇷 Argentina | [argentina.gob.ar/aaip](https://www.argentina.gob.ar/aaip) |
 | 🇵🇪 Perú | [gacetajuridica.com.pe](https://www.gacetajuridica.com.pe) + ANPD |
 | 🇪🇨 Ecuador | [registroficial.gob.ec](https://www.registroficial.gob.ec) |
@@ -282,9 +273,10 @@ Para la validación, las fuentes autoritativas son:
 
 ---
 
-## Principios que guían el Roadmap
+## Principios del proyecto
 
 1. **Legal primero, tecnología después.** Nunca agregar un país o dimensión sin revisión editorial de un abogado experto.
-2. **Open-source siempre.** Las reglas y el conocimiento son abiertos. Los servicios de valor agregado (API, dashboard) pueden tener modelo freemium.
-3. **Legible por máquinas desde el día 1.** Todo conocimiento en JSON estructurado desde Fase 1 — nunca en prosa libre sin estructura.
-4. **Disclaimer permanente.** Cada versión, endpoint y output incluye el descargo de responsabilidad.
+2. **Open-source siempre.** Las reglas y el conocimiento son abiertos. Los servicios de valor agregado pueden tener modelo freemium.
+3. **Legible por máquinas desde el día 1.** Todo conocimiento en JSON estructurado — nunca en prosa libre sin estructura.
+4. **Dos pilares explícitos.** Cada pieza de contenido pertenece a Frontend (UX/consentimiento) o Backend (seguridad técnica). Nada es "de todos".
+5. **Disclaimer permanente.** Cada versión, endpoint y output incluye el descargo de responsabilidad.

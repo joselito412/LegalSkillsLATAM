@@ -1,9 +1,11 @@
 import chalk from "chalk";
-import type { ScoreResult } from "../engine/scorer.js";
+import type { ScoreResult, DualScoreResult } from "../engine/scorer.js";
 import { scoreColor, penalizerIcon, penalizerColor, levelColor } from "./colors.js";
 import { progressBar } from "./progress.js";
 import { categoryLabel } from "../engine/classifier.js";
 import { getCountryName } from "../engine/rules.js";
+import { renderFrontendPanel } from "./frontend-report.js";
+import { renderBackendPanel } from "./backend-report.js";
 
 const W = 56; // box inner width
 
@@ -73,6 +75,76 @@ export function renderScoreBox(result: ScoreResult): string {
       const label = p.label.length > 50 ? p.label.slice(0, 47) + "..." : p.label;
       lines.push(row(`  ${i + 1}. Corregir: ${label}`));
     });
+  }
+
+  lines.push("╚" + "═".repeat(W) + "╝");
+
+  return lines.join("\n");
+}
+
+/**
+ * Renders the dual-pillar audit box with separate FE and BE panels.
+ */
+export function renderDualScoreBox(result: DualScoreResult): string {
+  const color = scoreColor(result.finalScore);
+  const lColor = levelColor(result);
+  const countryList = result.countries.map(getCountryName).join(", ");
+  const rigorLabel = result.isStrictRegime ? "× 1.25 (régimen estricto)" : "× 1.00 (régimen estándar)";
+  const bar = progressBar(result.finalScore);
+
+  const lines: string[] = [];
+
+  lines.push("╔" + "═".repeat(W) + "╗");
+  lines.push(row(chalk.bold("🔍 LegalSkillsLATAM — Auditoría Dual FE/BE")));
+  lines.push(divider());
+  lines.push(row(`Proyecto : ${result.projectName}`));
+  lines.push(row(`País(es) : ${countryList}`));
+  lines.push(row(`Dato más sensible: ${categoryLabel(result.dataCategory)}`));
+  lines.push(divider());
+  lines.push(row(""));
+
+  // FE panel
+  for (const line of renderFrontendPanel(result.fePenalizers)) {
+    lines.push(row(line));
+  }
+
+  lines.push(row(""));
+
+  // BE panel
+  for (const line of renderBackendPanel(result.bePenalizers, result.cBase, result.dataCategory)) {
+    lines.push(row(line));
+  }
+
+  lines.push(row(""));
+  lines.push(row(`  ${rigorLabel}`));
+  lines.push(row("  " + "─".repeat(W - 6)));
+  lines.push(row(""));
+  lines.push(row(chalk.bold(color(`           ${result.finalScore} / 100`))));
+  lines.push(row(""));
+  lines.push(row(`              ${result.emoji}`));
+  lines.push(row(lColor.bold(`         ${result.levelLabel}`)));
+  lines.push(row(""));
+  lines.push(row(`  ${bar}  ${result.finalScore}%`));
+  lines.push(row(""));
+  lines.push(divider());
+
+  const feActive = result.fePenalizers.filter((p) => p.active);
+  const beActive = result.bePenalizers.filter((p) => p.active);
+  const topFe = feActive.sort((a, b) => b.score - a.score)[0];
+  const topBe = beActive.sort((a, b) => b.score - a.score)[0];
+
+  lines.push(row(chalk.bold("ACCIONES PRIORITARIAS")));
+  if (topFe) {
+    const label = topFe.label.length > 42 ? topFe.label.slice(0, 39) + "..." : topFe.label;
+    lines.push(row(`  🖥️  FE → ${label}`));
+  } else {
+    lines.push(row(`  🖥️  FE → ✅ Sin acciones FE pendientes`));
+  }
+  if (topBe) {
+    const label = topBe.label.length > 42 ? topBe.label.slice(0, 39) + "..." : topBe.label;
+    lines.push(row(`  ⚙️  BE → ${label}`));
+  } else {
+    lines.push(row(`  ⚙️  BE → ✅ Sin acciones BE pendientes`));
   }
 
   lines.push("╚" + "═".repeat(W) + "╝");

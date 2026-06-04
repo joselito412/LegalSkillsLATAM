@@ -15,10 +15,10 @@ const { default: Ajv2020 } = await import("ajv/dist/2020.js");
 const addFormats = require("ajv-formats");
 
 const ROOT = resolve(process.cwd());
-const SCHEMA_PATH = join(ROOT, "rules/schema/country-rules.schema.json");
+const SCHEMA_PATH = join(ROOT, "cli/rules/schema/country-rules.schema.json");
 const RULES_DIRS = [
-  join(ROOT, "rules/countries"),
-  join(ROOT, "rules/international"),
+  join(ROOT, "cli/rules/countries"),
+  join(ROOT, "cli/rules/international"),
 ];
 const SKIP_FILES = ["_template.json"];
 
@@ -68,7 +68,7 @@ function integrityChecks(data, filePath) {
 const files = collectJsonFiles(RULES_DIRS);
 
 if (files.length === 0) {
-  console.log("⚠️  No se encontraron archivos JSON en rules/");
+  console.log("⚠️  No se encontraron archivos JSON en cli/rules/");
   process.exit(0);
 }
 

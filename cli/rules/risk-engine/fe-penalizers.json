@@ -1,0 +1,65 @@
+{
+  "$schema": "https://legalskills-latam.dev/schemas/score-formula.v1.json",
+  "version": "1.0.0",
+  "last_reviewed": "2026-06-04",
+  "review_status": "pending_legal_validation",
+  "reviewed_by": null,
+  "editorial_note": "Catálogo de penalizadores del Pilar Frontend (UX/UI/Consentimiento). Máximo 50 puntos de este pilar. Generado 2026-06-04.",
+  "pillar": "frontend",
+  "max_score": 50,
+  "description": "Penalizadores aplicables al Pilar Frontend — todo lo que el usuario ve, toca o decide en relación con sus datos. Owner: PM + UX. Validación: Abogado de privacidad.",
+
+  "penalizers": [
+    {
+      "id": "fe_no_granular_consent",
+      "label": "Sin consentimiento granular por finalidad",
+      "description": "El sistema usa un solo checkbox 'Acepto todo' sin toggles separados por finalidad (analytics, marketing, terceros)",
+      "score": 15,
+      "pillar": "frontend",
+      "legal_refs": ["LGPD Art. 8", "GDPR Art. 7", "Ley 1581 Art. 9", "LFPDPPP Arts. 8-9"],
+      "applies_when": "el formulario de registro mezcla múltiples finalidades en un solo consentimiento"
+    },
+    {
+      "id": "fe_no_privacy_policy",
+      "label": "Sin política de privacidad publicada y accesible",
+      "description": "No existe política de privacidad, o existe pero no es accesible desde la página principal, o está incompleta",
+      "score": 10,
+      "pillar": "frontend",
+      "legal_refs": ["LGPD Art. 9", "GDPR Arts. 13-14", "Ley 1581 Art. 15", "LFPDPPP Arts. 15-18"],
+      "applies_when": "política inexistente, no accesible desde el footer/formulario, o sin los elementos mínimos exigidos por ley"
+    },
+    {
+      "id": "fe_no_cookie_notice",
+      "label": "Sin aviso de cookies o banner no conforme",
+      "description": "El sistema usa cookies de analytics/marketing pero no tiene banner de consentimiento, o el banner tiene 'Rechazar' más difícil que 'Aceptar'",
+      "score": 10,
+      "pillar": "frontend",
+      "legal_refs": ["GDPR ePrivacy Directive", "LGPD Art. 7", "LFPDPPP Art. 15"],
+      "applies_when": "el sistema usa cookies de terceros (GA, Meta, Hotjar) sin solicitar consentimiento previo, o el diseño del banner viola el principio de igualdad entre aceptar y rechazar"
+    },
+    {
+      "id": "fe_no_consent_revocation_ui",
+      "label": "Sin mecanismo visible de revocación de consentimiento",
+      "description": "El usuario no puede revocar su consentimiento de forma autónoma desde la UI, o el proceso es significativamente más difícil que otorgarlo",
+      "score": 10,
+      "pillar": "frontend",
+      "legal_refs": ["LGPD Art. 8.5", "GDPR Art. 7.3", "Ley 1581 Art. 9", "LFPDPPP Art. 8"],
+      "applies_when": "no hay sección de gestión de consentimiento en el perfil, o revocar requiere contactar soporte en lugar de hacerlo en la app"
+    },
+    {
+      "id": "fe_minors_no_parental_consent_flow",
+      "label": "Sin flujo de consentimiento parental para menores",
+      "description": "La plataforma puede tener usuarios menores de edad pero no tiene un flujo diferenciado que requiera autorización del representante legal",
+      "score": 15,
+      "pillar": "frontend",
+      "legal_refs": ["LGPD Art. 14", "GDPR Art. 8", "Ley 1581 Art. 7", "LFPDPPP — menores"],
+      "applies_when": "el sistema no detecta ni diferencia usuarios menores de edad, o no implementa el flujo de autorización parental"
+    }
+  ],
+
+  "scoring_rules": {
+    "max_total": 50,
+    "note": "La suma de penalizadores FE activos se cap a 50 puntos. Se combina con el score BE para el riesgo total.",
+    "cap_behavior": "min(sum_active_fe_penalizers, 50)"
+  }
+}

@@ -1,0 +1,145 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://legalskills-latam.dev/schemas/country-rules.v1.json",
+  "title": "LegalSkillsLATAM — Country Rules Schema",
+  "description": "Esquema de validación para archivos de reglas por país en LegalSkillsLATAM. Acepta formato flat (colombia.json) y formato anidado (brasil.json, gdpr.json).",
+  "version": "1.1.0",
+  "type": "object",
+  "required": ["primary_law"],
+  "additionalProperties": true,
+
+  "properties": {
+    "version": { "type": "string" },
+    "last_reviewed": { "type": "string" },
+    "review_status": {
+      "type": "string",
+      "enum": ["pending_legal_validation", "under_review", "validated"]
+    },
+    "reviewed_by": { "type": ["string", "null"] },
+    "editorial_note": { "type": "string" },
+
+    "country": {
+      "oneOf": [
+        { "type": "string" },
+        {
+          "type": "object",
+          "required": ["code", "name"],
+          "properties": {
+            "code": { "type": "string", "pattern": "^[A-Z]{2}$" },
+            "name": { "type": "string" },
+            "flag": { "type": "string" },
+            "rigor_level": { "type": "string" },
+            "rigor_factor": { "type": "number" },
+            "note": { "type": "string" }
+          },
+          "additionalProperties": true
+        }
+      ]
+    },
+
+    "iso_code": { "type": "string", "pattern": "^[A-Z]{2}$" },
+    "flag": { "type": "string" },
+
+    "rigor_level": {
+      "type": "string",
+      "enum": ["standard", "strict", "high", "very_high"]
+    },
+
+    "primary_law": {
+      "type": "object",
+      "required": ["name"],
+      "additionalProperties": true,
+      "properties": {
+        "name": { "type": "string" },
+        "full_name": { "type": "string" },
+        "enacted": { "type": "string" },
+        "regulator": {
+          "type": "object",
+          "required": ["name"],
+          "additionalProperties": true,
+          "properties": {
+            "name": { "type": "string" },
+            "acronym": { "type": "string" },
+            "url": { "type": "string" }
+          }
+        }
+      }
+    },
+
+    "consent": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "form": { "type": "string" },
+        "granularity": { "type": "string" },
+        "withdrawal": { "type": "string" },
+        "legal_ref": { "type": "string" },
+        "minors": {
+          "type": "object",
+          "additionalProperties": true
+        }
+      }
+    },
+
+    "data_subject_rights": {
+      "type": "object",
+      "additionalProperties": true
+    },
+
+    "data_categories": {
+      "type": "object",
+      "additionalProperties": true
+    },
+
+    "sanctions": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "max_fine": { "type": "string" },
+        "approximate_usd": { "type": "number" },
+        "authority": { "type": "string" },
+        "legal_ref": { "type": "string" }
+      }
+    },
+
+    "dpo_requirement": {
+      "type": "object",
+      "additionalProperties": true
+    },
+
+    "notes_for_developers": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  },
+
+  "$defs": {
+    "right": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "available": { "type": "boolean" },
+        "deadline_days": { "type": "integer" },
+        "deadline_type": { "type": "string" },
+        "note": { "type": "string" },
+        "legal_ref": { "type": "string" }
+      }
+    },
+    "penalizer": {
+      "type": "object",
+      "required": ["id", "description", "score"],
+      "additionalProperties": true,
+      "properties": {
+        "id": { "type": "string" },
+        "description": { "type": "string" },
+        "score": { "type": "number", "minimum": 0, "maximum": 50 },
+        "applies_when": { "type": "string" },
+        "pillar": {
+          "type": "string",
+          "enum": ["frontend", "backend", "both"],
+          "description": "Pilar responsable: 'frontend'=UI/consentimiento, 'backend'=seguridad técnica, 'both'=ambos."
+        }
+      }
+    }
+  }
+}

@@ -5,6 +5,8 @@ interface ClassificationResult {
   baseScore: number;
   reason: string;
   flags: string[];
+  /** Data classification is a Backend responsibility — always "backend". */
+  pillar: "backend";
 }
 
 const SENSITIVE_SIGNALS = [
@@ -27,6 +29,11 @@ const PERSONAL_SIGNALS = [
   "fecha de nacimiento", "birth", "edad", "age",
 ];
 
+/**
+ * Classifies free-form text (e.g. a comma-separated list of field names)
+ * into a data sensitivity category using keyword matching.
+ * Sensitive signals take priority over personal signals.
+ */
 export function classifyText(text: string): ClassificationResult {
   const lower = text.toLowerCase();
   const flags: string[] = [];
@@ -41,6 +48,7 @@ export function classifyText(text: string): ClassificationResult {
       baseScore: 80,
       reason: `Contiene señales de datos sensibles: ${flags.slice(0, 3).join(", ")}`,
       flags,
+      pillar: "backend" as const,
     };
   }
 
@@ -55,6 +63,7 @@ export function classifyText(text: string): ClassificationResult {
       baseScore: 40,
       reason: `Contiene datos de identificación personal: ${personalFlags.slice(0, 3).join(", ")}`,
       flags: personalFlags,
+      pillar: "backend" as const,
     };
   }
 
@@ -63,6 +72,7 @@ export function classifyText(text: string): ClassificationResult {
     baseScore: 10,
     reason: "No se detectaron señales de datos personales ni sensibles",
     flags: [],
+    pillar: "backend" as const,
   };
 }
 
