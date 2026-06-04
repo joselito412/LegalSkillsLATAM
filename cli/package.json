@@ -1,0 +1,47 @@
+{
+  "name": "legalskills-latam",
+  "version": "0.2.0-beta.1",
+  "description": "Legal risk auditor for LATAM developers — classify data, score risk, compare privacy laws",
+  "type": "module",
+  "bin": {
+    "legalskills-latam": "./dist/index.js",
+    "lls": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx src/index.ts",
+    "test": "node --test tests/*.test.js",
+    "lint": "tsc --noEmit"
+  },
+  "files": [
+    "dist/",
+    "rules/"
+  ],
+  "dependencies": {
+    "@inquirer/prompts": "^8.5.2",
+    "chalk": "^5.3.0",
+    "commander": "^12.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "tsx": "^4.0.0",
+    "typescript": "^5.4.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": [
+    "privacy",
+    "compliance",
+    "latam",
+    "gdpr",
+    "lgpd",
+    "data-protection",
+    "legal"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/joselito412/LegalSkillsLATAM.git"
+  }
+}
