@@ -1,9 +1,10 @@
-import { select, input, checkbox, confirm } from "@inquirer/prompts";
+import { input, checkbox, confirm } from "@inquirer/prompts";
 import { readFileSync, existsSync } from "fs";
 import { resolve } from "path";
 import chalk from "chalk";
 import { calculateScore, type AuditInput, type DataCategory } from "../engine/scorer.js";
 import { classifyText } from "../engine/classifier.js";
+import { COUNTRIES, isStrictRegime } from "../engine/rules.js";
 import { renderScoreBox } from "../ui/box.js";
 
 interface ConfigFile {
@@ -21,17 +22,7 @@ interface ConfigFile {
   has_breach_response_plan?: boolean;
 }
 
-const COUNTRY_CHOICES = [
-  { name: "🇨🇴 Colombia", value: "CO" },
-  { name: "🇲🇽 México", value: "MX" },
-  { name: "🇧🇷 Brasil (LGPD — régimen estricto)", value: "BR" },
-  { name: "🇨🇱 Chile", value: "CL" },
-  { name: "🇦🇷 Argentina", value: "AR" },
-  { name: "🇵🇪 Perú", value: "PE" },
-  { name: "🇪🇨 Ecuador (LOPDP — régimen estricto)", value: "EC" },
-  { name: "🇪🇺 Europa / GDPR (régimen estricto)", value: "EU" },
-  { name: "🇺🇸 EE.UU. / CCPA", value: "US" },
-];
+const COUNTRY_CHOICES = COUNTRIES.map((c) => ({ name: c.label, value: c.code }));
 
 function inferCategoryFromDataTypes(dataTypes: string[]): DataCategory {
   const text = dataTypes.join(" ");
@@ -128,8 +119,8 @@ export async function runAuditWizard(options: { config?: boolean; json?: boolean
     configData.has_arco_procedure ??
     (await confirm({ message: "¿Tienen canal documentado para solicitudes ARCO/derechos de datos?", default: false }));
 
-  // Strict regime extras (BR, EU, EC)
-  const isStrict = countries.some((c) => ["BR", "EU", "EC"].includes(c));
+  // Strict regime extras (BR, EU, EC) — derived from COUNTRIES catalogue, not a hardcoded list
+  const isStrict = isStrictRegime(countries);
   let hasDpo: boolean | undefined;
   let hasLegalBasisPerPurpose: boolean | undefined;
   let hasBreachResponsePlan: boolean | undefined;

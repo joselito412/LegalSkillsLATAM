@@ -18,8 +18,8 @@ Abogado Experto   →   Reglas en JSON/MD   →   IA aplica las reglas   →   D
 ## Roles
 
 ### Equipo Editorial (Abogados)
-- **Responsabilidad:** Redactar, validar y actualizar el contenido legal de `rules/`, `matrices/` y `checklists/`
-- **Gatekeeping:** Ningún archivo en `rules/countries/` ni `rules/international/` puede ser publicado sin su revisión
+- **Responsabilidad:** Redactar, validar y actualizar el contenido legal de `cli/rules/`, `knowledge/matrices/` y `knowledge/checklists/`
+- **Gatekeeping:** Ningún archivo en `cli/rules/countries/` ni `cli/rules/international/` puede ser publicado sin su revisión
 - **Periodicidad de revisión:** Al menos cada 6 meses por país, o ante cambio normativo relevante
 
 ### Colaboradores Técnicos (Devs)

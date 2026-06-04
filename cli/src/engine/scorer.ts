@@ -41,6 +41,14 @@ export interface ScoreResult {
   isStrictRegime: boolean;
 }
 
+/**
+ * Calculates the Legal Risk Score for a project.
+ *
+ * Formula: min(100, (C_base + ΣPenalizers) × F_rigor)
+ * - C_base: base score from data category (public=10, personal=40, sensitive=80)
+ * - Penalizers: additive points for each missing compliance control
+ * - F_rigor: 1.25× multiplier for strict-regime jurisdictions (BR, EU, EC)
+ */
 export function calculateScore(input: AuditInput): ScoreResult {
   const formula = loadFormula();
   const strict = isStrictRegime(input.countries);
@@ -108,7 +116,8 @@ export function calculateScore(input: AuditInput): ScoreResult {
 
   const activePenalizers = penalizerResults.filter((p) => p.active);
   const penalizersSum = activePenalizers.reduce((sum, p) => sum + p.score, 0);
-  const fRigor = strict ? 1.25 : 1.0;
+  const rigorKey = strict ? "strict_regime" : "latam_standard";
+  const fRigor = formula.rigor_factors[rigorKey]?.multiplier ?? (strict ? 1.25 : 1.0);
   const rawScore = (cBase + penalizersSum) * fRigor;
   const finalScore = Math.min(100, Math.round(rawScore));
 

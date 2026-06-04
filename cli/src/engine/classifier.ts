@@ -27,6 +27,11 @@ const PERSONAL_SIGNALS = [
   "fecha de nacimiento", "birth", "edad", "age",
 ];
 
+/**
+ * Classifies free-form text (e.g. a comma-separated list of field names)
+ * into a data sensitivity category using keyword matching.
+ * Sensitive signals take priority over personal signals.
+ */
 export function classifyText(text: string): ClassificationResult {
   const lower = text.toLowerCase();
   const flags: string[] = [];

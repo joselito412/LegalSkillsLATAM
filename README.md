@@ -103,14 +103,15 @@ LegalSkillsLATAM/
 │   ├── matriz-normativa/    # Compara leyes LATAM vs GDPR/CCPA
 │   └── derechos-usuario/    # Guía de respuesta ARCO/ARSOP
 │
-├── rules/                   # Motor de reglas (RAG-Ready, API-Ready)
+├── cli/rules/               # Motor de reglas JSON (bundled con el paquete npm)
 │   ├── schema/              # JSON Schemas de validación
 │   ├── countries/           # Reglas por país (colombia.json, etc.)
 │   ├── international/       # GDPR, CCPA
 │   └── risk-engine/         # Fórmula del Legal Risk Score
 │
-├── matrices/                # Comparativas normativas en Markdown
-├── checklists/              # Listas de verificación para devs
+├── knowledge/               # Contenido jurídico de referencia (solo lectura)
+│   ├── matrices/            # Comparativas normativas en Markdown
+│   └── checklists/          # Listas de verificación para devs
 ├── prompts/                 # System prompts para auditores IA
 └── docs/                    # Gobernanza, roadmap, seguridad, contribución
 ```
