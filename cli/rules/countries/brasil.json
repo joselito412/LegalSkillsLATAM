@@ -275,43 +275,50 @@
       "id": "lgpd_no_legal_basis",
       "description": "Tratamento sem base legal documentada para cada finalidade",
       "score": 20,
-      "applies_when": "controlador não identificou nem documentou a base legal para o tratamento"
+      "applies_when": "controlador não identificou nem documentou a base legal para o tratamento",
+      "pillar": "both"
     },
     {
       "id": "lgpd_no_specific_consent",
       "description": "Consentimento genérico onde consentimento específico é exigido",
       "score": 15,
-      "applies_when": "consentimento único para múltiplas finalidades ou dados sensíveis sem destaque"
+      "applies_when": "consentimento único para múltiplas finalidades ou dados sensíveis sem destaque",
+      "pillar": "frontend"
     },
     {
       "id": "lgpd_no_dpo",
       "description": "Ausência de Encarregado de Dados (DPO) nomeado",
       "score": 15,
-      "applies_when": "controlador não nomeou nem divulgou publicamente o encarregado de dados"
+      "applies_when": "controlador não nomeou nem divulgou publicamente o encarregado de dados",
+      "pillar": "backend"
     },
     {
       "id": "lgpd_no_privacy_notice",
       "description": "Ausência de aviso/política de privacidade com todos os elementos exigidos",
       "score": 10,
-      "applies_when": "política de privacidade inexistente, incompleta ou não clara"
+      "applies_when": "política de privacidade inexistente, incompleta ou não clara",
+      "pillar": "frontend"
     },
     {
       "id": "lgpd_minors_data",
       "description": "Tratamento de dados de crianças e adolescentes",
       "score": 30,
-      "applies_when": "plataforma pode ter usuários menores de 18 anos"
+      "applies_when": "plataforma pode ter usuários menores de 18 anos",
+      "pillar": "both"
     },
     {
       "id": "lgpd_no_breach_plan",
       "description": "Sem plano de resposta a incidentes de segurança",
       "score": 15,
-      "applies_when": "ausência de procedimento documentado para notificação de vazamentos"
+      "applies_when": "ausência de procedimento documentado para notificação de vazamentos",
+      "pillar": "backend"
     },
     {
       "id": "lgpd_uncontrolled_transfer",
       "description": "Transferência internacional sem garantias adequadas",
       "score": 20,
-      "applies_when": "dados transferidos a países sem nível de proteção adequado e sem cláusulas contratuais"
+      "applies_when": "dados transferidos a países sem nível de proteção adequado e sem cláusulas contratuais",
+      "pillar": "backend"
     }
   ],
   "metadata": {

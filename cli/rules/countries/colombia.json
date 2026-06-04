@@ -129,5 +129,71 @@
     "La SIC es activa en investigaciones; tener política de privacidad publicada es prioritario.",
     "El contrato de tratamiento de datos con terceros (similar al DPA) es obligatorio.",
     "Registrar las bases de datos ante la SIC es obligatorio para responsables (no aplica a encargados)."
-  ]
+  ],
+
+  "penalizers": [
+    {
+      "id": "co_no_privacy_policy",
+      "description": "Sin política de privacidad o aviso publicado con los elementos mínimos",
+      "score": 10,
+      "applies_when": "ausencia de política de privacidad o no cumple con los requisitos del Art. 15 Ley 1581",
+      "pillar": "frontend"
+    },
+    {
+      "id": "co_no_explicit_consent",
+      "description": "Autorización de tratamiento no previa, expresa e informada",
+      "score": 15,
+      "applies_when": "consentimiento implícito, genérico o no registrado para datos personales",
+      "pillar": "frontend"
+    },
+    {
+      "id": "co_sensitive_without_explicit_consent",
+      "description": "Datos sensibles sin autorización explícita del titular",
+      "score": 25,
+      "applies_when": "tratamiento de datos sensibles (salud, biometría, origen étnico, opiniones políticas) sin autorización expresa del titular",
+      "pillar": "frontend"
+    },
+    {
+      "id": "co_minors_data",
+      "description": "Datos de menores sin autorización del representante legal",
+      "score": 30,
+      "applies_when": "plataforma puede tener usuarios menores de 18 años sin consentimiento de representante legal",
+      "pillar": "both"
+    },
+    {
+      "id": "co_no_arco_channel",
+      "description": "Sin canal documentado para ejercer derechos ARCO",
+      "score": 10,
+      "applies_when": "no hay mecanismo designado para recibir solicitudes de acceso, rectificación, cancelación u oposición",
+      "pillar": "both"
+    },
+    {
+      "id": "co_no_transfer_contract",
+      "description": "Transferencia a terceros sin contrato de encargado del tratamiento",
+      "score": 15,
+      "applies_when": "datos compartidos con terceros procesadores sin contrato que garantice el mismo nivel de protección",
+      "pillar": "backend"
+    },
+    {
+      "id": "co_no_security_measures",
+      "description": "Ausencia de medidas de seguridad técnicas y administrativas documentadas",
+      "score": 15,
+      "applies_when": "sin política interna de seguridad de datos o sin implementación de medidas técnicas mínimas",
+      "pillar": "backend"
+    },
+    {
+      "id": "co_no_breach_notification",
+      "description": "Sin plan de respuesta y notificación de incidentes de seguridad",
+      "score": 10,
+      "applies_when": "ausencia de procedimiento para notificar vulneraciones a la SIC y a los titulares afectados",
+      "pillar": "backend"
+    }
+  ],
+
+  "metadata": {
+    "version": "1.0.0",
+    "last_updated": "2026-06-04",
+    "legal_review_pending": true,
+    "note": "Este archivo es una guía informativa. No constituye ni sustituye asesoría jurídica especializada."
+  }
 }

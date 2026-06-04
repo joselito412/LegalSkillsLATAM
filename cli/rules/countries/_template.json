@@ -141,7 +141,15 @@
     "legal_ref": "[Art. X, Ley YYYY]"
   },
 
-  "penalizers": [],
+  "penalizers": [
+    {
+      "id": "[xx]_[nombre_penalizador]",
+      "description": "[Descripción clara del incumplimiento]",
+      "score": 0,
+      "applies_when": "[Condición técnica que activa este penalizador]",
+      "pillar": "frontend"
+    }
+  ],
 
   "notes_for_developers": [
     "[Nota práctica 1 para el desarrollador]",

@@ -301,43 +301,50 @@
       "id": "mx_no_privacy_notice",
       "description": "Sin aviso de privacidad o aviso incompleto",
       "score": 15,
-      "applies_when": "ausencia de aviso de privacidad o sin los elementos mínimos exigidos"
+      "applies_when": "ausencia de aviso de privacidad o sin los elementos mínimos exigidos",
+      "pillar": "frontend"
     },
     {
       "id": "mx_no_arco_channel",
       "description": "Sin canal designado para solicitudes ARCO",
       "score": 10,
-      "applies_when": "no hay persona o departamento designado para atender derechos de los titulares"
+      "applies_when": "no hay persona o departamento designado para atender derechos de los titulares",
+      "pillar": "both"
     },
     {
       "id": "mx_sensitive_without_written_consent",
       "description": "Datos sensibles sin consentimiento expreso y por escrito",
       "score": 25,
-      "applies_when": "tratamiento de datos sensibles con consentimiento tácito o genérico"
+      "applies_when": "tratamiento de datos sensibles con consentimiento tácito o genérico",
+      "pillar": "frontend"
     },
     {
       "id": "mx_transfer_without_disclosure",
       "description": "Transferencia a terceros no informada en el aviso de privacidad",
       "score": 15,
-      "applies_when": "los datos se comparten con terceros sin haberlo informado en el aviso"
+      "applies_when": "los datos se comparten con terceros sin haberlo informado en el aviso",
+      "pillar": "both"
     },
     {
       "id": "mx_minors_data",
       "description": "Datos de menores sin consentimiento del tutor legal",
       "score": 30,
-      "applies_when": "plataforma puede tener usuarios menores de 18 años"
+      "applies_when": "plataforma puede tener usuarios menores de 18 años",
+      "pillar": "both"
     },
     {
       "id": "mx_no_security_measures",
       "description": "Ausencia de medidas de seguridad administrativas, físicas o técnicas",
       "score": 15,
-      "applies_when": "sin política de seguridad de datos documentada"
+      "applies_when": "sin política de seguridad de datos documentada",
+      "pillar": "backend"
     },
     {
       "id": "mx_no_breach_procedure",
       "description": "Sin procedimiento de notificación de vulneraciones de seguridad",
       "score": 10,
-      "applies_when": "ausencia de plan de respuesta a incidentes"
+      "applies_when": "ausencia de plan de respuesta a incidentes",
+      "pillar": "backend"
     }
   ],
   "metadata": {

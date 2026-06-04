@@ -124,6 +124,22 @@
         "note": { "type": "string" },
         "legal_ref": { "type": "string" }
       }
+    },
+    "penalizer": {
+      "type": "object",
+      "required": ["id", "description", "score"],
+      "additionalProperties": true,
+      "properties": {
+        "id": { "type": "string" },
+        "description": { "type": "string" },
+        "score": { "type": "number", "minimum": 0, "maximum": 50 },
+        "applies_when": { "type": "string" },
+        "pillar": {
+          "type": "string",
+          "enum": ["frontend", "backend", "both"],
+          "description": "Pilar responsable: 'frontend'=UI/consentimiento, 'backend'=seguridad técnica, 'both'=ambos."
+        }
+      }
     }
   }
 }

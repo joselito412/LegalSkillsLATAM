@@ -323,9 +323,69 @@
     "gdpr_inspired_laws": ["LGPD Brasil", "LOPDP Ecuador", "Ley 21.719 Chile (2026)"],
     "expansión_europa": "Si tu producto quiere expandirse a Europa, cumplir LGPD es el mejor punto de partida — es la ley LATAM más cercana al GDPR."
   },
+  "penalizers": [
+    {
+      "id": "gdpr_no_legal_basis",
+      "description": "Tratamiento sin base legal documentada bajo Art. 6 GDPR",
+      "score": 20,
+      "applies_when": "el responsable no identificó ni documentó la base legal para cada finalidad de tratamiento",
+      "pillar": "both"
+    },
+    {
+      "id": "gdpr_no_explicit_consent",
+      "description": "Consentimiento no libre, específico, informado e inequívoco",
+      "score": 20,
+      "applies_when": "uso de checkboxes pre-marcados, consentimiento bundled, o consentimiento implícito para tratamientos que lo requieren",
+      "pillar": "frontend"
+    },
+    {
+      "id": "gdpr_no_privacy_notice",
+      "description": "Aviso de privacidad ausente o sin los elementos exigidos por Arts. 13-14",
+      "score": 15,
+      "applies_when": "política de privacidad inexistente, incompleta o sin los requisitos del Art. 13/14 GDPR",
+      "pillar": "frontend"
+    },
+    {
+      "id": "gdpr_no_dpo",
+      "description": "DPO requerido por ley no designado o no comunicado a la autoridad",
+      "score": 15,
+      "applies_when": "el responsable realiza tratamiento a gran escala de categorías especiales o hace monitoreo sistemático y no tiene DPO designado",
+      "pillar": "backend"
+    },
+    {
+      "id": "gdpr_minors_data",
+      "description": "Datos de menores sin consentimiento parental verificado (menores de 16/13 años)",
+      "score": 30,
+      "applies_when": "el servicio puede tener usuarios menores de 16 años (o el umbral nacional si es menor) sin mecanismo de verificación de consentimiento parental",
+      "pillar": "both"
+    },
+    {
+      "id": "gdpr_no_breach_notification_plan",
+      "description": "Sin plan de notificación de brechas en 72 horas a la autoridad supervisora",
+      "score": 20,
+      "applies_when": "ausencia de procedimiento documentado para detectar, contener y notificar violaciones de seguridad en el plazo de 72 horas",
+      "pillar": "backend"
+    },
+    {
+      "id": "gdpr_uncontrolled_transfer",
+      "description": "Transferencia internacional sin mecanismo de garantía (adecuación, SCCs, BCRs)",
+      "score": 25,
+      "applies_when": "datos transferidos a países fuera del EEE sin decisión de adecuación, SCCs vigentes o BCRs aprobadas",
+      "pillar": "backend"
+    },
+    {
+      "id": "gdpr_no_dpia",
+      "description": "Evaluación de Impacto (DPIA) obligatoria no realizada",
+      "score": 15,
+      "applies_when": "el tratamiento es de alto riesgo (Art. 35 GDPR) y no se ha realizado DPIA antes de iniciar el tratamiento",
+      "pillar": "backend"
+    }
+  ],
+
   "metadata": {
     "version": "1.0.0",
-    "last_updated": "2026-06-02",
+    "last_updated": "2026-06-04",
+    "penalizers_added": "2026-06-04",
     "legal_review_pending": true,
     "note": "Este archivo es una guía informativa comparativa. No constituye ni sustituye asesoría jurídica especializada."
   }
