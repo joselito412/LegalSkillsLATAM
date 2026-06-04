@@ -2,10 +2,10 @@ import { input, checkbox, confirm } from "@inquirer/prompts";
 import { readFileSync, existsSync } from "fs";
 import { resolve } from "path";
 import chalk from "chalk";
-import { calculateScore, type AuditInput, type DataCategory } from "../engine/scorer.js";
+import { calculateDualScore, type AuditInput, type DataCategory } from "../engine/scorer.js";
 import { classifyText } from "../engine/classifier.js";
 import { COUNTRIES, isStrictRegime } from "../engine/rules.js";
-import { renderScoreBox } from "../ui/box.js";
+import { renderDualScoreBox } from "../ui/box.js";
 
 interface ConfigFile {
   project_name?: string;
@@ -152,12 +152,12 @@ export async function runAuditWizard(options: { config?: boolean; json?: boolean
     hasBreachResponsePlan,
   };
 
-  const result = calculateScore(auditInput);
+  const result = calculateDualScore(auditInput);
 
   if (options.json) {
     console.log(JSON.stringify(result, null, 2));
   } else {
-    console.log("\n" + renderScoreBox(result) + "\n");
+    console.log("\n" + renderDualScoreBox(result) + "\n");
 
     if (result.finalScore >= 71) {
       console.log(chalk.red.bold("🔴 Auditoría legal obligatoria.") + " Este nivel de riesgo supera lo que una guía automatizada puede gestionar de forma segura. Contacta un abogado especialista en protección de datos.\n");
@@ -167,9 +167,20 @@ export async function runAuditWizard(options: { config?: boolean; json?: boolean
       console.log(chalk.green("🟢 Proyecto de bajo riesgo.") + " Sigue los checklists de LegalSkillsLATAM para mantener este nivel.\n");
     }
 
-    console.log(chalk.dim("→ /clasificar-datos <campo>    para analizar un dato específico"));
-    console.log(chalk.dim("→ /derechos-usuario --pais XX  para implementar canal ARCO"));
-    console.log(chalk.dim("→ /matriz-normativa consentimiento  para comparar leyes entre países\n"));
+    const feActive = result.fePenalizers.filter((p) => p.active);
+    const beActive = result.bePenalizers.filter((p) => p.active);
+
+    console.log(chalk.bold("Profundizar por pilar:"));
+    if (feActive.length > 0) {
+      console.log(chalk.dim("  → /frontend-privacy/consentimiento   auditoría de consentimiento y UI"));
+      console.log(chalk.dim("  → /frontend-privacy/transparencia     política de privacidad y cookies"));
+    }
+    if (beActive.length > 0) {
+      console.log(chalk.dim("  → /backend-security/data-protection   cifrado, retención y DPA"));
+      console.log(chalk.dim("  → /backend-security/access-control    RBAC y audit logging"));
+    }
+    console.log(chalk.dim("  → /clasificar-datos <campo>           analizar un dato específico"));
+    console.log(chalk.dim("  → /derechos-usuario --pais XX         implementar canal ARCO\n"));
     console.log(chalk.dim("⚠️  Este análisis es orientativo. No constituye asesoría jurídica. Ver DISCLAIMER.md\n"));
   }
 

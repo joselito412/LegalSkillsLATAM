@@ -5,6 +5,8 @@ interface ClassificationResult {
   baseScore: number;
   reason: string;
   flags: string[];
+  /** Data classification is a Backend responsibility — always "backend". */
+  pillar: "backend";
 }
 
 const SENSITIVE_SIGNALS = [
@@ -46,6 +48,7 @@ export function classifyText(text: string): ClassificationResult {
       baseScore: 80,
       reason: `Contiene señales de datos sensibles: ${flags.slice(0, 3).join(", ")}`,
       flags,
+      pillar: "backend" as const,
     };
   }
 
@@ -60,6 +63,7 @@ export function classifyText(text: string): ClassificationResult {
       baseScore: 40,
       reason: `Contiene datos de identificación personal: ${personalFlags.slice(0, 3).join(", ")}`,
       flags: personalFlags,
+      pillar: "backend" as const,
     };
   }
 
@@ -68,6 +72,7 @@ export function classifyText(text: string): ClassificationResult {
     baseScore: 10,
     reason: "No se detectaron señales de datos personales ni sensibles",
     flags: [],
+    pillar: "backend" as const,
   };
 }
 

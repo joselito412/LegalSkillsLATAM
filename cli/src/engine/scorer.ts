@@ -1,4 +1,6 @@
 import { loadFormula, isStrictRegime } from "./rules.js";
+import { getFrontendPenalizers } from "./frontend-scorer.js";
+import { getBackendPenalizers } from "./backend-scorer.js";
 
 export type DataCategory = "public" | "personal_general" | "sensitive";
 
@@ -22,6 +24,12 @@ export interface PenalizerResult {
   label: string;
   score: number;
   active: boolean;
+  pillar?: "frontend" | "backend" | "both";
+}
+
+export interface DualScoreResult extends ScoreResult {
+  fePenalizers: PenalizerResult[];
+  bePenalizers: PenalizerResult[];
 }
 
 export interface ScoreResult {
@@ -63,54 +71,63 @@ export function calculateScore(input: AuditInput): ScoreResult {
       label: "Sin consentimiento granular por finalidad",
       score: 15,
       active: !input.hasGranularConsent,
+      pillar: "frontend",
     },
     {
       id: "minors_data",
       label: "Datos de menores de edad sin proceso verificado",
       score: 30,
       active: input.hasMinors,
+      pillar: "both",
     },
     {
       id: "non_adequate_servers",
       label: "Servidores fuera de jurisdicción sin garantías",
       score: 20,
       active: input.serverRegion !== "adequate",
+      pillar: "backend",
     },
     {
       id: "unstructured_international_transfer",
       label: "Transferencia a terceros sin cláusulas contractuales",
       score: 15,
       active: input.thirdPartyTransfers,
+      pillar: "backend",
     },
     {
       id: "no_privacy_policy",
       label: "Sin política de privacidad publicada",
       score: 10,
       active: !input.hasPrivacyPolicy,
+      pillar: "frontend",
     },
     {
       id: "no_arco_procedure",
       label: "Sin canal ARCO/ARSOP documentado",
       score: 10,
       active: !input.hasArcoProcedure,
+      pillar: "both",
     },
     {
       id: "no_dpo",
       label: "Sin DPO/Encarregado designado (LGPD/GDPR)",
       score: 15,
       active: strict && input.hasDpo === false,
+      pillar: "backend",
     },
     {
       id: "no_legal_basis",
       label: "Sin base legal documentada por finalidad",
       score: 20,
       active: strict && input.hasLegalBasisPerPurpose === false,
+      pillar: "backend",
     },
     {
       id: "no_breach_plan",
       label: "Sin plan de respuesta a brechas de seguridad",
       score: 15,
       active: strict && input.hasBreachResponsePlan === false,
+      pillar: "backend",
     },
   ];
 
@@ -157,5 +174,23 @@ export function calculateScore(input: AuditInput): ScoreResult {
     emoji,
     action,
     isStrictRegime: strict,
+  };
+}
+
+/**
+ * Calculates the dual-pillar score, splitting findings into FE and BE panels.
+ * Combined score is backward-compatible with calculateScore().
+ */
+export function calculateDualScore(input: AuditInput): DualScoreResult {
+  const base = calculateScore(input);
+  const strict = isStrictRegime(input.countries);
+
+  const fePenalizers = getFrontendPenalizers(input);
+  const bePenalizers = getBackendPenalizers(input, strict);
+
+  return {
+    ...base,
+    fePenalizers,
+    bePenalizers,
   };
 }
