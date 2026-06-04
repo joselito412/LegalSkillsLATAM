@@ -29,6 +29,23 @@ El proyecto opera en **tres formatos simultáneos**:
 
 ---
 
+## Dos Pilares: Frontend y Backend
+
+A partir de v0.3, el conocimiento del proyecto está organizado en **dos pilares explícitos**:
+
+| Pilar | Scope | Owner | Riesgo |
+|---|---|---|---|
+| **Frontend** — UX / Consentimiento / Transparencia | Lo que el usuario ve, toca o decide | PM + UX + Abogado privacidad | 0–50 pts |
+| **Backend** — Seguridad Técnica / Arquitectura | Protección interna de datos | CTO + Security Lead + Abogado data governance | 0–50 pts |
+
+> Regla rápida: **Si el usuario lo ve → Frontend. Si el sistema lo hace por dentro → Backend.**
+
+- Documentación de pilares: [`architecture/PILLAR-SEPARATION.md`](architecture/PILLAR-SEPARATION.md)
+- Índice de skills por caso de uso: [`skills/_SKILLS-INDEX.md`](skills/_SKILLS-INDEX.md)
+- Árbol de decisión de skills: [`skills/_routing.md`](skills/_routing.md)
+
+---
+
 ## Arquitectura
 
 ![Arquitectura del repositorio](assets/architecture.svg)
