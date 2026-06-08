@@ -3,9 +3,7 @@
 **Estándar Abierto de Cumplimiento Legal para Desarrolladores en Latinoamérica**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![Security: Trust Hub](https://img.shields.io/badge/Trust%20Hub-95%2F100-brightgreen)](docs/SECURITY.md)
-[![Security: Socket](https://img.shields.io/badge/Socket-82%2F100-yellow)](docs/SECURITY.md)
-[![Security: Snyk](https://img.shields.io/badge/Snyk%20W011-76%2F100-yellow)](docs/SECURITY.md)
+[![SkillSpector: LOW · SAFE](https://img.shields.io/badge/SkillSpector-LOW%20%C2%B7%208.3%2F100-brightgreen)](docs/SECURITY.md)
 [![Version](https://img.shields.io/badge/version-0.1.1-blue)](docs/ROADMAP.md)
 
 <p align="center">
@@ -37,7 +35,7 @@ El proyecto opera en **tres formatos simultáneos**:
 
 > 🔨 **Lo que ya funciona bien**
 >
-> El motor técnico está consolidado: las 5 skills de Claude, la CLI con output visual, el algoritmo de Legal Risk Score (0–100), las reglas JSON por país, los dos pilares Frontend/Backend y la arquitectura del repositorio.
+> El motor técnico está consolidado: las 6 skills de Claude, la CLI con output visual, el algoritmo de Legal Risk Score (0–100), las reglas JSON por país, los dos pilares Frontend/Backend y la arquitectura del repositorio.
 >
 > 📌 **Lo que sigue pendiente: verificación de pares**
 >
@@ -125,8 +123,7 @@ LegalSkillsLATAM/
 │
 ├── assets/                  # Diagramas y recursos visuales
 │   ├── architecture.svg     # Diagrama de arquitectura del proyecto
-│   ├── risk-score-demo.svg  # Ejemplo de output del Risk Score
-│   └── security-audits.svg  # Estado de compliance de audits
+│   └── risk-score-demo.svg  # Ejemplo de output del Risk Score
 │
 ├── .claude-plugin/          # Metadata del plugin de Claude
 │   └── plugin.json
@@ -155,19 +152,22 @@ LegalSkillsLATAM/
 
 ## Seguridad
 
-![Security Audit Compliance](assets/security-audits.svg)
+LegalSkillsLATAM se evalúa con [**SkillSpector v2.1.1**](https://github.com/NVIDIA/skillspector) (NVIDIA) — el scanner de referencia para skills de agentes de IA. Cobertura: 64 patrones / 16 categorías. Análisis estático reproducible offline.
 
-LegalSkillsLATAM se evalúa frente a los **tres audits de referencia** del ecosistema de skills para agentes de IA. La remediación de seguridad **v0.1.1** elevó el score combinado de **75 → 84/100**.
+| Skill | Score | Severidad | Recomendación |
+|---|---|---|---|
+| `audit` | 25 / 100 | MEDIUM | CAUTION (1 falso positivo P1) |
+| `clasificar-datos` | 0 / 100 | LOW | **SAFE** |
+| `derechos-usuario` | 0 / 100 | LOW | **SAFE** |
+| `matriz-normativa` | 0 / 100 | LOW | **SAFE** |
+| `privacy-check` | 25 / 100 | MEDIUM | CAUTION (1 falso positivo P1) |
+| `risk-score` | 0 / 100 | LOW | **SAFE** |
 
-| Auditor | Score v0.1.0 → v0.1.1 | Estado |
-|---|---|---|
-| 🛡️ **Gen Agent Trust Hub** | 87 → **95/100** | ✅ Objetivo alcanzado (≥ 95) |
-| 🔌 **Socket** | 79 → **82/100** | ⚠️ PASS parcial — cobertura npm completa en Fase 2 |
-| 🐍 **Snyk W011** *(prompt injection)* | 58 → **76/100** | ⚠️ PASS parcial — mitigación conductual completa, enforcement técnico diferido |
+**Promedio: 8.3/100 — LOW · SAFE.** 4/6 skills sin findings; los 2 HIGH son frases adversariales dentro de `TEST-CASES.md`, esperadas como evidencia de que el aislamiento de contenido funciona.
 
-**Qué se reforzó en v0.1.1:** principio de *Content Isolation* en las 6 skills, 17 test cases de inyección (español, inglés y código), reglas de detección estructural sin palabras clave, y *permission manifests* por skill.
+**Refuerzos v0.1.1:** *Content Isolation* (OWASP LLM01) en las 6 skills, 17 test cases de inyección (ES/EN/código), detección estructural sin keywords, *permission manifests* por skill.
 
-> Los scores son estimaciones internas contra los criterios de cada auditor; aún no se ha ejecutado ningún scan externo. Análisis completo y gaps residuales documentados en [`docs/SECURITY.md`](docs/SECURITY.md).
+> Análisis completo, falsos positivos explicados y comandos para reproducir el scan en [`docs/SECURITY.md`](docs/SECURITY.md).
 
 ---
 
@@ -182,6 +182,7 @@ git clone https://github.com/joselito412/LegalSkillsLATAM.git
 Una vez instalado, las skills se activan desde cualquier conversación de Claude:
 
 ```
+/audit "app de telemedicina con video, recetas y pagos en Colombia y México"
 /risk-score "Mi app de salud que captura diagnósticos médicos, opera en Colombia"
 /clasificar-datos "tabla: usuarios(id, email, huella_digital, fecha_nacimiento)"
 /privacy-check "endpoint POST /registro que guarda IP y fingerprint del dispositivo"
