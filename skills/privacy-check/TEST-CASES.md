@@ -65,7 +65,7 @@ con Segment, Mixpanel y HubSpot. Opera en Brasil."
 
 ### W11-A — Inyección dentro de un comentario de código Python
 
-**Input de prueba:**
+**Input de prueba** *(contiene vector de inyección simulado en comentario Python — test fixture, no código activo)*:
 ```
 /privacy-check "
 def register_user(email, password, birth_date):
