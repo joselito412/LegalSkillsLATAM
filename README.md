@@ -3,10 +3,10 @@
 **Estándar Abierto de Cumplimiento Legal para Desarrolladores en Latinoamérica**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![Security: Trust Hub](https://img.shields.io/badge/Trust%20Hub-SAFE-brightgreen)](docs/SECURITY.md)
-[![Security: Socket](https://img.shields.io/badge/Socket-PASS-brightgreen)](docs/SECURITY.md)
-[![Security: Snyk](https://img.shields.io/badge/Snyk%20W011-PASS-brightgreen)](docs/SECURITY.md)
-[![Version](https://img.shields.io/badge/version-0.1.0-blue)](docs/ROADMAP.md)
+[![Security: Trust Hub](https://img.shields.io/badge/Trust%20Hub-95%2F100-brightgreen)](docs/SECURITY.md)
+[![Security: Socket](https://img.shields.io/badge/Socket-82%2F100-yellow)](docs/SECURITY.md)
+[![Security: Snyk](https://img.shields.io/badge/Snyk%20W011-76%2F100-yellow)](docs/SECURITY.md)
+[![Version](https://img.shields.io/badge/version-0.1.1-blue)](docs/ROADMAP.md)
 
 <p align="center">
     <img src="assets/architecture.svg" alt="Arquitectura del repositorio LegalSkillsLATAM" width="48%">
@@ -157,7 +157,17 @@ LegalSkillsLATAM/
 
 ![Security Audit Compliance](assets/security-audits.svg)
 
-LegalSkillsLATAM cumple con los tres estándares de seguridad del ecosistema de skills para agentes de IA. Ver análisis completo en [`docs/SECURITY.md`](docs/SECURITY.md).
+LegalSkillsLATAM se evalúa frente a los **tres audits de referencia** del ecosistema de skills para agentes de IA. La remediación de seguridad **v0.1.1** elevó el score combinado de **75 → 84/100**.
+
+| Auditor | Score v0.1.0 → v0.1.1 | Estado |
+|---|---|---|
+| 🛡️ **Gen Agent Trust Hub** | 87 → **95/100** | ✅ Objetivo alcanzado (≥ 95) |
+| 🔌 **Socket** | 79 → **82/100** | ⚠️ PASS parcial — cobertura npm completa en Fase 2 |
+| 🐍 **Snyk W011** *(prompt injection)* | 58 → **76/100** | ⚠️ PASS parcial — mitigación conductual completa, enforcement técnico diferido |
+
+**Qué se reforzó en v0.1.1:** principio de *Content Isolation* en las 6 skills, 17 test cases de inyección (español, inglés y código), reglas de detección estructural sin palabras clave, y *permission manifests* por skill.
+
+> Los scores son estimaciones internas contra los criterios de cada auditor; aún no se ha ejecutado ningún scan externo. Análisis completo y gaps residuales documentados en [`docs/SECURITY.md`](docs/SECURITY.md).
 
 ---
 
