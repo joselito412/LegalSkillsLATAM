@@ -18,14 +18,14 @@
     "rules/"
   ],
   "dependencies": {
-    "@inquirer/prompts": "^8.5.2",
-    "chalk": "^5.3.0",
-    "commander": "^12.1.0"
+    "@inquirer/prompts": "8.5.2",
+    "chalk": "5.6.2",
+    "commander": "12.1.0"
   },
   "devDependencies": {
-    "@types/node": "^20.0.0",
-    "tsx": "^4.0.0",
-    "typescript": "^5.4.0"
+    "@types/node": "20.19.1",
+    "tsx": "4.22.4",
+    "typescript": "5.4.5"
   },
   "engines": {
     "node": ">=18.0.0"
