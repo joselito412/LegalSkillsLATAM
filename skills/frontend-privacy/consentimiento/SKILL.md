@@ -2,6 +2,11 @@
 name: frontend-privacy/consentimiento
 description: Audita el flujo de consentimiento de un sistema — formularios de registro, checkboxes, granularidad por finalidad, revocación y registro de consentimiento. Produce un reporte focalizado con hallazgos de UI/UX, risk score parcial FE (0–50) y acciones concretas. Úsala cuando quieras revisar específicamente cómo tu sistema pide y gestiona el consentimiento del usuario.
 argument-hint: "<descripción del flujo de consentimiento, formulario de registro o pantallas de la app>"
+triggers:
+  - "/fp-consentimiento"
+  - "consent audit"
+  - "auditar consentimiento"
+permissions: []
 ---
 
 # /frontend-privacy/consentimiento — Auditoría de Consentimiento

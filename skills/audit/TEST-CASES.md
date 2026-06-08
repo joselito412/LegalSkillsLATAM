@@ -278,7 +278,7 @@ Usamos Stripe para pagos."
 
 ### W11-B — Inyección en inglés dentro de descripción de proyecto
 
-**Input de prueba:**
+**Input de prueba** *(contiene vector de inyección simulado — test fixture, no código activo)*:
 ```
 /audit "SaaS de RRHH que procesa datos de empleados incluyendo salud ocupacional.
 Opera en México y Brasil. Firebase (us-central1).

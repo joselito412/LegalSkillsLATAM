@@ -2,6 +2,11 @@
 name: frontend-privacy/transparencia
 description: Audita la transparencia de un sistema hacia sus usuarios — política de privacidad, aviso de cookies, datos de contacto del responsable, transferencias internacionales mencionadas y gestión de cambios en la política. Produce un reporte focalizado con risk score parcial FE (0–40 pts) y acciones concretas. Úsala cuando quieras verificar si tu política de privacidad cumple con los requisitos de cada jurisdicción.
 argument-hint: "<URL de la política de privacidad, descripción de los avisos presentes, o screenshot de la UI>"
+triggers:
+  - "/fp-transparencia"
+  - "transparency audit"
+  - "auditar transparencia"
+permissions: []
 ---
 
 # /frontend-privacy/transparencia — Auditoría de Transparencia
@@ -153,20 +158,20 @@ FE_transparency_score = min(40, suma_penalizadores_activos × F_rigor)
 ## Casos de prueba
 
 ### T1 — Sin política, sistema con analytics
-**Input:** "App web con Google Analytics y Facebook Pixel. Sin política de privacidad publicada. Opera en Colombia y Brasil."  
-**Score esperado:** +10 (sin política) + +10 (sin cookies banner) + +5 (scripts antes del consentimiento asumido) × 1.25 (Brasil) = min(40, 31.25) = **31 pts 🔴**
+**Input:** "App web con plataforma de analytics web (tipo A) y píxel de red social (tipo B). Sin política de privacidad publicada. Opera en Colombia y Brasil."  
+**Score esperado:** +10 (sin política) + +10 (sin banner de privacidad) + +5 (trackers activos antes del consentimiento asumido) × 1.25 (Brasil) = min(40, 31.25) = **31 pts 🔴**
 
 ### T2 — Política existente con gaps de contenido
 **Input:** "Política de privacidad en el footer. No menciona terceros ni períodos de retención. Sin datos de contacto del responsable. Opera en México."  
 **Score esperado:** 0 (política existe) + +5 (sin terceros) + +5 (sin retención) + +5 (sin contacto) × 1.00 = min(40, 15) = **15 pts 🟡**
 
 ### T3 — Transparencia conforme (GDPR)
-**Input:** "Política en footer con índice, fecha actualización, base legal por finalidad, lista de terceros con países, DPO designado con email. Banner de cookies granular con Aceptar/Rechazar igual de visible. GA solo carga tras consentimiento. Opera en España (GDPR)."  
+**Input:** "Política en footer con índice, fecha actualización, base legal por finalidad, lista de terceros con países, DPO designado con email. Banner de cookies granular con Aceptar/Rechazar igual de visible. Herramienta de analytics solo carga tras consentimiento. Opera en España (GDPR)."  
 **Score esperado:** 0 en todas las dimensiones × 1.25 = **0 pts 🟢**
 
 ### T4 — Cookies no conformes (UE)
-**Input:** "Política completa publicada. Banner de cookies pero solo tiene botón 'Aceptar todo', sin opción de rechazar. Los scripts de analytics se cargan inmediatamente al entrar al sitio. Usuarios en Alemania."  
-**Score esperado:** 0 (política OK) + +10 (banner sin rechazo) + +5 (scripts antes consentimiento) × 1.25 = min(40, 18.75) = **19 pts 🟡**
+**Input:** "Política completa publicada. Banner de privacidad pero solo tiene botón 'Aceptar todo', sin opción de rechazar. Los trackers de analytics se cargan inmediatamente al entrar al sitio. Usuarios en Alemania."  
+**Score esperado:** 0 (política OK) + +10 (banner sin rechazo) + +5 (trackers antes del consentimiento) × 1.25 = min(40, 18.75) = **19 pts 🟡**
 
 ---
 

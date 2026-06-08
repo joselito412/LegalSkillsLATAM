@@ -2,6 +2,11 @@
 name: backend-security/data-protection
 description: Audita la protección técnica de datos en un sistema — clasificación de datos, cifrado en reposo y tránsito, hashing de credenciales, retención y purga, DPA con proveedores y transferencias internacionales. Produce un reporte focalizado con risk score parcial BE (0–50 pts) y acciones concretas. Úsala cuando quieras revisar la arquitectura de seguridad de datos antes de lanzar o de agregar un nuevo tipo de dato sensible.
 argument-hint: "<esquema de base de datos, descripción de arquitectura, lista de proveedores, o endpoint a auditar>"
+triggers:
+  - "/be-data-protection"
+  - "data protection audit"
+  - "auditar protección de datos"
+permissions: []
 ---
 
 # /backend-security/data-protection — Auditoría de Protección de Datos

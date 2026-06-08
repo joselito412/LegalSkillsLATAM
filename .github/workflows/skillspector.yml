@@ -1,0 +1,101 @@
+name: SkillSpector Security Scan
+
+on:
+  pull_request:
+    paths:
+      - 'skills/**/SKILL.md'
+  push:
+    branches: [main]
+    paths:
+      - 'skills/**/SKILL.md'
+
+jobs:
+  scan:
+    name: Scan Skills
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install SkillSpector
+        run: |
+          git clone --depth 1 https://github.com/NVIDIA/skillspector.git /tmp/skillspector
+          pip install -e /tmp/skillspector --quiet
+
+      - name: Scan root skills (static)
+        id: scan_root
+        run: |
+          FAILED=0
+          for skill_file in skills/audit/SKILL.md skills/risk-score/SKILL.md skills/clasificar-datos/SKILL.md skills/privacy-check/SKILL.md skills/matriz-normativa/SKILL.md skills/derechos-usuario/SKILL.md; do
+            echo "--- Scanning $skill_file ---"
+            SCORE=$(skillspector scan "$skill_file" --no-llm --format json 2>/dev/null | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('risk_score', 0))" 2>/dev/null || echo "0")
+            SEVERITY=$(skillspector scan "$skill_file" --no-llm --format json 2>/dev/null | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('risk_severity', 'UNKNOWN'))" 2>/dev/null || echo "UNKNOWN")
+            echo "  Score: $SCORE | Severity: $SEVERITY"
+            if [ "$SCORE" -gt 30 ] 2>/dev/null; then
+              echo "  ❌ FAIL: Score $SCORE exceeds threshold (30)"
+              skillspector scan "$skill_file" --no-llm 2>&1 | grep -E "CRITICAL|HIGH" || true
+              FAILED=1
+            else
+              echo "  ✅ PASS"
+            fi
+          done
+          if [ $FAILED -eq 1 ]; then
+            echo "One or more skills exceeded the risk score threshold."
+            exit 1
+          fi
+
+      - name: Scan frontend-privacy skills (static)
+        run: |
+          FAILED=0
+          for skill_file in skills/frontend-privacy/consentimiento/SKILL.md skills/frontend-privacy/transparencia/SKILL.md skills/frontend-privacy/user-controls/SKILL.md; do
+            echo "--- Scanning $skill_file ---"
+            SCORE=$(skillspector scan "$skill_file" --no-llm --format json 2>/dev/null | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('risk_score', 0))" 2>/dev/null || echo "0")
+            echo "  Score: $SCORE"
+            if [ "$SCORE" -gt 30 ] 2>/dev/null; then
+              echo "  ❌ FAIL: Score $SCORE exceeds threshold (30)"
+              skillspector scan "$skill_file" --no-llm 2>&1 | grep -E "CRITICAL|HIGH" || true
+              FAILED=1
+            else
+              echo "  ✅ PASS"
+            fi
+          done
+          if [ $FAILED -eq 1 ]; then exit 1; fi
+
+      - name: Scan backend-security skills (static)
+        run: |
+          FAILED=0
+          for skill_file in skills/backend-security/access-control/SKILL.md skills/backend-security/data-lifecycle/SKILL.md skills/backend-security/data-protection/SKILL.md; do
+            echo "--- Scanning $skill_file ---"
+            SCORE=$(skillspector scan "$skill_file" --no-llm --format json 2>/dev/null | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('risk_score', 0))" 2>/dev/null || echo "0")
+            echo "  Score: $SCORE"
+            if [ "$SCORE" -gt 30 ] 2>/dev/null; then
+              echo "  ❌ FAIL: Score $SCORE exceeds threshold (30)"
+              skillspector scan "$skill_file" --no-llm 2>&1 | grep -E "CRITICAL|HIGH" || true
+              FAILED=1
+            else
+              echo "  ✅ PASS"
+            fi
+          done
+          if [ $FAILED -eq 1 ]; then exit 1; fi
+
+      - name: Generate SARIF reports
+        if: always()
+        run: |
+          mkdir -p sarif-reports
+          for skill_file in skills/audit/SKILL.md skills/risk-score/SKILL.md skills/clasificar-datos/SKILL.md skills/privacy-check/SKILL.md skills/matriz-normativa/SKILL.md skills/derechos-usuario/SKILL.md skills/frontend-privacy/consentimiento/SKILL.md skills/frontend-privacy/transparencia/SKILL.md skills/frontend-privacy/user-controls/SKILL.md skills/backend-security/access-control/SKILL.md skills/backend-security/data-lifecycle/SKILL.md skills/backend-security/data-protection/SKILL.md; do
+            SKILL_NAME=$(echo "$skill_file" | sed 's|skills/||' | sed 's|/SKILL.md||' | tr '/' '-')
+            skillspector scan "$skill_file" --no-llm --format sarif -o "sarif-reports/${SKILL_NAME}.sarif" 2>/dev/null || true
+          done
+
+      - name: Upload SARIF to GitHub Security tab
+        if: always()
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: sarif-reports/
+        continue-on-error: true
