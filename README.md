@@ -15,6 +15,8 @@
 
 > ⚠️ Este proyecto es una guía metodológica y operativa. No constituye ni suplanta asesoría jurídica profesional. Consulta siempre con un abogado experto ante dudas legales específicas.
 
+> 🇬🇧 **English:** Open standard for legal privacy compliance in LATAM — tools for devs, rules for AI, and an open call for legal collaborators (lawyers, academics, legal tech). [Jump to the call →](#-buscamos-colaboradores-legales)
+
 ---
 
 ## ¿Qué es?
@@ -23,9 +25,25 @@ LegalSkillsLATAM es un paquete de herramientas de cumplimiento normativo (*Compl
 
 El proyecto opera en **tres formatos simultáneos**:
 
-- **Para humanos** — Matrices comparativas, checklists y guías en Markdown, legibles directamente en GitHub.
-- **Para IA** — Skills instalables en Claude que actúan como auditores autónomos de privacidad.
-- **Para máquinas** — Reglas en JSON semántico, listas para ser consumidas por APIs o pipelines de CI/CD.
+| Formato | ¿Para quién? | ¿Dónde está? |
+|---|---|---|
+| 📄 **Humanos** | Abogados, devs, CTOs | Matrices y checklists en `knowledge/` |
+| 🤖 **IA** | Claude y otros LLMs | Skills instalables en `skills/` |
+| ⚙️ **Máquinas** | APIs, CI/CD | Reglas JSON en `cli/rules/` |
+
+---
+
+## Estado actual
+
+> 🔨 **Lo que ya funciona bien**
+>
+> El motor técnico está consolidado: las 5 skills de Claude, la CLI con output visual, el algoritmo de Legal Risk Score (0–100), las reglas JSON por país, los dos pilares Frontend/Backend y la arquitectura del repositorio.
+>
+> 📌 **Lo que sigue pendiente: verificación de pares**
+>
+> El contenido legal — reglas, matrices, checklists y penalizadores — fue redactado con criterio técnico-jurídico, pero **aún no ha pasado por revisión formal de pares** (abogados de datos, académicos o profesionales de legal tech). La herramienta funciona; su autoridad normativa todavía se está construyendo.
+>
+> Si eres abogado/a de protección de datos, académico/a de derecho digital o profesional de legal tech, [este es tu lugar →](#-buscamos-colaboradores-legales)
 
 ---
 
@@ -191,10 +209,29 @@ Ver [`docs/ROADMAP.md`](docs/ROADMAP.md) para el detalle completo, incluyendo el
 
 | Perfil | Uso principal |
 |---|---|
-| 👨‍💻 Desarrollador independiente | Clasificar los datos de su app y conocer sus obligaciones |
+| 👨‍💻 Desarrollador independiente | Clasificar los datos de su app y conocer sus obligaciones legales |
 | 🚀 Startup / CTO | Auto-evaluar el riesgo legal antes de lanzar o internacionalizar |
 | 🤖 Agente de IA (LLM) | Auditar código y arquitecturas usando las reglas JSON del proyecto |
-| ⚖️ Abogado / Consultor | Referencia comparativa de normativas LATAM vs GDPR |
+| ⚖️ Abogado / Consultor | Revisar, corregir y enriquecer el contenido normativo del repositorio |
+| 🎓 Académico / Investigador | Referencia comparativa de normativas LATAM vs GDPR vs CCPA |
+
+---
+
+## 🤝 Buscamos colaboradores legales
+
+Este es un llamado abierto a:
+
+🔹 **Abogados de protección de datos** en cualquier país de LATAM
+
+🔹 **Académicos de derecho digital** o regulación tecnológica
+
+🔹 **Profesionales de legal tech** que quieran construir estándares abiertos
+
+**No necesitas saber programar.** El contenido legal está en Markdown y JSON legible. Solo necesitas saber de leyes y tener ganas de que LATAM tenga herramientas de compliance a la altura de las de Europa o EE.UU.
+
+📌 **Estado actual:** por verificar con pares — y ahí es donde entras tú.
+
+Puedes empezar abriendo un Issue con tus observaciones, corrigiendo una matriz, o revisando una regla JSON de tu país. Ver [`docs/CONTRIBUTING.md`](docs/CONTRIBUTING.md) para el proceso detallado.
 
 ---
 
