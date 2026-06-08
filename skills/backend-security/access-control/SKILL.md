@@ -2,6 +2,11 @@
 name: backend-security/access-control
 description: Audita el control de acceso y el audit logging de un sistema — RBAC, principio de mínimo privilegio, logs de auditoría, inmutabilidad de logs, monitoreo de accesos y gestión del ciclo de vida de accesos. Produce un reporte focalizado con risk score parcial BE (0–40 pts) y acciones concretas. Úsala cuando quieras revisar quién puede ver los datos de usuarios en producción y si existe registro auditable de esos accesos.
 argument-hint: "<descripción de la arquitectura de acceso, roles del sistema, configuración de logs, o incidente de acceso no autorizado>"
+triggers:
+  - "/be-access-control"
+  - "access control audit"
+  - "auditar control de acceso"
+permissions: []
 ---
 
 # /backend-security/access-control — Auditoría de Control de Acceso

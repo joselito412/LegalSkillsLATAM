@@ -2,6 +2,11 @@
 name: backend-security/data-lifecycle
 description: Audita el ciclo de vida de datos en un sistema — política de retención, purga automática, anonimización, backups y respuesta a incidentes. Produce un reporte focalizado con risk score parcial BE (0–40 pts) y acciones concretas. Úsala cuando quieras verificar cuánto tiempo conservas los datos de tus usuarios, si los eliminas correctamente y si tus backups están protegidos.
 argument-hint: "<descripción de la política de retención, estructura de la DB, o configuración de backups del sistema>"
+triggers:
+  - "/be-data-lifecycle"
+  - "data lifecycle audit"
+  - "ciclo de vida datos"
+permissions: []
 ---
 
 # /backend-security/data-lifecycle — Auditoría de Ciclo de Vida de Datos

@@ -2,6 +2,11 @@
 name: frontend-privacy/user-controls
 description: Audita el portal de datos del usuario en un sistema — acceso y descarga de datos, flujo de eliminación de cuenta, revocación de consentimiento desde la UI y comunicación de plazos ARCO. Produce un reporte focalizado con risk score parcial FE (0–40 pts) y acciones concretas. Úsala cuando quieras revisar si tu app permite que los usuarios ejerzan sus derechos de forma autónoma sin necesidad de contactar soporte.
 argument-hint: "<descripción del portal de privacidad, pantallas de configuración de cuenta, o flujos de eliminación de datos>"
+triggers:
+  - "/fp-user-controls"
+  - "user controls audit"
+  - "portal de privacidad"
+permissions: []
 ---
 
 # /frontend-privacy/user-controls — Auditoría del Portal de Datos del Usuario
