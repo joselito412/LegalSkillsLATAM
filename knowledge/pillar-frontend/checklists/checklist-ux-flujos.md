@@ -1,7 +1,7 @@
 # Checklist Frontend — Flujos UX para Datos Sensibles
 **Pilar: Frontend (UX / UI / Consentimiento)**
 
-> **LegalSkillsLATAM** — Guía operativa. No constituye asesoría jurídica.  
+> **Privacy Compliance Skills** — Guía operativa. No constituye asesoría jurídica.  
 > Versión: 1.0.0 | Elaborado: 2026-06-04  
 > Propietario: PM de Producto + UX Designer | Validación: Abogado de privacidad
 
@@ -89,4 +89,4 @@ Usa este checklist cuando tu sistema trata **datos sensibles** (salud, biometrí
 
 *Pilar: Frontend | Owner: PM + UX | Validación: Abogado de privacidad*  
 *Ver contraparte backend: [checklist-datos-sensibles.md](../../pillar-backend/checklists/checklist-datos-sensibles.md)*  
-*LegalSkillsLATAM — [DISCLAIMER.md](../../../DISCLAIMER.md)*
+*Privacy Compliance Skills — [DISCLAIMER.md](../../../DISCLAIMER.md)*

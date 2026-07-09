@@ -188,3 +188,30 @@ Criterio de aceptación: enlaces consistentes; release 0.4.0 publicada.
 - `chile.json` — verificar contra el texto de la Ley 21.719 y su reglamento antes de la vigencia 01-12-2026.
 - `region-factors.json` — validar que los F_rigor reflejan el criterio jurídico deseado.
 - Reclutar especialistas CCPA/CPRA + estatal para el llamado de colaboradores (README §Buscamos colaboradores).
+
+---
+
+## Sesión G — Renombre global en código, lockfiles y assets (correr en Claude Code)
+
+```
+Contexto: el repo se renombró a Privacy_Compliance_Skills-UE-USA-LATAM y la marca a
+"Privacy Compliance Skills". La sesión de Cowork ya actualizó docs, reglas JSON, skills,
+plugin.json y web/src/config.ts. Quedaron SIN tocar las referencias en codigo/lockfiles/SVG
+para no romper build/tests. Complétalas aquí (con build + test):
+
+Pendiente:
+- package.json y cli/package.json: campo "name" (legalskills-latam -> privacy-compliance-skills)
+  y "repository.url" -> https://github.com/joselito412/Privacy_Compliance_Skills-UE-USA-LATAM.git
+- package-lock.json y cli/package-lock.json: regenerar con npm install tras cambiar el name.
+- cli/src/index.ts, cli/src/ui/box.ts, cli/src/commands/audit.ts: strings de banner y la URL vieja
+  ("LegalSkillsLATAM" / "legalskills-latam" / github.com/.../LegalSkillsLATAM) -> nuevos valores.
+- scripts/validate.js: mensajes.
+- assets/architecture.svg, assets/risk-score-demo.svg, assets/security-audits.svg: texto visible
+  "LegalSkillsLATAM" -> "Privacy Compliance Skills" (verificar que no desborde; regenerar si hace falta).
+- git remote set-url origin https://github.com/joselito412/Privacy_Compliance_Skills-UE-USA-LATAM.git
+
+Tarea: aplicar cambios, `npm run build` + `npm test` en cli/, confirmar que el banner/CLI muestra el
+nuevo nombre, y commitear. Conservar "formerly/antes se llamaba LegalSkillsLATAM" solo como nota historica.
+
+Criterio: `grep -rn "LegalSkillsLATAM\|legalskills-latam"` solo aparece en notas historicas; build y tests verdes.
+```

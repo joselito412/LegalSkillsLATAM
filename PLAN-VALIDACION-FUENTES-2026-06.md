@@ -1,5 +1,5 @@
 # Plan de Validación de Fuentes Legales y Recomendaciones de Arquitectura
-## LegalSkillsLATAM — Trabajo de Calidad de Contenido
+## Privacy Compliance Skills — Trabajo de Calidad de Contenido
 
 **Preparado por:** Claude (asistente IA)  
 **Fecha:** 2026-06-18  
@@ -10,7 +10,7 @@
 
 ## 1. Resumen Ejecutivo
 
-Este plan estructura el trabajo de **validación legal exhaustiva** del proyecto LegalSkillsLATAM en tres ejes:
+Este plan estructura el trabajo de **validación legal exhaustiva** del proyecto Privacy Compliance Skills en tres ejes:
 
 1. **Eje Normativo**: Validar que cada "claim" (afirmación legal) en el proyecto está respaldado por ley primaria
 2. **Eje de Reglas**: Revisar que las reglas JSON codifican correctamente los requisitos legales
@@ -464,4 +464,4 @@ Cada claim será validado con esta estructura:
 **Estado:** 📋 Borrador — Pendiente aprobación  
 **Última actualización:** 2026-06-18
 
-*LegalSkillsLATAM — Cerrando la brecha entre código y cumplimiento legal en LATAM.*
+*Privacy Compliance Skills — Cerrando la brecha entre código y cumplimiento legal en LATAM.*

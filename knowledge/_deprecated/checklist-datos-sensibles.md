@@ -8,7 +8,7 @@
 
 ---
 
-> **LegalSkillsLATAM** — Guía operativa para devs. No constituye asesoría jurídica.
+> **Privacy Compliance Skills** — Guía operativa para devs. No constituye asesoría jurídica.
 > Versión: 1.0.0 | Última actualización: 2026-06-02
 
 **Usa este checklist si tu sistema trata alguno de estos tipos de datos:**
@@ -309,5 +309,5 @@ Usa esta tabla para evaluar el estado de tu sistema:
 
 ---
 
-*LegalSkillsLATAM — Cerrando la brecha entre el código y el cumplimiento legal en LATAM.*
+*Privacy Compliance Skills — Cerrando la brecha entre el código y el cumplimiento legal en LATAM.*
 *Este checklist es una guía operativa. No constituye ni suplanta asesoría jurídica profesional.*

@@ -195,7 +195,7 @@ Esto mantiene la transparencia y permite al usuario corregir sin rehacer todo el
 
 ```
 ╔══════════════════════════════════════════════════════╗
-║         🔍 LegalSkillsLATAM — Auditoría Rápida       ║
+║         🔍 Privacy Compliance Skills — Auditoría Rápida       ║
 ╠══════════════════════════════════════════════════════╣
 ║  [Proyecto]  |  [País(es)]                           ║
 ╠══════════════════════════════════════════════════════╣

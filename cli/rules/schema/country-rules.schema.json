@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://legalskills-latam.dev/schemas/country-rules.v1.json",
-  "title": "LegalSkillsLATAM — Country Rules Schema",
-  "description": "Esquema de validación para archivos de reglas por país en LegalSkillsLATAM. Acepta formato flat (colombia.json) y formato anidado (brasil.json, gdpr.json).",
+  "$id": "https://privacy-compliance-skills.dev/schemas/country-rules.v1.json",
+  "title": "Privacy Compliance Skills — Country Rules Schema",
+  "description": "Esquema de validación para archivos de reglas por país en Privacy Compliance Skills. Acepta formato flat (colombia.json) y formato anidado (brasil.json, gdpr.json).",
   "version": "1.1.0",
   "type": "object",
   "required": ["primary_law"],

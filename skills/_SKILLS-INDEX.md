@@ -1,5 +1,5 @@
 # Skills Index — Mapa de Casos de Uso
-**LegalSkillsLATAM — Directorio de Skills**
+**Privacy Compliance Skills — Directorio de Skills**
 
 > Elaborado: 2026-06-04 · Actualizado: 2026-07-08
 > Versión: 1.1
@@ -214,5 +214,5 @@ Legal Risk Score: 62/100 🟡 Medio
 
 ---
 
-*LegalSkillsLATAM — [DISCLAIMER.md](../DISCLAIMER.md)*  
+*Privacy Compliance Skills — [DISCLAIMER.md](../DISCLAIMER.md)*  
 *Elaborado: 2026-06-04 | Estado: Activo*

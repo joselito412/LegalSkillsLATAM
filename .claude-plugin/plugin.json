@@ -4,7 +4,7 @@
   "description": "Estándar abierto de cumplimiento de privacidad (Compliance-as-Code) para desarrolladores. Clasifica datos, evalúa riesgo normativo y compara leyes de la UE (GDPR), EE.UU. (CCPA/CPRA + leyes estatales) y LATAM.",
   "author": {
     "name": "Privacy Compliance Skills Editorial Team",
-    "url": "https://github.com/joselito412/LegalSkillsLATAM"
+    "url": "https://github.com/joselito412/Privacy_Compliance_Skills-UE-USA-LATAM"
   },
   "license": "MIT",
   "keywords": ["privacy", "compliance", "compliance-as-code", "gdpr", "ccpa", "cpra", "us-state-privacy", "lgpd", "latam", "eu", "usa", "data-protection"],

@@ -1,7 +1,7 @@
 # Checklist Frontend — Consentimiento y Documentos Legales
 **Pilar: Frontend (UX / UI / Consentimiento)**
 
-> **LegalSkillsLATAM** — Guía operativa. No constituye asesoría jurídica.  
+> **Privacy Compliance Skills** — Guía operativa. No constituye asesoría jurídica.  
 > Versión: 1.0.0 | Elaborado: 2026-06-04  
 > Propietario: PM de Producto + UX Designer | Validación: Abogado de privacidad
 
@@ -87,4 +87,4 @@ Para la contraparte técnica de estos ítems, ver [checklist-seguridad-datos.md]
 
 *Pilar: Frontend | Owner: PM + UX | Validación: Abogado de privacidad*  
 *Ver contraparte backend: [checklist-seguridad-datos.md](../../pillar-backend/checklists/checklist-seguridad-datos.md)*  
-*LegalSkillsLATAM — [DISCLAIMER.md](../../../DISCLAIMER.md)*
+*Privacy Compliance Skills — [DISCLAIMER.md](../../../DISCLAIMER.md)*

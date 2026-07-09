@@ -1,6 +1,6 @@
-# Cómo Contribuir a LegalSkillsLATAM
+# Cómo Contribuir a Privacy Compliance Skills
 
-LegalSkillsLATAM se construye con dos manos: **abogados** que aportan normativa, jurisprudencia y criterio editorial, y **personas técnicas** que mantienen las skills, las reglas en JSON y la CLI. Ambos perfiles son indispensables — y este documento tiene una ruta clara para cada uno.
+Privacy Compliance Skills se construye con dos manos: **abogados** que aportan normativa, jurisprudencia y criterio editorial, y **personas técnicas** que mantienen las skills, las reglas en JSON y la CLI. Ambos perfiles son indispensables — y este documento tiene una ruta clara para cada uno.
 
 > **¿Eres abogado/a o trabajas en cumplimiento?** Salta a [Ruta para perfiles legales](#ruta-para-perfiles-legales-abogados-cumplimiento-dpo). No necesitas saber programar ni usar Git.
 >
@@ -27,7 +27,7 @@ LegalSkillsLATAM se construye con dos manos: **abogados** que aportan normativa,
 
 ### Opción A — Reportar o proponer un cambio (recomendado para empezar)
 
-1. Entra al repositorio en GitHub: <https://github.com/joselito412/LegalSkillsLATAM>
+1. Entra al repositorio en GitHub: <https://github.com/joselito412/Privacy_Compliance_Skills-UE-USA-LATAM>
 2. Click en la pestaña **Issues** → **New issue**.
 3. Describe tu aporte usando esta estructura:
 

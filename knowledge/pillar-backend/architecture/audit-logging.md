@@ -1,7 +1,7 @@
 # Arquitectura: Audit Logging
 **Pilar: Backend (Seguridad Técnica / Arquitectura)**
 
-> **LegalSkillsLATAM** — Guía de arquitectura. No constituye asesoría jurídica.  
+> **Privacy Compliance Skills** — Guía de arquitectura. No constituye asesoría jurídica.  
 > Versión: 1.0.0 | Elaborado: 2026-06-04  
 > Propietario: CTO + Security Lead | Revisión: Trimestral
 
@@ -201,4 +201,4 @@ Los logs archivados pasan a almacenamiento S3/GCS de bajo costo (Glacier, Coldli
 ---
 
 *Pilar: Backend | Owner: CTO + Security Lead | Validación: Security audit interno*  
-*LegalSkillsLATAM — [DISCLAIMER.md](../../../DISCLAIMER.md)*
+*Privacy Compliance Skills — [DISCLAIMER.md](../../../DISCLAIMER.md)*

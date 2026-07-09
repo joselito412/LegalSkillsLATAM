@@ -1,7 +1,7 @@
 # Matriz: Medidas de Seguridad Mínimas por Jurisdicción
 **Pilar: Backend (Seguridad Técnica / Arquitectura)**
 
-> **LegalSkillsLATAM** — Guía de referencia. No constituye asesoría jurídica.  
+> **Privacy Compliance Skills** — Guía de referencia. No constituye asesoría jurídica.  
 > Versión: 1.0.0 | Elaborado: 2026-06-04  
 > Pendiente validación por abogado especialista por jurisdicción
 
@@ -92,4 +92,4 @@ Puntaje: 8-10 ✅ = nivel técnico adecuado | 5-7 = trabajar antes del lanzamien
 ---
 
 *Pilar: Backend | Owner: CTO + Security Lead | Validación: Abogado de data governance*  
-*LegalSkillsLATAM — [DISCLAIMER.md](../../../DISCLAIMER.md)*
+*Privacy Compliance Skills — [DISCLAIMER.md](../../../DISCLAIMER.md)*

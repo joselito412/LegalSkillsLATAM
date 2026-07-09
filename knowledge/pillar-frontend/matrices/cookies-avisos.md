@@ -1,7 +1,7 @@
 # Matriz: Cookies y Avisos por Jurisdicción
 **Pilar: Frontend (UX / UI / Consentimiento)**
 
-> **LegalSkillsLATAM** — Guía de referencia. No constituye asesoría jurídica.  
+> **Privacy Compliance Skills** — Guía de referencia. No constituye asesoría jurídica.  
 > Versión: 1.0.0 | Elaborado: 2026-06-04
 
 ---
@@ -121,4 +121,4 @@ Para más detalles, ver nuestra [Política de Privacidad →].
 
 *Pilar: Frontend | Owner: PM + UX | Validación: Abogado de privacidad*  
 *Ver patrón: [consent-banner.md](../patterns/consent-banner.md)*  
-*LegalSkillsLATAM — [DISCLAIMER.md](../../../DISCLAIMER.md)*
+*Privacy Compliance Skills — [DISCLAIMER.md](../../../DISCLAIMER.md)*

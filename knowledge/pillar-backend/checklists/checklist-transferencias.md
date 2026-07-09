@@ -1,7 +1,7 @@
 # Checklist Backend — Transferencias Internacionales y DPA con Terceros
 **Pilar: Backend (Seguridad Técnica / Arquitectura)**
 
-> **LegalSkillsLATAM** — Guía operativa. No constituye asesoría jurídica.  
+> **Privacy Compliance Skills** — Guía operativa. No constituye asesoría jurídica.  
 > Versión: 1.0.0 | Elaborado: 2026-06-04  
 > Propietario: CTO + Security Lead | Validación: Abogado de data governance e internacional  
 > Cadencia de revisión: Al agregar un nuevo proveedor o jurisdicción
@@ -111,4 +111,4 @@ Antes de integrar cualquier nuevo SDK o servicio que reciba datos de usuarios:
 
 *Pilar: Backend | Owner: CTO + Security Lead | Validación: Abogado de data governance e internacional*  
 *Ver contraparte frontend: [checklist-transparencia-ui.md](../../pillar-frontend/checklists/checklist-transparencia-ui.md) — Bloque 4*  
-*LegalSkillsLATAM — [DISCLAIMER.md](../../../DISCLAIMER.md)*
+*Privacy Compliance Skills — [DISCLAIMER.md](../../../DISCLAIMER.md)*

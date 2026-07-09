@@ -1,4 +1,4 @@
-# ROADMAP — LegalSkillsLATAM
+# ROADMAP — Privacy Compliance Skills
 **Documento vivo. Actualizado por el Equipo Editorial.**
 
 ---
@@ -43,14 +43,14 @@ Fundación  →   CLI Tool   →   Pilares FE/BE  →  Expansión  →  API / Sa
 - [x] `cli/src/ui/` — box renderer con chalk + progress bar
 - [x] `skill /audit` unificada — reemplaza el flujo de 5 skills separadas
 - [x] `legalskills.config.json` — configuración de proyecto para CI/CD
-- [x] `npx legalskills-latam audit --config` — modo no-interactivo
+- [x] `npx privacy-compliance-skills audit --config` — modo no-interactivo
 - [x] `--fail-on <score>` — integración con pipelines CI/CD
 
 **Output del CLI (v0.2):**
 
 ```
 ╔══════════════════════════════════════════════════════╗
-║       🔍 LegalSkillsLATAM — Legal Risk Audit         ║
+║       🔍 Privacy Compliance Skills — Legal Risk Audit         ║
 ╠══════════════════════════════════════════════════════╣
 ║  Proyecto : Mi Startup App                           ║
 ║  País(es) : Colombia 🇨🇴, México 🇲🇽                  ║
@@ -113,7 +113,7 @@ Fundación  →   CLI Tool   →   Pilares FE/BE  →  Expansión  →  API / Sa
 
 ```
 ╔══════════════════════════════════════════════════════╗
-║         🔍 LegalSkillsLATAM — Auditoría Dual FE/BE   ║
+║         🔍 Privacy Compliance Skills — Auditoría Dual FE/BE   ║
 ╠══════════════════════════════════════════════════════╣
 ║  ┌─ 🖥️  FRONTEND — UX / Consentimiento ─────────┐   ║
 ║  │ ⚠️  Sin consentimiento granular    +15 pts    │   ║
@@ -215,8 +215,8 @@ POST /api/v1/audit/code  →  { findings, severity, pillar, legal_refs }
 
 ```yaml
 # Integración CI/CD (visión)
-- name: LegalSkillsLATAM Audit
-  uses: legalskills-latam/audit-action@v1
+- name: Privacy Compliance Skills Audit
+  uses: privacy-compliance-skills/audit-action@v1
   with:
     config: legalskills.config.json
     fail_on_score: 71

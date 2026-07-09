@@ -115,7 +115,7 @@ FE_transparency_score = min(40, suma_penalizadores_activos × F_rigor)
 
 ```
 ╔══════════════════════════════════════════════════════╗
-║  🖥️  Auditoría de Transparencia — LegalSkillsLATAM   ║
+║  🖥️  Auditoría de Transparencia — Privacy Compliance Skills   ║
 ╠══════════════════════════════════════════════════════╣
 ║  [descripción del sistema / política auditada]       ║
 ║  Países: [lista]   |   Ley más exigente: [ley]       ║
@@ -176,4 +176,4 @@ FE_transparency_score = min(40, suma_penalizadores_activos × F_rigor)
 ---
 
 *Skill del Pilar Frontend | Ver también: [/frontend-privacy/consentimiento](../consentimiento/SKILL.md) | [/audit](../../audit/SKILL.md)*  
-*LegalSkillsLATAM — [DISCLAIMER.md](../../../DISCLAIMER.md)*
+*Privacy Compliance Skills — [DISCLAIMER.md](../../../DISCLAIMER.md)*

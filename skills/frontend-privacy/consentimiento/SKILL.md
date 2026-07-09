@@ -117,7 +117,7 @@ FE_consent_score = min(50, suma_penalizadores_activos × F_rigor)
 
 ```
 ╔══════════════════════════════════════════════════════╗
-║  🖥️  Auditoría de Consentimiento — LegalSkillsLATAM  ║
+║  🖥️  Auditoría de Consentimiento — Privacy Compliance Skills  ║
 ╠══════════════════════════════════════════════════════╣
 ║  [descripción del flujo auditado]                    ║
 ║  Países: [lista]   |   Ley más exigente: [ley]       ║
@@ -178,4 +178,4 @@ FE_consent_score = min(50, suma_penalizadores_activos × F_rigor)
 ---
 
 *Skill del Pilar Frontend | Ver también: [/frontend-privacy/transparencia](../transparencia/SKILL.md) | [/audit](../../audit/SKILL.md)*  
-*LegalSkillsLATAM — [DISCLAIMER.md](../../../DISCLAIMER.md)*
+*Privacy Compliance Skills — [DISCLAIMER.md](../../../DISCLAIMER.md)*

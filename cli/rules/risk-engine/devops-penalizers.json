@@ -1,5 +1,5 @@
 {
-  "$schema": "https://legalskills-latam.dev/schemas/score-formula.v1.json",
+  "$schema": "https://privacy-compliance-skills.dev/schemas/score-formula.v1.json",
   "version": "1.0.0",
   "last_reviewed": "2026-07-08",
   "review_status": "pending_legal_validation",
@@ -99,10 +99,10 @@
       "pillar": "devops",
       "topic": "devops",
       "legal_refs": [],
-      "standards_refs": ["Compliance-as-Code (control interno LegalSkillsLATAM)"],
+      "standards_refs": ["Compliance-as-Code (control interno Privacy Compliance Skills)"],
       "config_key": "has_ci_risk_gate",
-      "fix_hint": "Añadir `npx legalskills-latam audit --config --fail-on 71` (51 si hay datos sensibles) como job del pipeline de CI.",
-      "applies_when": "el CI no ejecuta la CLI de LegalSkillsLATAM como gate"
+      "fix_hint": "Añadir `npx privacy-compliance-skills audit --config --fail-on 71` (51 si hay datos sensibles) como job del pipeline de CI.",
+      "applies_when": "el CI no ejecuta la CLI de Privacy Compliance Skills como gate"
     }
   ],
 

@@ -1,5 +1,5 @@
 # Integration Points — Sincronización entre Pilares
-**LegalSkillsLATAM — Documento Arquitectónico**
+**Privacy Compliance Skills — Documento Arquitectónico**
 
 > Elaborado: 2026-06-04  
 > Versión: 1.0  
@@ -177,5 +177,5 @@ Cuando haya duda sobre si un cambio requiere sincronización, consultar la tabla
 
 ---
 
-*LegalSkillsLATAM — [DISCLAIMER.md](../DISCLAIMER.md)*  
+*Privacy Compliance Skills — [DISCLAIMER.md](../DISCLAIMER.md)*  
 *Elaborado: 2026-06-04 | Estado: Activo*

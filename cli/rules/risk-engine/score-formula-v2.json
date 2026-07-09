@@ -1,11 +1,11 @@
 {
-  "$schema": "https://legalskills-latam.dev/schemas/score-formula.v1.json",
+  "$schema": "https://privacy-compliance-skills.dev/schemas/score-formula.v1.json",
   "version": "2.0.0",
   "last_reviewed": "2026-06-04",
   "review_status": "pending_legal_validation",
   "reviewed_by": null,
   "editorial_note": "Fórmula dual de scoring v2 con separación de pilares Frontend y Backend. Compatible con score-formula.json v1 (backward compat). Generado 2026-06-04.",
-  "description": "Motor de cálculo del Legal Risk Score v2 para LegalSkillsLATAM — separado por pilares Frontend y Backend con combinación ponderada.",
+  "description": "Motor de cálculo del Legal Risk Score v2 para Privacy Compliance Skills — separado por pilares Frontend y Backend con combinación ponderada.",
   "disclaimer": "Este motor es una herramienta de orientación. No constituye asesoría jurídica.",
 
   "backward_compatibility": {

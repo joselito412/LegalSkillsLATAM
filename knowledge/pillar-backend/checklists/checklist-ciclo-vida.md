@@ -1,7 +1,7 @@
 # Checklist Backend — Ciclo de Vida de Datos: Retención, Purga y Backups
 **Pilar: Backend (Seguridad Técnica / Arquitectura)**
 
-> **LegalSkillsLATAM** — Guía operativa. No constituye asesoría jurídica.  
+> **Privacy Compliance Skills** — Guía operativa. No constituye asesoría jurídica.  
 > Versión: 1.0.0 | Elaborado: 2026-06-04  
 > Propietario: CTO + Security Lead | Validación: Abogado de data governance  
 > Cadencia de revisión: Trimestral
@@ -101,4 +101,4 @@ Plazos de referencia (verificar con abogado según el sector y jurisdicción esp
 ---
 
 *Pilar: Backend | Owner: CTO + Security Lead | Validación: Abogado de data governance*  
-*LegalSkillsLATAM — [DISCLAIMER.md](../../../DISCLAIMER.md)*
+*Privacy Compliance Skills — [DISCLAIMER.md](../../../DISCLAIMER.md)*

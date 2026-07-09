@@ -1,7 +1,7 @@
 # Arquitectura: Clasificación de Datos
 **Pilar: Backend (Seguridad Técnica / Arquitectura)**
 
-> **LegalSkillsLATAM** — Guía de arquitectura. No constituye asesoría jurídica.  
+> **Privacy Compliance Skills** — Guía de arquitectura. No constituye asesoría jurídica.  
 > Versión: 1.0.0 | Elaborado: 2026-06-04  
 > Propietario: CTO + Security Lead
 
@@ -22,7 +22,7 @@ Datos que no identifican a una persona o que son de acceso público por ley.
 | Estadísticas agregadas y anónimas | Ninguna especial | No |
 | Precios, catálogos públicos | Ninguna especial | No |
 
-**Score de riesgo:** 10 puntos base (LegalSkillsLATAM)
+**Score de riesgo:** 10 puntos base (Privacy Compliance Skills)
 
 ### Nivel 2: Personal General
 
@@ -38,7 +38,7 @@ Cualquier información que identifique directa o indirectamente a una persona na
 | Historial de navegación en la app | Cifrado en tránsito + acceso restringido | Consentimiento o interés legítimo |
 | Geolocalización | Cifrado en tránsito + acceso restringido | Consentimiento explícito |
 
-**Score de riesgo:** 40 puntos base (LegalSkillsLATAM)
+**Score de riesgo:** 40 puntos base (Privacy Compliance Skills)
 
 ### Nivel 3: Sensible
 
@@ -55,7 +55,7 @@ Datos que por su naturaleza pueden generar discriminación, daño grave o riesgo
 | **Penal/Judicial** | Antecedentes penales, procesos judiciales | Solo si hay base legal específica + acceso restringido |
 | **Financiero** | Cuentas bancarias, ingresos, deudas (fuera de pagos) | Cifrado + acceso restringido |
 
-**Score de riesgo:** 80 puntos base (LegalSkillsLATAM)
+**Score de riesgo:** 80 puntos base (Privacy Compliance Skills)
 
 ### Nivel 4: Menores
 
@@ -133,4 +133,4 @@ tables:
 
 *Pilar: Backend | Owner: CTO + Security Lead | Validación: Abogado de data governance*  
 *Ver skill: [/clasificar-datos](../../../skills/clasificar-datos/SKILL.md)*  
-*LegalSkillsLATAM — [DISCLAIMER.md](../../../DISCLAIMER.md)*
+*Privacy Compliance Skills — [DISCLAIMER.md](../../../DISCLAIMER.md)*

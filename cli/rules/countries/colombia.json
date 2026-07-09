@@ -1,5 +1,5 @@
 {
-  "$schema": "https://legalskills-latam.dev/schemas/country-rules.v1.json",
+  "$schema": "https://privacy-compliance-skills.dev/schemas/country-rules.v1.json",
   "country": "Colombia",
   "iso_code": "CO",
   "flag": "🇨🇴",
@@ -7,7 +7,7 @@
   "last_reviewed": "2026-01-01",
   "review_status": "pending_legal_validation",
   "reviewed_by": null,
-  "editorial_note": "Generado por equipo editorial LegalSkillsLATAM. Pendiente de validación por abogado experto en derecho colombiano. No constituye asesoría jurídica.",
+  "editorial_note": "Generado por equipo editorial Privacy Compliance Skills. Pendiente de validación por abogado experto en derecho colombiano. No constituye asesoría jurídica.",
 
   "primary_law": {
     "name": "Ley Estatutaria 1581 de 2012",

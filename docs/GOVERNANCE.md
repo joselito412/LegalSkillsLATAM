@@ -1,4 +1,4 @@
-# Gobernanza y Control Editorial — LegalSkillsLATAM
+# Gobernanza y Control Editorial — Privacy Compliance Skills
 
 ---
 
@@ -75,6 +75,6 @@ El proyecto usa **Semantic Versioning** adaptado al contexto legal:
 
 Todo output generado por las skills, la CLI o la API **debe incluir** la siguiente línea:
 
-> *Este resultado es una estimación orientativa generada por LegalSkillsLATAM. No constituye asesoría jurídica. Ver [DISCLAIMER.md](../DISCLAIMER.md).*
+> *Este resultado es una estimación orientativa generada por Privacy Compliance Skills. No constituye asesoría jurídica. Ver [DISCLAIMER.md](../DISCLAIMER.md).*
 
 Ninguna versión del proyecto puede ser publicada sin este descargo en todos los puntos de contacto con el usuario.

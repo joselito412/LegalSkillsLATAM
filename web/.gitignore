@@ -11,3 +11,6 @@ npm-debug.log*
 .env.production
 # macOS
 .DS_Store
+
+# archivo de prueba del entorno sandbox (no se pudo borrar por el mount)
+.__wtest

@@ -1,7 +1,7 @@
 # Pilar Frontend — Índice de Navegación
 **UX / UI / Consentimiento / Transparencia**
 
-> **LegalSkillsLATAM** | Versión: 1.0.0 | Elaborado: 2026-06-04  
+> **Privacy Compliance Skills** | Versión: 1.0.0 | Elaborado: 2026-06-04  
 > Owner: PM de Producto + UX Designer | Validación: Abogado de privacidad
 
 ---
@@ -93,4 +93,4 @@ Ver [INTEGRATION-POINTS.md](../../architecture/INTEGRATION-POINTS.md) para todos
 
 ---
 
-*LegalSkillsLATAM — [DISCLAIMER.md](../../DISCLAIMER.md)*
+*Privacy Compliance Skills — [DISCLAIMER.md](../../DISCLAIMER.md)*

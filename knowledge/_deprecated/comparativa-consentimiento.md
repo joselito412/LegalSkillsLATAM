@@ -1,6 +1,6 @@
 # Matriz Comparativa: Consentimiento
 
-> Fuente: Equipo Editorial LegalSkillsLATAM | Última revisión: 2026-01  
+> Fuente: Equipo Editorial Privacy Compliance Skills | Última revisión: 2026-01  
 > ⚠️ Guía informativa. No constituye asesoría jurídica.
 
 ## Tabla Comparativa

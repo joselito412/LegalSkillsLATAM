@@ -202,7 +202,7 @@ Privacy Compliance Skills se evalúa con [**SkillSpector v2.1.1**](https://githu
 ```bash
 # Desde Claude Desktop > Settings > Plugins
 # Apunta al directorio raíz de este repositorio clonado
-git clone https://github.com/joselito412/LegalSkillsLATAM.git
+git clone https://github.com/joselito412/Privacy_Compliance_Skills-UE-USA-LATAM.git
 ```
 
 Una vez instalado, las skills se activan desde cualquier conversación de Claude:

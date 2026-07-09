@@ -1,5 +1,5 @@
 {
-  "$schema": "https://legalskills-latam.dev/schemas/score-formula.v1.json",
+  "$schema": "https://privacy-compliance-skills.dev/schemas/score-formula.v1.json",
   "version": "1.0.0",
   "last_reviewed": "2026-06-04",
   "review_status": "pending_legal_validation",

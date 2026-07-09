@@ -1,6 +1,6 @@
 # Matriz Comparativa: Derechos del Titular de Datos
 
-> **LegalSkillsLATAM** — Matriz de referencia normativa. No constituye asesoría jurídica.
+> **Privacy Compliance Skills** — Matriz de referencia normativa. No constituye asesoría jurídica.
 > Versión: 1.0.0 | Última actualización: 2026-06-02
 
 Esta matriz compara los derechos que los titulares de datos personales tienen en cada jurisdicción, los plazos de respuesta obligatorios y las particularidades más relevantes para el diseño de sistemas.
@@ -208,4 +208,4 @@ function calculateDeadline(country, requestType, receivedAt) {
 
 ---
 
-*LegalSkillsLATAM — Cerrando la brecha entre el código y el cumplimiento legal en LATAM.*
+*Privacy Compliance Skills — Cerrando la brecha entre el código y el cumplimiento legal en LATAM.*

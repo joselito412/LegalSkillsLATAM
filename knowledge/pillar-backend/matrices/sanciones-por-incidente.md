@@ -1,7 +1,7 @@
 # Matriz: Sanciones por Tipo de Incidente
 **Pilar: Backend (Seguridad Técnica / Arquitectura)**
 
-> **LegalSkillsLATAM** — Guía de referencia. No constituye asesoría jurídica.  
+> **Privacy Compliance Skills** — Guía de referencia. No constituye asesoría jurídica.  
 > Versión: 1.0.0 | Elaborado: 2026-06-04  
 > Los montos son aproximados y varían según tipo de cambio y año. Verificar con abogado.
 
@@ -91,4 +91,4 @@ Más allá de las multas, una brecha de datos genera:
 ---
 
 *Pilar: Backend | Owner: CTO + Security Lead | Validación: Abogado de data governance*  
-*LegalSkillsLATAM — [DISCLAIMER.md](../../../DISCLAIMER.md)*
+*Privacy Compliance Skills — [DISCLAIMER.md](../../../DISCLAIMER.md)*

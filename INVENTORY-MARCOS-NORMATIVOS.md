@@ -1,4 +1,4 @@
-# Inventario de Marcos Normativos — LegalSkillsLATAM
+# Inventario de Marcos Normativos — Privacy Compliance Skills
 ## Alcance Actual y Estado de Validación
 
 **Fecha:** 2026-06-18  
@@ -345,4 +345,4 @@ Para cada jurisdicción, estatus de cobertura:
 **Fecha:** 2026-06-18  
 **Estado:** 📋 Borrador — Pendiente aprobación
 
-*LegalSkillsLATAM — Inventario de Marcos Normativos*
+*Privacy Compliance Skills — Inventario de Marcos Normativos*
