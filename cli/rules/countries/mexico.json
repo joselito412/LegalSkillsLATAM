@@ -2,7 +2,7 @@
   "$schema": "../schema/country-rules.schema.json",
   "version": "1.1.0",
   "last_reviewed": "2026-07-08",
-  "review_status": "verified_editorial",
+  "review_status": "pending_legal_validation",
   "reviewed_by": null,
   "editorial_note": "Actualizado 2026-07-08: nueva LFPDPPP (DOF 20-03-2025) que abroga la ley de 2010; autoridad ahora es la Secretaría Anticorrupción y Buen Gobierno (INAI extinto); sanciones en UMA. IMPORTANTE: las secciones de consentimiento, aviso de privacidad, derechos ARCO y transferencias fueron redactadas bajo la ley de 2010 — sus reglas generales se mantienen en la nueva ley, pero la numeración de artículos y detalles deben re-validarse contra el texto de 2025 en la revisión de pares. No constituye asesoría jurídica.",
   "country": {
