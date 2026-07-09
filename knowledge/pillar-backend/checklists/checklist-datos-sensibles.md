@@ -1,7 +1,7 @@
 # Checklist Backend — Protección Técnica de Datos Sensibles
 **Pilar: Backend (Seguridad Técnica / Arquitectura)**
 
-> **LegalSkillsLATAM** — Guía operativa. No constituye asesoría jurídica.  
+> **Privacy Compliance Skills** — Guía operativa. No constituye asesoría jurídica.  
 > Versión: 1.0.0 | Elaborado: 2026-06-04  
 > Propietario: CTO + Security Lead | Validación: Abogado de data governance
 
@@ -141,4 +141,4 @@ HEALTH_KEY = b'my-secret-key-123'  # NUNCA en el código
 
 *Pilar: Backend | Owner: CTO + Security Lead | Validación: Abogado de data governance*  
 *Ver contraparte frontend: [checklist-ux-flujos.md](../../pillar-frontend/checklists/checklist-ux-flujos.md)*  
-*LegalSkillsLATAM — [DISCLAIMER.md](../../../DISCLAIMER.md)*
+*Privacy Compliance Skills — [DISCLAIMER.md](../../../DISCLAIMER.md)*

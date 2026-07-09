@@ -1,7 +1,7 @@
 # Pilar Backend — Índice de Navegación
 **Seguridad Técnica / Arquitectura de Datos**
 
-> **LegalSkillsLATAM** | Versión: 1.0.0 | Elaborado: 2026-06-04  
+> **Privacy Compliance Skills** | Versión: 1.0.0 | Elaborado: 2026-06-04  
 > Owner: CTO + Security Lead | Validación: Abogado de data governance
 
 ---
@@ -105,4 +105,4 @@ Ver [INTEGRATION-POINTS.md](../../architecture/INTEGRATION-POINTS.md) para todos
 
 ---
 
-*LegalSkillsLATAM — [DISCLAIMER.md](../../DISCLAIMER.md)*
+*Privacy Compliance Skills — [DISCLAIMER.md](../../DISCLAIMER.md)*

@@ -1,5 +1,5 @@
 # Matriz SDLC — Acciones de Cumplimiento por Capa
-**LegalSkillsLATAM — De la ley a la acción concreta en el ciclo de vida del desarrollo**
+**Privacy Compliance Skills — De la ley a la acción concreta en el ciclo de vida del desarrollo**
 
 > Elaborado: 2026-07-08
 > Versión: 1.0
@@ -49,7 +49,7 @@ Esta matriz traduce las obligaciones legales de LATAM (con contraste GDPR/EE.UU.
 | DO-3 | Secrets manager para credenciales y llaves (Vault, AWS SM, etc.) — nada en el repo ni en `.env` versionado | ✅ | ✅ + rotación programada | Deber de seguridad (Art. 32 GDPR y equivalentes LATAM) | OWASP ASVS V6 · ISO 27001 A.8.24 |
 | DO-4 | Separación de entornos y de credenciales: prod aislada, sin cuentas compartidas entre entornos | ✅ | ✅ | Deber de seguridad | ISO 27001 A.8.31 · SOC 2 CC6.3 |
 | DO-5 | SAST + escaneo de dependencias (SCA) en el pipeline de CI | ✅ | ✅ + escaneo de secretos (gitleaks o equivalente) | Deber de seguridad proactivo | OWASP ASVS V10 · NIST SSDF |
-| DO-6 | Gate de riesgo legal en CI: `npx legalskills-latam audit --config --fail-on 71` (51 para datos sensibles) | Recomendado | ✅ | — (control interno) | Compliance-as-Code |
+| DO-6 | Gate de riesgo legal en CI: `npx privacy-compliance-skills audit --config --fail-on 71` (51 para datos sensibles) | Recomendado | ✅ | — (control interno) | Compliance-as-Code |
 | DO-7 | Logs de aplicación sin PII en claro (enmascarar email, tokens, documentos de identidad) | ✅ | ✅ | Minimización aplicada a telemetría: EU Art. 5(1)(c), GDPR | OWASP ASVS V7.1 |
 | DO-8 | Backups cifrados con restauración probada (≥ 1 prueba/semestre documentada) | ✅ | ✅ | Disponibilidad e integridad: Art. 32(1)(c), GDPR y equivalentes | ISO 27001 A.8.13 · SOC 2 A1.2 |
 | DO-9 | Runbook de respuesta a brechas con plazos por jurisdicción: BR 3 días hábiles (Res. ANPD 15/2024) · GDPR 72h · PE 48h (D.S. 016-2024-JUS) · MX "a la brevedad" (SABG) · CO "tan pronto como sea posible" (SIC) | ✅ | ✅ + simulacro anual | Ver refs por país en la celda | ISO 27001 A.5.24-A.5.28 · NIST SP 800-61 |
@@ -75,4 +75,4 @@ Las acciones DO-1 a DO-9 alimentan los penalizadores de `cli/rules/risk-engine/d
 
 ---
 
-*LegalSkillsLATAM — Este documento es una guía informativa y no constituye asesoría jurídica. Ver [DISCLAIMER.md](../../DISCLAIMER.md).*
+*Privacy Compliance Skills — Este documento es una guía informativa y no constituye asesoría jurídica. Ver [DISCLAIMER.md](../../DISCLAIMER.md).*

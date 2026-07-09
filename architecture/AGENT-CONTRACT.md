@@ -1,5 +1,5 @@
 # AGENT-CONTRACT — Contrato de datos CLI ↔ LLM
-**LegalSkillsLATAM — Especificación v1.0 (schema_version: "1.0")**
+**Privacy Compliance Skills — Especificación v1.0 (schema_version: "1.0")**
 
 > Elaborado: 2026-07-08
 > Estado: 📐 Especificación aprobada editorialmente — pendiente de implementación en la CLI (sesión de código, Fase 2.1-2.2 del `PLAN-CUMPLIMIENTO-SDLC-Y-CLI-2026-07.md`)
@@ -19,7 +19,7 @@
                código y re-invoca
 ```
 
-1. LLM ejecuta `npx legalskills-latam audit --config --json`
+1. LLM ejecuta `npx privacy-compliance-skills audit --config --json`
 2. CLI responde con el contrato (abajo)
 3. LLM agrupa findings por `topic`, corrige el de mayor impacto (usando `fix_hint`), actualiza `legalskills.config.json`
 4. LLM re-ejecuta con `--baseline` y compara el delta
@@ -119,4 +119,4 @@ Fuente de los penalizadores: `cli/rules/risk-engine/devops-penalizers.json` (not
 
 ---
 
-*LegalSkillsLATAM — [DISCLAIMER.md](../DISCLAIMER.md)*
+*Privacy Compliance Skills — [DISCLAIMER.md](../DISCLAIMER.md)*

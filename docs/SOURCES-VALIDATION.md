@@ -135,5 +135,5 @@ Estos items no son necesariamente incorrectos, pero requieren confirmación por 
 
 ---
 
-*Este documento es un instrumento de trabajo interno del equipo editorial de LegalSkillsLATAM.*
+*Este documento es un instrumento de trabajo interno del equipo editorial de Privacy Compliance Skills.*
 *No es de distribución pública hasta completar la revisión legal.*

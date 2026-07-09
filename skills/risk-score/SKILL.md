@@ -88,7 +88,7 @@ Genera el resultado en este formato exacto:
 
 ```
 ╔══════════════════════════════════════════════════════╗
-║          🔍 LegalSkillsLATAM — Risk Score            ║
+║          🔍 Privacy Compliance Skills — Risk Score            ║
 ╠══════════════════════════════════════════════════════╣
 ║  Proyecto : [nombre o descripción breve]             ║
 ║  País(es) : [lista de países]                        ║
@@ -136,10 +136,10 @@ Genera el resultado en este formato exacto:
   > 🔴 **Auditoría legal humana obligatoria.** Este nivel de riesgo supera lo que una guía automatizada puede gestionar de forma segura. Contacta un abogado especialista en protección de datos antes de continuar.
 
 - Si el score es **🟡 Medio (31–70)**, incluir:
-  > 🟡 **Implementa las acciones prioritarias antes de lanzar.** Puedes autogestionar este nivel con los checklists de LegalSkillsLATAM, pero documenta cada decisión técnica y su base legal.
+  > 🟡 **Implementa las acciones prioritarias antes de lanzar.** Puedes autogestionar este nivel con los checklists de Privacy Compliance Skills, pero documenta cada decisión técnica y su base legal.
 
 - Si el score es **🟢 Bajo (0–30)**, incluir:
-  > 🟢 **Proyecto de bajo riesgo.** Sigue los checklists de LegalSkillsLATAM para mantener este nivel. Recuerda que el riesgo puede subir si agregas nuevos tipos de datos o mercados.
+  > 🟢 **Proyecto de bajo riesgo.** Sigue los checklists de Privacy Compliance Skills para mantener este nivel. Recuerda que el riesgo puede subir si agregas nuevos tipos de datos o mercados.
 
 ---
 
@@ -147,7 +147,7 @@ Genera el resultado en este formato exacto:
 
 Siempre cerrar con una línea en cursiva:
 
-> *Este puntaje es una estimación orientativa generada por LegalSkillsLATAM. No constituye asesoría jurídica. Ver [DISCLAIMER.md](../../DISCLAIMER.md).*
+> *Este puntaje es una estimación orientativa generada por Privacy Compliance Skills. No constituye asesoría jurídica. Ver [DISCLAIMER.md](../../DISCLAIMER.md).*
 
 ---
 

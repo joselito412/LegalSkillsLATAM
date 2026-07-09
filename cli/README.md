@@ -1,13 +1,13 @@
-# legalskills-latam CLI
+# privacy-compliance-skills CLI
 
 Herramienta de línea de comandos para calcular el **Legal Risk Score** de proyectos de software que operan en LATAM.
 
 ## Instalación
 
 ```bash
-npm install -D legalskills-latam
+npm install -D privacy-compliance-skills
 # o ejecutar sin instalar:
-npx legalskills-latam audit
+npx privacy-compliance-skills audit
 ```
 
 **Requiere Node.js 18+.**
@@ -17,7 +17,7 @@ npx legalskills-latam audit
 ### Wizard interactivo
 
 ```bash
-npx legalskills-latam audit
+npx privacy-compliance-skills audit
 ```
 
 Responde 5–8 preguntas y obtén tu score con desglose de penalizadores.
@@ -25,7 +25,7 @@ Responde 5–8 preguntas y obtén tu score con desglose de penalizadores.
 ### Desde archivo de configuración
 
 ```bash
-npx legalskills-latam audit --config
+npx privacy-compliance-skills audit --config
 ```
 
 Lee `legalskills.config.json` en el directorio actual. Ejemplo:
@@ -47,13 +47,13 @@ Lee `legalskills.config.json` en el directorio actual. Ejemplo:
 ### Salida JSON (para CI/CD)
 
 ```bash
-npx legalskills-latam audit --json
+npx privacy-compliance-skills audit --json
 ```
 
 ### Fallar el pipeline si el score supera un umbral
 
 ```bash
-npx legalskills-latam audit --fail-on 71
+npx privacy-compliance-skills audit --fail-on 71
 ```
 
 Sale con código 1 si `finalScore >= 71`. Útil como gate en GitHub Actions.
@@ -86,10 +86,10 @@ cli/
 
 ## Modo agente (LLMs)
 
-La CLI es la **fuente de verdad del score** para agentes de IA. La skill `/audit` de LegalSkillsLATAM la invoca en un loop Evaluar → Corregir → Re-evaluar (estilo react-doctor):
+La CLI es la **fuente de verdad del score** para agentes de IA. La skill `/audit` de Privacy Compliance Skills la invoca en un loop Evaluar → Corregir → Re-evaluar (estilo react-doctor):
 
 ```bash
-npx legalskills-latam audit --config --json   # emite el contrato JSON para el agente
+npx privacy-compliance-skills audit --config --json   # emite el contrato JSON para el agente
 ```
 
 - Contrato de datos (findings con `fix_hint`, `legal_refs`, `config_key`): ver [`architecture/AGENT-CONTRACT.md`](../architecture/AGENT-CONTRACT.md)
@@ -101,7 +101,7 @@ npx legalskills-latam audit --config --json   # emite el contrato JSON para el a
 ## Alias corto
 
 ```bash
-lls audit        # equivalente a legalskills-latam audit
+lls audit        # equivalente a privacy-compliance-skills audit
 ```
 
 ## Disclaimer

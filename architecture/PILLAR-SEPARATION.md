@@ -1,5 +1,5 @@
 # Separación de Pilares: Frontend vs Backend
-**LegalSkillsLATAM — Documento Arquitectónico**
+**Privacy Compliance Skills — Documento Arquitectónico**
 
 > Elaborado: 2026-06-04  
 > Versión: 1.0  
@@ -219,5 +219,5 @@ Usa [_SKILLS-INDEX.md](../skills/_SKILLS-INDEX.md) para encontrar la skill corre
 
 ---
 
-*LegalSkillsLATAM — [DISCLAIMER.md](../DISCLAIMER.md)*  
+*Privacy Compliance Skills — [DISCLAIMER.md](../DISCLAIMER.md)*  
 *Elaborado: 2026-06-04 | Estado: Activo*

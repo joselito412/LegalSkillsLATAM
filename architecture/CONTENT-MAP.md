@@ -1,5 +1,5 @@
 # Content Map — Inventario y Destino de Archivos
-**LegalSkillsLATAM — Documento Arquitectónico**
+**Privacy Compliance Skills — Documento Arquitectónico**
 
 > Elaborado: 2026-06-04  
 > Versión: 1.0  
@@ -164,5 +164,5 @@ Los archivos en `_deprecated/` siguen siendo accesibles pero dejan de ser la ref
 
 ---
 
-*LegalSkillsLATAM — [DISCLAIMER.md](../DISCLAIMER.md)*  
+*Privacy Compliance Skills — [DISCLAIMER.md](../DISCLAIMER.md)*  
 *Elaborado: 2026-06-04 | Estado: Activo*

@@ -1,5 +1,5 @@
 # PLAN — Cumplimiento Normativo en el SDLC + Optimización CLI/LLM
-**LegalSkillsLATAM — Plan de trabajo v0.4**
+**Privacy Compliance Skills — Plan de trabajo v0.4**
 
 > Elaborado: 2026-07-08
 > Estado: 📋 Propuesto — pendiente de aprobación
@@ -125,7 +125,7 @@ Modo loop de la CLI, no interactivo:
 El `SKILL.md` pasa de "fórmula + formato" a un protocolo de loop explícito para el LLM:
 
 ```
-S0 DETECTAR   ¿CLI disponible? → sí: `npx legalskills-latam audit --config --json`
+S0 DETECTAR   ¿CLI disponible? → sí: `npx privacy-compliance-skills audit --config --json`
                                 → no: fallback a la fórmula del SKILL (marcando "score estimado, no verificado")
 S1 EVALUAR    Obtener score + findings del contrato JSON
 S2 DIAGNOSTICAR  Agrupar por tema; priorizar por puntos × facilidad de corrección

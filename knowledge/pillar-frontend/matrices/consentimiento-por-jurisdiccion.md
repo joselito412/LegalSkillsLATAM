@@ -1,7 +1,7 @@
 # Matriz: Consentimiento por Jurisdicción
 **Pilar: Frontend (UX / UI / Consentimiento)**
 
-> **LegalSkillsLATAM** — Guía de referencia. No constituye asesoría jurídica.  
+> **Privacy Compliance Skills** — Guía de referencia. No constituye asesoría jurídica.  
 > Versión: 1.0.0 | Elaborado: 2026-06-04  
 > Pendiente validación por abogado especialista por jurisdicción
 
@@ -73,4 +73,4 @@ Al implementar una nueva política de privacidad que requiere consentimiento don
 
 *Pilar: Frontend | Owner: PM + UX | Validación: Abogado de privacidad*  
 *Ver patrón: [consent-form.md](../patterns/consent-form.md)*  
-*LegalSkillsLATAM — [DISCLAIMER.md](../../../DISCLAIMER.md)*
+*Privacy Compliance Skills — [DISCLAIMER.md](../../../DISCLAIMER.md)*

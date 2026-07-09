@@ -1,4 +1,4 @@
-# Security Standards — LegalSkillsLATAM
+# Security Standards — Privacy Compliance Skills
 
 > Análisis de seguridad real basado en **[SkillSpector](https://github.com/NVIDIA/skillspector) v2.1.1** (NVIDIA) — el scanner de referencia para skills de agentes de IA. Cualquiera puede reproducir estos resultados con los comandos al final del documento.
 
@@ -100,7 +100,7 @@ uv pip install -e .
 # 2) Escanear cada skill (modo estático, sin API key)
 for skill in audit clasificar-datos derechos-usuario matriz-normativa privacy-check risk-score; do
   skillspector scan \
-    /ruta/a/LegalSkillsLATAM/skills/$skill \
+    /ruta/a/privacy-compliance-skills/skills/$skill \
     --no-llm --format json \
     --output /tmp/$skill-report.json
 done
@@ -111,7 +111,7 @@ done
 ```bash
 export SKILLSPECTOR_PROVIDER=anthropic
 export ANTHROPIC_API_KEY=sk-ant-...
-skillspector scan /ruta/a/LegalSkillsLATAM/skills/audit --format markdown
+skillspector scan /ruta/a/privacy-compliance-skills/skills/audit --format markdown
 ```
 
 ---
@@ -120,10 +120,10 @@ skillspector scan /ruta/a/LegalSkillsLATAM/skills/audit --format markdown
 
 Si encuentras un problema de seguridad, repórtalo de forma responsable:
 
-- **Email:** security@legalskills-latam.dev *(pendiente de configurar)*
+- **Email:** security@privacy-compliance-skills.dev *(pendiente de configurar)*
 - **GitHub:** Issue privado con label `[security]`
 - **No publiques** vulnerabilidades activas en Issues públicos hasta que el equipo las evalúe.
 
 ---
 
-*Última revisión: 2026-06-08 · Herramienta de referencia: SkillSpector v2.1.1 (NVIDIA) · Equipo Editorial LegalSkillsLATAM*
+*Última revisión: 2026-06-08 · Herramienta de referencia: SkillSpector v2.1.1 (NVIDIA) · Equipo Editorial Privacy Compliance Skills*

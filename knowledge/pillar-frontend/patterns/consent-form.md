@@ -1,7 +1,7 @@
 # Patrón: Consent Form (Formulario de Consentimiento Granular)
 **Pilar: Frontend (UX / UI / Consentimiento)**
 
-> **LegalSkillsLATAM** — Guía de diseño. No constituye asesoría jurídica.  
+> **Privacy Compliance Skills** — Guía de diseño. No constituye asesoría jurídica.  
 > Versión: 1.0.0 | Elaborado: 2026-06-04
 
 ---
@@ -167,4 +167,4 @@ Ver [checklist-seguridad-datos.md](../checklists/checklist-seguridad-datos.md) �
 ---
 
 *Pilar: Frontend | Owner: PM + UX | Validación: Abogado de privacidad*  
-*LegalSkillsLATAM — [DISCLAIMER.md](../../../DISCLAIMER.md)*
+*Privacy Compliance Skills — [DISCLAIMER.md](../../../DISCLAIMER.md)*

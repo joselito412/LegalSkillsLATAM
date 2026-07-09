@@ -1,5 +1,5 @@
 # Skills Routing — Árbol de Decisión
-**LegalSkillsLATAM v0.3**
+**Privacy Compliance Skills v0.3**
 
 > Elaborado: 2026-06-04  
 > Versión: 1.0
@@ -109,5 +109,5 @@ Usa este árbol para llegar a la skill correcta en 3 pasos o menos.
 
 ---
 
-*LegalSkillsLATAM — [DISCLAIMER.md](../DISCLAIMER.md)*  
+*Privacy Compliance Skills — [DISCLAIMER.md](../DISCLAIMER.md)*  
 *Ver índice completo: [_SKILLS-INDEX.md](./_SKILLS-INDEX.md)*

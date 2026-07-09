@@ -1,5 +1,5 @@
 # PLAN: Separación de Pilares Frontend vs Backend
-**LegalSkillsLATAM — Archivo histórico**
+**Privacy Compliance Skills — Archivo histórico**
 
 > Estado: **EJECUTADO** ✅  
 > Fecha de ejecución: 2026-06-04  
@@ -7,7 +7,7 @@
 
 ---
 
-Este documento fue el plan de trabajo que guió la reorganización arquitectónica de LegalSkillsLATAM en dos pilares explícitos (Frontend y Backend). **El plan está completamente ejecutado.**
+Este documento fue el plan de trabajo que guió la reorganización arquitectónica de Privacy Compliance Skills en dos pilares explícitos (Frontend y Backend). **El plan está completamente ejecutado.**
 
 Para información actualizada, usa los documentos operativos:
 

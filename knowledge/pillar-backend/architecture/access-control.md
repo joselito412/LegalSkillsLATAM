@@ -1,7 +1,7 @@
 # Arquitectura: Control de Acceso (RBAC)
 **Pilar: Backend (Seguridad Técnica / Arquitectura)**
 
-> **LegalSkillsLATAM** — Guía de arquitectura. No constituye asesoría jurídica.  
+> **Privacy Compliance Skills** — Guía de arquitectura. No constituye asesoría jurídica.  
 > Versión: 1.0.0 | Elaborado: 2026-06-04  
 > Propietario: CTO + Security Lead | Revisión: Trimestral
 
@@ -173,4 +173,4 @@ Para datos de alto riesgo (sensibles, menores), implementar segregación:
 
 *Pilar: Backend | Owner: CTO + Security Lead | Validación: Security audit interno*  
 *Ver: [audit-logging.md](./audit-logging.md) — para logs de acceso*  
-*LegalSkillsLATAM — [DISCLAIMER.md](../../../DISCLAIMER.md)*
+*Privacy Compliance Skills — [DISCLAIMER.md](../../../DISCLAIMER.md)*

@@ -195,4 +195,4 @@ BE_dp_score = min(50, (C_base + suma_penalizadores_activos) × F_rigor)
 ---
 
 *Skill del Pilar Backend | Ver también: [/backend-security/access-control](../access-control/SKILL.md) | [/clasificar-datos](../../clasificar-datos/SKILL.md) | [/audit](../../audit/SKILL.md)*  
-*LegalSkillsLATAM — [DISCLAIMER.md](../../../DISCLAIMER.md)*
+*Privacy Compliance Skills — [DISCLAIMER.md](../../../DISCLAIMER.md)*

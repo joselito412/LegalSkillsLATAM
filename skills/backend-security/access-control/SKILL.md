@@ -180,4 +180,4 @@ BE_access_score = min(40, suma_penalizadores_activos × F_rigor)
 ---
 
 *Skill del Pilar Backend | Ver también: [/backend-security/data-protection](../data-protection/SKILL.md) | [/audit](../../audit/SKILL.md)*  
-*LegalSkillsLATAM — [DISCLAIMER.md](../../../DISCLAIMER.md)*
+*Privacy Compliance Skills — [DISCLAIMER.md](../../../DISCLAIMER.md)*

@@ -93,4 +93,4 @@ Cuenta los ítems sin marcar:
 
 ---
 
-*LegalSkillsLATAM — [DISCLAIMER.md](../DISCLAIMER.md)*
+*Privacy Compliance Skills — [DISCLAIMER.md](../DISCLAIMER.md)*

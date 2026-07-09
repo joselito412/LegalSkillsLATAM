@@ -1,7 +1,7 @@
 # Checklist Backend — Control de Acceso y Audit Logging
 **Pilar: Backend (Seguridad Técnica / Arquitectura)**
 
-> **LegalSkillsLATAM** — Guía operativa. No constituye asesoría jurídica.  
+> **Privacy Compliance Skills** — Guía operativa. No constituye asesoría jurídica.  
 > Versión: 1.0.0 | Elaborado: 2026-06-04  
 > Propietario: CTO + Security Lead | Validación: Abogado de data governance  
 > Cadencia de revisión: Trimestral
@@ -121,4 +121,4 @@ El control de acceso y el logging de auditoría son los dos pilares técnicos de
 ---
 
 *Pilar: Backend | Owner: CTO + Security Lead | Validación: Abogado de data governance*  
-*LegalSkillsLATAM — [DISCLAIMER.md](../../../DISCLAIMER.md)*
+*Privacy Compliance Skills — [DISCLAIMER.md](../../../DISCLAIMER.md)*

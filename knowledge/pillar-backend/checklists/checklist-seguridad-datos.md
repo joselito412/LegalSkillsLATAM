@@ -1,7 +1,7 @@
 # Checklist Backend — Seguridad Técnica Básica
 **Pilar: Backend (Seguridad Técnica / Arquitectura)**
 
-> **LegalSkillsLATAM** — Guía operativa. No constituye asesoría jurídica.  
+> **Privacy Compliance Skills** — Guía operativa. No constituye asesoría jurídica.  
 > Versión: 1.0.0 | Elaborado: 2026-06-04  
 > Propietario: CTO + Security Lead | Validación: Abogado de data governance
 
@@ -79,4 +79,4 @@ Usa este checklist para verificar los controles técnicos y organizativos mínim
 
 *Pilar: Backend | Owner: CTO + Security Lead | Validación: Abogado de data governance*  
 *Ver contraparte frontend: [checklist-consentimiento.md](../../pillar-frontend/checklists/checklist-consentimiento.md)*  
-*LegalSkillsLATAM — [DISCLAIMER.md](../../../DISCLAIMER.md)*
+*Privacy Compliance Skills — [DISCLAIMER.md](../../../DISCLAIMER.md)*

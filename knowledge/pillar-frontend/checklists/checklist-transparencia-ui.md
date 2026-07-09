@@ -1,7 +1,7 @@
 # Checklist Frontend — Transparencia: Política, Cookies y Avisos
 **Pilar: Frontend (UX / UI / Consentimiento)**
 
-> **LegalSkillsLATAM** — Guía operativa. No constituye asesoría jurídica.  
+> **Privacy Compliance Skills** — Guía operativa. No constituye asesoría jurídica.  
 > Versión: 1.0.0 | Elaborado: 2026-06-04  
 > Propietario: PM de Producto + UX Designer | Validación: Abogado de privacidad
 
@@ -102,4 +102,4 @@ Transparencia es el derecho del usuario a entender **qué pasa con sus datos**. 
 
 *Pilar: Frontend | Owner: PM + UX | Validación: Abogado de privacidad*  
 *Ver contraparte backend: [checklist-transferencias.md](../../pillar-backend/checklists/checklist-transferencias.md)*  
-*LegalSkillsLATAM — [DISCLAIMER.md](../../../DISCLAIMER.md)*
+*Privacy Compliance Skills — [DISCLAIMER.md](../../../DISCLAIMER.md)*

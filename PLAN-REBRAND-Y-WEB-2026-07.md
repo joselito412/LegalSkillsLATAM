@@ -43,7 +43,7 @@ Privacy Compliance Skills
 
 - **Wordmark:** `Privacy Compliance Skills` en sans geométrica (Space Grotesk / Inter, peso 600–700).
 - **Descriptor:** `UE · USA · LATAM` en monospace (JetBrains Mono), mayúsculas, tracking amplio — evoca el entorno técnico.
-- **Slug / paquete npm:** `privacy-compliance-skills` (repo puede seguir siendo `github.com/joselito412/LegalSkillsLATAM` con un alias/redirect, o renombrarse — ver §7).
+- **Slug / paquete npm:** `privacy-compliance-skills` (repo puede seguir siendo `github.com/joselito412/Privacy_Compliance_Skills-UE-USA-LATAM` con un alias/redirect, o renombrarse — ver §7).
 - **Codename corto interno (opcional):** `PCS`.
 
 ### 2.2 Concepto de logo
