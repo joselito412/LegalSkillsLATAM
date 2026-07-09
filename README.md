@@ -1,25 +1,36 @@
-# LegalSkillsLATAM
+<p align="center">
+  <img src="assets/logo.svg" alt="Privacy Compliance Skills — UE · USA · LATAM" width="760">
+</p>
 
-**Estándar Abierto de Cumplimiento Legal para Desarrolladores en Latinoamérica**
+<p align="center"><strong>Estándar abierto de cumplimiento de privacidad para desarrolladores — Compliance-as-Code</strong></p>
+
+<p align="center">
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![SkillSpector: LOW · SAFE](https://img.shields.io/badge/SkillSpector-LOW%20%C2%B7%208.3%2F100-brightgreen)](docs/SECURITY.md)
-[![Version](https://img.shields.io/badge/version-0.1.1-blue)](docs/ROADMAP.md)
+[![Version](https://img.shields.io/badge/version-0.4.0--dev-blue)](docs/ROADMAP.md)
+[![Regions](https://img.shields.io/badge/regions-EU%20%C2%B7%20US%20%C2%B7%20LATAM-58A6FF)](#-cobertura-regulatoria)
+
+</p>
 
 <p align="center">
-    <img src="assets/architecture.svg" alt="Arquitectura del repositorio LegalSkillsLATAM" width="48%">
+    <img src="assets/architecture.svg" alt="Arquitectura del repositorio Privacy Compliance Skills" width="48%">
     <img src="assets/risk-score-demo.svg" alt="Demo visual del Legal Risk Score" width="48%">
 </p>
 
-> ⚠️ Este proyecto es una guía metodológica y operativa. No constituye ni suplanta asesoría jurídica profesional. Consulta siempre con un abogado experto ante dudas legales específicas.
+> ⚠️ Este proyecto es una guía metodológica y operativa. **No constituye ni suplanta asesoría jurídica profesional.** Consulta siempre con un abogado experto ante dudas legales específicas.
 
-> 🇬🇧 **English:** Open standard for legal privacy compliance in LATAM — tools for devs, rules for AI, and an open call for legal collaborators (lawyers, academics, legal tech). [Jump to the call →](#-buscamos-colaboradores-legales)
+> 🌐 **Read this in English → [`README.en.md`](README.en.md)**
+
+> 📛 **Antes se llamaba `LegalSkillsLATAM`.** El proyecto se renombró a **Privacy Compliance Skills (UE · USA · LATAM)** al elevar la Unión Europea y Estados Unidos a jurisdicciones de primer nivel. Ver [`PLAN-REBRAND-Y-WEB-2026-07.md`](PLAN-REBRAND-Y-WEB-2026-07.md).
 
 ---
 
 ## ¿Qué es?
 
-LegalSkillsLATAM es un paquete de herramientas de cumplimiento normativo (*Compliance-as-Code*) diseñado para que desarrolladores de software y startups de Latinoamérica construyan tecnologías conformes a las leyes de privacidad y protección de datos, con proyección hacia los mercados más regulados del mundo.
+**Privacy Compliance Skills** es un paquete de herramientas de cumplimiento de privacidad (*Compliance-as-Code*) para que desarrolladores de software y startups construyan tecnología conforme a las leyes de protección de datos de los **tres bloques regulatorios que más importan hoy**: la **Unión Europea** (GDPR), **Estados Unidos** (CCPA/CPRA + leyes estatales) y **Latinoamérica** (Ley 1581, LFPDPPP, LGPD y las demás).
+
+Nació como recurso LATAM-first y hoy es un **estándar tri-regional**: compara las normativas locales entre sí y contra los marcos más exigentes del mundo, para que un producto pueda escalar de LATAM a Europa o EE.UU. sin reescribir su arquitectura de privacidad.
 
 El proyecto opera en **tres formatos simultáneos**:
 
@@ -35,11 +46,15 @@ El proyecto opera en **tres formatos simultáneos**:
 
 > 🔨 **Lo que ya funciona bien**
 >
-> El motor técnico está consolidado: las 6 skills de Claude, la CLI con output visual, el algoritmo de Legal Risk Score (0–100), las reglas JSON por país, los dos pilares Frontend/Backend y la arquitectura del repositorio.
+> El motor técnico está consolidado: las skills de Claude, la CLI con output visual, el algoritmo de Legal Risk Score (0–100), las reglas JSON por jurisdicción, los dos pilares Frontend/Backend y la arquitectura del repositorio. El bloque **LATAM está maduro** y el de la **UE (GDPR) está a nivel de producción**.
+>
+> 🚧 **Lo que está en construcción: el bloque USA**
+>
+> Con el rebrand, **Estados Unidos pasa de "contraste" a primer nivel**: se está construyendo `usa-federal.json` (CCPA/CPRA + sectoriales) y la matriz de ~20 leyes estatales de privacidad vigentes en 2026. Ver [`PLAN-REBRAND-Y-WEB-2026-07.md`](PLAN-REBRAND-Y-WEB-2026-07.md).
 >
 > 📌 **Lo que sigue pendiente: verificación de pares**
 >
-> El contenido legal — reglas, matrices, checklists y penalizadores — fue redactado con criterio técnico-jurídico, pero **aún no ha pasado por revisión formal de pares** (abogados de datos, académicos o profesionales de legal tech). La herramienta funciona; su autoridad normativa todavía se está construyendo.
+> El contenido legal fue redactado con criterio técnico-jurídico, pero **aún no ha pasado por revisión formal de pares** (abogados de datos, académicos o legal tech). La herramienta funciona; su autoridad normativa todavía se está construyendo — y con UE/USA en el título, ese llamado es más urgente que nunca.
 >
 > Si eres abogado/a de protección de datos, académico/a de derecho digital o profesional de legal tech, [este es tu lugar →](#-buscamos-colaboradores-legales)
 
@@ -47,7 +62,7 @@ El proyecto opera en **tres formatos simultáneos**:
 
 ## Dos Pilares: Frontend y Backend
 
-A partir de v0.3, el conocimiento del proyecto está organizado en **dos pilares explícitos**:
+El conocimiento del proyecto está organizado en **dos pilares explícitos**:
 
 | Pilar | Scope | Owner | Riesgo |
 |---|---|---|---|
@@ -62,12 +77,6 @@ A partir de v0.3, el conocimiento del proyecto está organizado en **dos pilares
 
 ---
 
-## Arquitectura
-
-![Arquitectura del repositorio](assets/architecture.svg)
-
----
-
 ## El Legal Risk Score
 
 El corazón del proyecto es un algoritmo que calcula el riesgo legal de cualquier sistema en una escala de 0 a 100:
@@ -76,9 +85,11 @@ El corazón del proyecto es un algoritmo que calcula el riesgo legal de cualquie
 Risk Score = min(100, (C_base + Σ Penalizadores) × F_rigor)
 ```
 
+`F_rigor` se calibra por **bloque regulatorio**: la UE (GDPR) es el techo de exigencia, EE.UU. escala con el número de estados aplicables, y LATAM es la base (con Brasil como techo regional).
+
 | Nivel | Rango | Significado |
 |---|---|---|
-| 🟢 Bajo | 0 – 30 pts | Datos públicos o básicos. Autogestión posible con LegalSkillsLATAM. |
+| 🟢 Bajo | 0 – 30 pts | Datos públicos o básicos. Autogestión posible con Privacy Compliance Skills. |
 | 🟡 Medio | 31 – 70 pts | Datos personales. Medidas técnicas estrictas requeridas. |
 | 🔴 Alto | 71 – 100 pts | Datos sensibles o mercados regulados. **Auditoría legal humana obligatoria.** |
 
@@ -96,12 +107,12 @@ Risk Score = min(100, (C_base + Σ Penalizadores) × F_rigor)
 | 🗂️ Clasificar Datos | `/clasificar-datos` | Clasifica cualquier campo o tabla según su nivel de sensibilidad legal por jurisdicción |
 | 🖥️ Consentimiento (FE) | `/frontend-privacy/consentimiento` | Audita el flujo de consentimiento granular y su registro |
 | 🖥️ Transparencia (FE) | `/frontend-privacy/transparencia` | Verifica política de privacidad, cookies y avisos |
-| 🖥️ User Controls (FE) | `/frontend-privacy/user-controls` | Flujo UX del portal de derechos del usuario (ARCO) |
+| 🖥️ User Controls (FE) | `/frontend-privacy/user-controls` | Flujo UX del portal de derechos del usuario (ARCO / DSAR) |
 | ⚙️ Data Protection (BE) | `/backend-security/data-protection` | Cifrado, hashing, retención y DPA |
 | ⚙️ Access Control (BE) | `/backend-security/access-control` | RBAC y audit logging |
 | ⚙️ Data Lifecycle (BE) | `/backend-security/data-lifecycle` | Política de retención y purga por tipo de dato |
-| 🌎 Matriz Normativa | `/matriz-normativa` | Compara leyes LATAM vs GDPR vs CCPA en cualquier dimensión |
-| 📋 Derechos Usuario | `/derechos-usuario` | Genera el protocolo de respuesta a solicitudes ARCO/ARSOP |
+| 🌎 Matriz Normativa | `/matriz-normativa` | Compara leyes UE vs USA vs LATAM en cualquier dimensión |
+| 📋 Derechos Usuario | `/derechos-usuario` | Genera el protocolo de respuesta a solicitudes ARCO / DSAR |
 | 🔍 Privacy Check | `/privacy-check` | Audita un feature, endpoint o schema *(se deprecará en v0.4 — usa `/audit`)* |
 | ⚖️ Risk Score | `/risk-score` | Solo el score 0–100 *(se deprecará en v0.4 — usa `/audit`)* |
 
@@ -111,51 +122,57 @@ Risk Score = min(100, (C_base + Σ Penalizadores) × F_rigor)
 
 ## Cobertura Regulatoria
 
-| País | Ley Principal | Estado |
+Tres bloques. La columna **Nivel** es honesta sobre la profundidad real de cada jurisdicción hoy.
+
+### 🇪🇺 Unión Europea
+
+| Jurisdicción | Ley Principal | Nivel |
 |---|---|---|
-| 🇨🇴 Colombia | Ley 1581 de 2012 (Hábeas Data) + Decretos 1377/2013 y 1074/2015 | ✅ Incluido |
-| 🇲🇽 México | **Nueva LFPDPPP (DOF 20-03-2025)** — abroga la ley de 2010; autoridad: SABG (ex-INAI); multas en UMA | ✅ Incluido *(actualizado jul-2026)* |
-| 🇧🇷 Brasil | LGPD 2018 + Resoluciones ANPD *(techo regulatorio regional; incidentes: 3 días hábiles, Res. 15/2024)* | ✅ Incluido *(actualizado jul-2026)* |
-| 🇨🇱 Chile | Ley 19.628 → **Ley 21.719 entra en vigencia el 01-12-2026** (APDP, multas hasta 20,000 UTM) | ✅ Incluido ⏳ *(transición dic-2026)* |
-| 🇦🇷 Argentina | Ley 25.326 *(proyectos de reforma en debate legislativo 2025-2026)* | ✅ Incluido |
-| 🇵🇪 Perú | Ley 29733 + **nuevo Reglamento D.S. 016-2024-JUS** (vigente mar-2025; brechas: 48h) | ✅ Incluido *(actualizado jul-2026)* |
-| 🇪🇨 Ecuador | LOPDP 2021 + Reglamento DE-904/2023 (Superintendencia operativa) | ✅ Incluido |
-| 🇪🇺 Unión Europea | GDPR 2018 *(referente global)* | ✅ Contraste |
-| 🇺🇸 Estados Unidos | CCPA / NIST | ✅ Contraste |
+| 🇪🇺 UE | **GDPR** — Reglamento (UE) 2016/679 (vigente 2018) · sanciones hasta 20M€ o 4% facturación global · brechas 72h | ✅ **Reglas propias** (producción) |
+
+### 🇺🇸 Estados Unidos
+
+| Jurisdicción | Ley Principal | Nivel |
+|---|---|---|
+| 🇺🇸 California | **CCPA / CPRA** — regulador CPPA (estándar de facto de EE.UU.) | 🚧 **Reglas propias** (en construcción) |
+| 🇺🇸 Estatal | **~20 leyes integrales vigentes en 2026** (VA, CO, CT, TX, UT, OR, etc.) | 🚧 **Matriz comparativa** (en construcción) |
+| 🇺🇸 Federal sectorial | HIPAA (salud) · COPPA (menores) · GLBA (financiero) · FERPA (educación) | 🚧 **Penalizadores sectoriales** |
+
+### 🌎 Latinoamérica
+
+| País | Ley Principal | Nivel |
+|---|---|---|
+| 🇨🇴 Colombia | Ley 1581 de 2012 (Hábeas Data) + Decretos 1377/2013 y 1074/2015 | ✅ Reglas propias |
+| 🇲🇽 México | **Nueva LFPDPPP (DOF 20-03-2025)** — abroga la ley de 2010; autoridad SABG (ex-INAI); multas en UMA | ✅ Reglas propias *(actualizado jul-2026)* |
+| 🇧🇷 Brasil | LGPD 2018 + Resoluciones ANPD *(techo regional; incidentes: 3 días hábiles, Res. 15/2024)* | ✅ Reglas propias *(actualizado jul-2026)* |
+| 🇨🇱 Chile | Ley 19.628 → **Ley 21.719 vigente 01-12-2026** (APDP, multas hasta 20,000 UTM) | ✅ Reglas propias ⏳ *(vigencia dic-2026)* |
+| 🇦🇷 Argentina | Ley 25.326 *(reformas en debate legislativo 2025-2026)* | ✅ Reglas propias |
+| 🇵🇪 Perú | Ley 29733 + **Reglamento D.S. 016-2024-JUS** (vigente mar-2025; brechas: 48h) | ✅ Reglas propias *(actualizado jul-2026)* |
+| 🇪🇨 Ecuador | LOPDP 2021 + Reglamento DE-904/2023 (Superintendencia operativa) | ✅ Reglas propias |
 
 > Verificación de vigencia: [`docs/SOURCES-VALIDATION.md`](docs/SOURCES-VALIDATION.md) — ronda 2026-07-08.
 
 ---
 
-## Estructura del Repositorio
+## Arquitectura
+
+![Arquitectura del repositorio](assets/architecture.svg)
 
 ```
-LegalSkillsLATAM/
+privacy-compliance-skills/
 │
 ├── assets/                  # Diagramas y recursos visuales
-│   ├── architecture.svg     # Diagrama de arquitectura del proyecto
-│   └── risk-score-demo.svg  # Ejemplo de output del Risk Score
-│
 ├── .claude-plugin/          # Metadata del plugin de Claude
-│   └── plugin.json
-│
 ├── skills/                  # Skills instalables en Claude
-│   ├── clasificar-datos/    # Clasifica tipo de dato por jurisdicción
-│   ├── privacy-check/       # Audita un feature o producto
-│   ├── risk-score/          # Calcula el Legal Risk Score (0–100) ★
-│   ├── matriz-normativa/    # Compara leyes LATAM vs GDPR/CCPA
-│   └── derechos-usuario/    # Guía de respuesta ARCO/ARSOP
-│
 ├── cli/rules/               # Motor de reglas JSON (bundled con el paquete npm)
 │   ├── schema/              # JSON Schemas de validación
-│   ├── countries/           # Reglas por país (colombia.json, etc.)
-│   ├── international/       # GDPR, CCPA
-│   └── risk-engine/         # Fórmula del Legal Risk Score
-│
+│   ├── eu/                  # GDPR
+│   ├── us/                  # CCPA/CPRA + matriz de leyes estatales
+│   ├── latam/               # Reglas por país (colombia.json, etc.)
+│   └── risk-engine/         # Fórmula del Legal Risk Score + factores por bloque
 ├── knowledge/               # Contenido jurídico de referencia (solo lectura)
-│   ├── matrices/            # Comparativas normativas en Markdown
-│   └── checklists/          # Listas de verificación para devs
 ├── prompts/                 # System prompts para auditores IA
+├── web/                     # Sitio Astro (landing + docs, bilingüe ES/EN)
 └── docs/                    # Gobernanza, roadmap, seguridad, contribución
 ```
 
@@ -163,7 +180,7 @@ LegalSkillsLATAM/
 
 ## Seguridad
 
-LegalSkillsLATAM se evalúa con [**SkillSpector v2.1.1**](https://github.com/NVIDIA/skillspector) (NVIDIA) — el scanner de referencia para skills de agentes de IA. Cobertura: 64 patrones / 16 categorías. Análisis estático reproducible offline.
+Privacy Compliance Skills se evalúa con [**SkillSpector v2.1.1**](https://github.com/NVIDIA/skillspector) (NVIDIA) — el scanner de referencia para skills de agentes de IA. Cobertura: 64 patrones / 16 categorías. Análisis estático reproducible offline.
 
 | Skill | Score | Severidad | Recomendación |
 |---|---|---|---|
@@ -174,11 +191,9 @@ LegalSkillsLATAM se evalúa con [**SkillSpector v2.1.1**](https://github.com/NVI
 | `privacy-check` | 25 / 100 | MEDIUM | CAUTION (1 falso positivo P1) |
 | `risk-score` | 0 / 100 | LOW | **SAFE** |
 
-**Promedio: 8.3/100 — LOW · SAFE.** 4/6 skills sin findings; los 2 HIGH son frases adversariales dentro de `TEST-CASES.md`, esperadas como evidencia de que el aislamiento de contenido funciona.
+**Promedio: 8.3/100 — LOW · SAFE.** 4/6 skills sin findings; los 2 MEDIUM son falsos positivos sobre frases adversariales dentro de `TEST-CASES.md`, esperadas como evidencia de que el aislamiento de contenido funciona.
 
-**Refuerzos v0.1.1:** *Content Isolation* (OWASP LLM01) en las 6 skills, 17 test cases de inyección (ES/EN/código), detección estructural sin keywords, *permission manifests* por skill.
-
-> Análisis completo, falsos positivos explicados y comandos para reproducir el scan en [`docs/SECURITY.md`](docs/SECURITY.md).
+> Análisis completo y comandos para reproducir el scan en [`docs/SECURITY.md`](docs/SECURITY.md).
 
 ---
 
@@ -193,11 +208,10 @@ git clone https://github.com/joselito412/LegalSkillsLATAM.git
 Una vez instalado, las skills se activan desde cualquier conversación de Claude:
 
 ```
-/audit "app de telemedicina con video, recetas y pagos en Colombia y México"
-/risk-score "Mi app de salud que captura diagnósticos médicos, opera en Colombia"
+/audit "app de telemedicina con video, recetas y pagos en California, España y Colombia"
+/risk-score "Mi app de salud que captura diagnósticos médicos, opera en la UE"
 /clasificar-datos "tabla: usuarios(id, email, huella_digital, fecha_nacimiento)"
-/privacy-check "endpoint POST /registro que guarda IP y fingerprint del dispositivo"
-/matriz-normativa consentimiento
+/matriz-normativa opt_out_vs_opt_in
 /derechos-usuario "usuario pide borrar todos sus datos" --pais BR
 ```
 
@@ -205,7 +219,7 @@ Una vez instalado, las skills se activan desde cualquier conversación de Claude
 
 ## Gobernanza
 
-El contenido legal de este proyecto es **curado, redactado y actualizado directamente por un equipo editorial con expertise jurídico** en derecho de datos. Ninguna IA genera reglas legales de forma autónoma — la IA solo aplica las reglas que el equipo editorial define.
+El contenido legal es **curado, redactado y actualizado por un equipo editorial con expertise jurídico** en derecho de datos. Ninguna IA genera reglas legales de forma autónoma — la IA solo aplica las reglas que el equipo editorial define.
 
 ```
 Abogado Experto → Reglas JSON/MD → IA aplica las reglas → Dev recibe guidance
@@ -219,11 +233,11 @@ Ver [`docs/GOVERNANCE.md`](docs/GOVERNANCE.md) para el flujo completo de control
 ## Roadmap
 
 ```
-[Repositorio GitHub] → [Plugin de Claude] → [CLI Tool] → [API / SaaS]
-      Fase 1 ✅           Fase 1 ✅          Fase 2 🔜     Fase 3 🔮
+[Repo GitHub] → [Plugin de Claude] → [Web pública] → [CLI Tool] → [API / SaaS]
+   Fase 1 ✅        Fase 1 ✅          Fase 2 🔜       Fase 2 🔜     Fase 3 🔮
 ```
 
-Ver [`docs/ROADMAP.md`](docs/ROADMAP.md) para el detalle completo, incluyendo el concepto de CLI estilo terminal con score visual inspirado en herramientas como `react-doctor`.
+Expansión en curso: **UE a producción + bloque USA de primer nivel + sitio Astro bilingüe.** Ver [`PLAN-REBRAND-Y-WEB-2026-07.md`](PLAN-REBRAND-Y-WEB-2026-07.md) y [`docs/ROADMAP.md`](docs/ROADMAP.md).
 
 ---
 
@@ -232,10 +246,10 @@ Ver [`docs/ROADMAP.md`](docs/ROADMAP.md) para el detalle completo, incluyendo el
 | Perfil | Uso principal |
 |---|---|
 | 👨‍💻 Desarrollador independiente | Clasificar los datos de su app y conocer sus obligaciones legales |
-| 🚀 Startup / CTO | Auto-evaluar el riesgo legal antes de lanzar o internacionalizar |
+| 🚀 Startup / CTO | Auto-evaluar el riesgo legal antes de lanzar o internacionalizar a UE/USA |
 | 🤖 Agente de IA (LLM) | Auditar código y arquitecturas usando las reglas JSON del proyecto |
 | ⚖️ Abogado / Consultor | Revisar, corregir y enriquecer el contenido normativo del repositorio |
-| 🎓 Académico / Investigador | Referencia comparativa de normativas LATAM vs GDPR vs CCPA |
+| 🎓 Académico / Investigador | Referencia comparativa de normativas UE vs USA vs LATAM |
 
 ---
 
@@ -243,23 +257,17 @@ Ver [`docs/ROADMAP.md`](docs/ROADMAP.md) para el detalle completo, incluyendo el
 
 Este es un llamado abierto a:
 
-🔹 **Abogados de protección de datos** en cualquier país de LATAM
+🔹 **Abogados de protección de datos** en LATAM, la UE o EE.UU.
 
 🔹 **Académicos de derecho digital** o regulación tecnológica
 
 🔹 **Profesionales de legal tech** que quieran construir estándares abiertos
 
-**No necesitas saber programar.** El contenido legal está en Markdown y JSON legible. Solo necesitas saber de leyes y tener ganas de que LATAM tenga herramientas de compliance a la altura de las de Europa o EE.UU.
+**No necesitas saber programar.** El contenido legal está en Markdown y JSON legible. Solo necesitas saber de leyes y querer que exista una herramienta de compliance-as-code abierta y comparativa entre los tres bloques.
 
-📌 **Estado actual:** por verificar con pares — y ahí es donde entras tú.
+📌 **Estado actual:** por verificar con pares — y ahí es donde entras tú. Con el bloque USA en construcción, hacen falta especialistas en **CCPA/CPRA y leyes estatales** además de expertos LATAM y GDPR.
 
-Puedes empezar abriendo un Issue con tus observaciones, corrigiendo una matriz, o revisando una regla JSON de tu país. Ver [`docs/CONTRIBUTING.md`](docs/CONTRIBUTING.md) para el proceso detallado.
-
----
-
-## Contribuir
-
-Ver [`docs/CONTRIBUTING.md`](docs/CONTRIBUTING.md).
+Puedes empezar abriendo un Issue con tus observaciones, corrigiendo una matriz, o revisando una regla JSON de tu jurisdicción. Ver [`docs/CONTRIBUTING.md`](docs/CONTRIBUTING.md).
 
 ---
 
@@ -269,4 +277,4 @@ MIT — Ver [`LICENSE`](LICENSE).
 
 ---
 
-*LegalSkillsLATAM — Cerrando la brecha entre el código y el cumplimiento legal en LATAM.*
+*Privacy Compliance Skills — UE · USA · LATAM. Cerrando la brecha entre el código y el cumplimiento de privacidad.*
