@@ -92,11 +92,20 @@ Risk Score = min(100, (C_base + Σ Penalizadores) × F_rigor)
 
 | Skill | Comando | Descripción |
 |---|---|---|
+| 🔍 **Audit (punto de entrada)** | `/audit` | Auditoría iterativa completa: loop Evaluar → Corregir → Re-evaluar con score 0–100 y paneles FE/BE/DevOps |
 | 🗂️ Clasificar Datos | `/clasificar-datos` | Clasifica cualquier campo o tabla según su nivel de sensibilidad legal por jurisdicción |
-| 🔍 Privacy Check | `/privacy-check` | Audita un feature, endpoint o esquema de base de datos |
-| ⚖️ Risk Score | `/risk-score` | Calcula el Legal Risk Score (0–100) con semáforo y acciones |
+| 🖥️ Consentimiento (FE) | `/frontend-privacy/consentimiento` | Audita el flujo de consentimiento granular y su registro |
+| 🖥️ Transparencia (FE) | `/frontend-privacy/transparencia` | Verifica política de privacidad, cookies y avisos |
+| 🖥️ User Controls (FE) | `/frontend-privacy/user-controls` | Flujo UX del portal de derechos del usuario (ARCO) |
+| ⚙️ Data Protection (BE) | `/backend-security/data-protection` | Cifrado, hashing, retención y DPA |
+| ⚙️ Access Control (BE) | `/backend-security/access-control` | RBAC y audit logging |
+| ⚙️ Data Lifecycle (BE) | `/backend-security/data-lifecycle` | Política de retención y purga por tipo de dato |
 | 🌎 Matriz Normativa | `/matriz-normativa` | Compara leyes LATAM vs GDPR vs CCPA en cualquier dimensión |
 | 📋 Derechos Usuario | `/derechos-usuario` | Genera el protocolo de respuesta a solicitudes ARCO/ARSOP |
+| 🔍 Privacy Check | `/privacy-check` | Audita un feature, endpoint o schema *(se deprecará en v0.4 — usa `/audit`)* |
+| ⚖️ Risk Score | `/risk-score` | Solo el score 0–100 *(se deprecará en v0.4 — usa `/audit`)* |
+
+> Estado canónico de cada skill: [`skills/_routing.md`](skills/_routing.md)
 
 ---
 
@@ -104,15 +113,17 @@ Risk Score = min(100, (C_base + Σ Penalizadores) × F_rigor)
 
 | País | Ley Principal | Estado |
 |---|---|---|
-| 🇨🇴 Colombia | Ley 1581 de 2012 (Hábeas Data) | ✅ Incluido |
-| 🇲🇽 México | LFPDPPP 2010 | ✅ Incluido |
-| 🇧🇷 Brasil | LGPD 2020 *(techo regulatorio regional)* | ✅ Incluido |
-| 🇨🇱 Chile | Ley 19.628 | ✅ Incluido |
-| 🇦🇷 Argentina | Ley 25.326 | ✅ Incluido |
-| 🇵🇪 Perú | Ley 29733 | ✅ Incluido |
-| 🇪🇨 Ecuador | LOPDP 2021 | ✅ Incluido |
+| 🇨🇴 Colombia | Ley 1581 de 2012 (Hábeas Data) + Decretos 1377/2013 y 1074/2015 | ✅ Incluido |
+| 🇲🇽 México | **Nueva LFPDPPP (DOF 20-03-2025)** — abroga la ley de 2010; autoridad: SABG (ex-INAI); multas en UMA | ✅ Incluido *(actualizado jul-2026)* |
+| 🇧🇷 Brasil | LGPD 2018 + Resoluciones ANPD *(techo regulatorio regional; incidentes: 3 días hábiles, Res. 15/2024)* | ✅ Incluido *(actualizado jul-2026)* |
+| 🇨🇱 Chile | Ley 19.628 → **Ley 21.719 entra en vigencia el 01-12-2026** (APDP, multas hasta 20,000 UTM) | ✅ Incluido ⏳ *(transición dic-2026)* |
+| 🇦🇷 Argentina | Ley 25.326 *(proyectos de reforma en debate legislativo 2025-2026)* | ✅ Incluido |
+| 🇵🇪 Perú | Ley 29733 + **nuevo Reglamento D.S. 016-2024-JUS** (vigente mar-2025; brechas: 48h) | ✅ Incluido *(actualizado jul-2026)* |
+| 🇪🇨 Ecuador | LOPDP 2021 + Reglamento DE-904/2023 (Superintendencia operativa) | ✅ Incluido |
 | 🇪🇺 Unión Europea | GDPR 2018 *(referente global)* | ✅ Contraste |
 | 🇺🇸 Estados Unidos | CCPA / NIST | ✅ Contraste |
+
+> Verificación de vigencia: [`docs/SOURCES-VALIDATION.md`](docs/SOURCES-VALIDATION.md) — ronda 2026-07-08.
 
 ---
 

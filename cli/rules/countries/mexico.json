@@ -1,34 +1,35 @@
 {
   "$schema": "../schema/country-rules.schema.json",
-  "version": "1.0.0",
-  "last_reviewed": "2026-01-01",
-  "review_status": "pending_legal_validation",
+  "version": "1.1.0",
+  "last_reviewed": "2026-07-08",
+  "review_status": "verified_editorial",
   "reviewed_by": null,
-  "editorial_note": "Generado por equipo editorial LegalSkillsLATAM. Pendiente de validación por abogado experto en derecho mexicano. No constituye asesoría jurídica.",
+  "editorial_note": "Actualizado 2026-07-08: nueva LFPDPPP (DOF 20-03-2025) que abroga la ley de 2010; autoridad ahora es la Secretaría Anticorrupción y Buen Gobierno (INAI extinto); sanciones en UMA. IMPORTANTE: las secciones de consentimiento, aviso de privacidad, derechos ARCO y transferencias fueron redactadas bajo la ley de 2010 — sus reglas generales se mantienen en la nueva ley, pero la numeración de artículos y detalles deben re-validarse contra el texto de 2025 en la revisión de pares. No constituye asesoría jurídica.",
   "country": {
     "code": "MX",
     "name": "México",
     "flag": "🇲🇽",
     "rigor_level": "standard",
     "rigor_factor": 1.00,
-    "note": "Segunda economía más grande de LATAM. La LFPDPPP fue pionera en la región (2010). El aviso de privacidad es el mecanismo central de cumplimiento."
+    "note": "Segunda economía más grande de LATAM. La LFPDPPP de 2010 fue pionera en la región; en marzo de 2025 fue abrogada y sustituida por una nueva LFPDPPP. El aviso de privacidad sigue siendo el mecanismo central de cumplimiento."
   },
   "primary_law": {
-    "name": "Ley Federal de Protección de Datos Personales en Posesión de los Particulares",
+    "name": "Ley Federal de Protección de Datos Personales en Posesión de los Particulares (nueva)",
     "acronym": "LFPDPPP",
-    "number": "DOF 5 de julio de 2010",
-    "reglamento": "Reglamento de la LFPDPPP (DOF 21 de diciembre de 2011)",
+    "number": "DOF 20 de marzo de 2025",
+    "abrogates": "LFPDPPP de 2010 (DOF 5 de julio de 2010)",
+    "reglamento": "Reglamento de la LFPDPPP de 2011 y lineamientos previos: aplicables en lo que no se opongan a la nueva ley, en tanto se emite nueva regulación secundaria (verificar estado actual)",
     "guidelines": [
-      "Lineamientos del Aviso de Privacidad (DOF 17 de enero de 2013)",
+      "Lineamientos del Aviso de Privacidad (DOF 17 de enero de 2013) — verificar vigencia frente a la nueva ley",
       "Parámetros para el Aviso de Privacidad Corto",
       "Criterios sobre medidas compensatorias"
     ],
-    "effective_date": "2010-07-06",
+    "effective_date": "2025-03-21",
     "regulator": {
-      "name": "Instituto Nacional de Transparencia, Acceso a la Información y Protección de Datos Personales (INAI)",
-      "website": "https://home.inai.org.mx",
+      "name": "Secretaría Anticorrupción y Buen Gobierno (SABG)",
+      "website": "https://www.gob.mx/buengobierno",
       "country": "México",
-      "formerly": "IFAI (Instituto Federal de Acceso a la Información)"
+      "formerly": "INAI (extinto en marzo de 2025; sus atribuciones sobre datos del sector privado pasaron a la SABG). Las resoluciones de la SABG son impugnables vía juicio de amparo ante juzgados de distrito y tribunales especializados."
     },
     "public_sector_law": {
       "name": "Ley General de Protección de Datos Personales en Posesión de Sujetos Obligados",
@@ -37,7 +38,7 @@
     },
     "gdpr_adequacy": false,
     "gdpr_alignment": "medium",
-    "notes": "México no tiene reconocimiento de adecuación de la UE. La ley es más antigua y menos alineada al GDPR que Brasil o Ecuador."
+    "notes": "México no tiene reconocimiento de adecuación de la UE. La nueva LFPDPPP (2025) moderniza parcialmente el marco, pero el cambio institucional más relevante es la desaparición del órgano garante autónomo (INAI) en favor de una secretaría del Ejecutivo (SABG)."
   },
   "data_categories": {
     "public": {
@@ -224,7 +225,7 @@
       }
     ],
     "cost": "Gratuito. El responsable no puede cobrar por atender solicitudes ARCO.",
-    "recourse": "Si el responsable no atiende la solicitud, el titular puede presentar queja ante el INAI (Procedimiento de Protección de Derechos)"
+    "recourse": "Si el responsable no atiende la solicitud, el titular puede presentar queja ante la Secretaría Anticorrupción y Buen Gobierno (Procedimiento de Protección de Derechos). Antes de marzo de 2025 esta función correspondía al INAI."
   },
   "dpo": {
     "required": false,
@@ -251,7 +252,7 @@
   "breach_notification": {
     "required": true,
     "notify_authority": {
-      "entity": "INAI",
+      "entity": "Secretaría Anticorrupción y Buen Gobierno (SABG)",
       "deadline": "No hay plazo específico en horas. La ley indica 'a la brevedad posible'. Referencia de buena práctica: 72 horas.",
       "condition": "vulneraciones de seguridad que afecten de forma significativa los derechos patrimoniales o morales de los titulares"
     },
@@ -278,23 +279,22 @@
     "legal_reference": "Arts. 19 y 20 LFPDPPP"
   },
   "sanctions": {
-    "authority": "INAI",
+    "authority": "Secretaría Anticorrupción y Buen Gobierno (SABG)",
     "types": [
       "apercibimiento (advertencia)",
-      "multa de 100 a 320,000 días de salario mínimo general vigente en el DF",
-      "multa adicional por cada día que persista la infracción",
-      "arresto de hasta 36 horas (para personas físicas en casos graves)"
+      "multa de 100 a 320,000 veces el valor diario de la UMA (Unidad de Medida y Actualización)",
+      "multa duplicable cuando la infracción involucra datos personales sensibles"
     ],
     "criminal_sanctions": {
       "applicable": true,
       "conditions": [
-        "tratamiento de datos sensibles sin consentimiento con ánimo de lucro",
-        "comercialización de datos sin consentimiento"
+        "tratamiento de datos mediante engaño o con ánimo de lucro indebido"
       ],
-      "penalty": "3 a 6 años de prisión (Art. 67 LFPDPPP)"
+      "penalty": "Pena de prisión de hasta 5 años según la nueva LFPDPPP (artículo exacto por confirmar en revisión de pares)"
     },
-    "max_fine_reference": "320,000 días de salario mínimo ≈ MXN $34 millones (aprox., varía con el SMG)",
-    "legal_reference": "Arts. 63-68 LFPDPPP"
+    "max_fine_reference": "320,000 UMA ≈ MXN $37.5 millones (UMA 2026: $117.31 diarios); duplicable con datos sensibles",
+    "legal_reference": "Arts. 58-64, LFPDPPP (DOF 20-03-2025)",
+    "deprecated_reference_note": "La ley de 2010 expresaba multas en días de salario mínimo (SMG del DF), unidad sustituida por la UMA desde 2016 y ya no aplicable."
   },
   "penalizers": [
     {
@@ -348,8 +348,8 @@
     }
   ],
   "metadata": {
-    "version": "1.0.0",
-    "last_updated": "2026-06-02",
+    "version": "1.1.0",
+    "last_updated": "2026-07-08",
     "legal_review_pending": true,
     "note": "Este archivo es una guía informativa. No constituye ni sustituye asesoría jurídica especializada. Para el sector financiero en México, consultar también regulación de CNBV, CONDUSEF y Banxico."
   }

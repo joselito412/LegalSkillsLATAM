@@ -59,8 +59,8 @@ Si hay datos de salud Y email → C_base = 80 (salud domina).
 | Ecuador / EC / LOPDP | 1.25 | LOPDP — activa: situación migratoria como sensible, portabilidad |
 | Europa / EU / GDPR / Unión Europea / España / Francia / Alemania / (cualquier país UE) | 1.25 | GDPR — activa: DPO condicional, SCCs para transferencias, 72h breach |
 | Colombia / CO | 1.00 | Ley 1581 — ARCO, aviso de privacidad, SIC |
-| México / MX | 1.00 | LFPDPPP — ARCO, aviso de privacidad integral/simplificado, INAI |
-| Chile / CL | 1.00 | Ley 19.628 (en reforma) |
+| México / MX | 1.00 | LFPDPPP 2025 — ARCO, aviso de privacidad, autoridad: SABG (ex-INAI) |
+| Chile / CL | 1.00 | Ley 19.628 → reformada por Ley 21.719 (vigencia 01-12-2026, APDP) |
 | Argentina / AR | 1.00 | Ley 25.326 |
 | Perú / PE | 1.00 | Ley 29733 |
 

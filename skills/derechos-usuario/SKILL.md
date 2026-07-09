@@ -59,7 +59,7 @@ Solicitar documento que acredite la identidad sin exigir información excesiva. 
 | País | Plazo de Respuesta | Posible Prórroga | Autoridad | Referencia |
 |---|---|---|---|---|
 | 🇨🇴 Colombia | **Consultas (Acceso):** 10 días hábiles. **Reclamos (Rectificación/Cancelación/Oposición):** 15 días hábiles | Consultas: +5 hábiles con aviso. Reclamos: +8 hábiles con aviso | SIC | Arts. 14-16, Ley 1581/2012 |
-| 🇲🇽 México | 20 días hábiles para responder | +20 días hábiles con justificación. Luego 15 días hábiles adicionales para hacer efectiva la respuesta | INAI | Art. 32, LFPDPPP |
+| 🇲🇽 México | 20 días hábiles para responder | +20 días hábiles con justificación. Luego 15 días hábiles adicionales para hacer efectiva la respuesta | SABG (ex-INAI, extinto 2025) | Art. 32, LFPDPPP 2010 — plazos por confirmar en la nueva LFPDPPP (DOF 20-03-2025) |
 | 🇧🇷 Brasil | 15 días (referencia operativa — la LGPD no fija plazo en días en su texto base; el estándar de 15 días proviene de la Resolução CD/ANPD) | No especificada en la ley | ANPD | Art. 18, LGPD + Resolução CD/ANPD |
 | 🇨🇱 Chile | 2 días hábiles para confirmar recepción; plazo razonable para resolver (ley en actualización) | — | CPLT / futuro Consejo de Protección | Ley 19.628 (en reforma) |
 | 🇦🇷 Argentina | 5 días hábiles | — | AAIP | Art. 14, Ley 25.326 |

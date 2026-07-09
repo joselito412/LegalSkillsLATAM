@@ -1,9 +1,11 @@
 # Skills Index — Mapa de Casos de Uso
 **LegalSkillsLATAM — Directorio de Skills**
 
-> Elaborado: 2026-06-04  
-> Versión: 1.0  
+> Elaborado: 2026-06-04 · Actualizado: 2026-07-08
+> Versión: 1.1
 > Estado: Activo
+
+> 📌 **Tabla canónica de estados:** la única fuente de verdad del estado de cada skill es la tabla "Skills actualmente disponibles" de [`_routing.md`](./_routing.md). Este índice describe casos de uso; si hay discrepancia de estados, manda `_routing.md`.
 
 Usa esta guía para encontrar la skill correcta según tu caso de uso. Cada entrada indica qué skill invocar, qué output recibirás, y si la skill es actual (✅), en transición (🔄) o planificada (🔮).
 
@@ -19,21 +21,22 @@ Usa esta guía para encontrar la skill correcta según tu caso de uso. Cada entr
 │
 ├── Revisar solo aspectos de UX / Consentimiento / Transparencia
 │   ├── ¿Consentimiento granular, checkboxes, revocación?
-│   │   └── /frontend-privacy/consentimiento 🔮 (Fase C)
+│   │   └── /frontend-privacy/consentimiento ✅
 │   ├── ¿Política de privacidad, cookies, avisos, DPO visible?
-│   │   └── /frontend-privacy/transparencia 🔮 (Fase C)
+│   │   └── /frontend-privacy/transparencia ✅
 │   └── ¿Portal ARCO, solicitudes de derechos en UI?
-│       └── /frontend-privacy/user-controls 🔮 (Fase C)
-│       └── (por ahora) /derechos-usuario ✅
+│       └── /frontend-privacy/user-controls ✅
+│       └── (protocolo de respuesta) /derechos-usuario ✅
 │
 ├── Revisar solo aspectos técnicos / Arquitectura / Seguridad
 │   ├── ¿Qué tipo de dato es? ¿Cómo clasificarlo?
 │   │   └── /clasificar-datos ✅
 │   ├── ¿Cifrado, hashing, retención, acceso?
-│   │   └── /backend-security/data-protection 🔮 (Fase C)
-│   │   └── (por ahora) /privacy-check ✅
+│   │   └── /backend-security/data-protection ✅
+│   ├── ¿Retención, purga, ciclo de vida del dato?
+│   │   └── /backend-security/data-lifecycle ✅
 │   └── ¿RBAC, logs de auditoría, segregación?
-│       └── /backend-security/access-control 🔮 (Fase C)
+│       └── /backend-security/access-control ✅
 │
 ├── Calcular el riesgo legal de un proyecto
 │   └── /risk-score ✅ → (futuro) parte de /audit
@@ -60,24 +63,24 @@ Usa esta guía para encontrar la skill correcta según tu caso de uso. Cada entr
 | "¿Cómo respondo esta solicitud ARCO?" | `/derechos-usuario` | BOTH | Protocolo de respuesta técnica y plazos por jurisdicción |
 | "¿Cuáles son las diferencias entre LATAM y GDPR?" | `/matriz-normativa` | BOTH | Comparativa normativa por dimensión específica |
 
-### Skills planificadas (v0.3 — Fase C)
+### Skills especializadas por pilar (disponibles — v0.3 Fase C completada)
 
-| Caso de uso | Skill (futura) | Pilar | Output esperado |
+| Caso de uso | Skill | Pilar | Output |
 |---|---|---|---|
-| "¿Cómo implemento consentimiento granular?" | `/frontend-privacy/consentimiento` | FE | Guía de UI + registro de consentimiento + risk score FE 0–50 |
-| "¿Tengo la política de privacidad correcta?" | `/frontend-privacy/transparencia` | FE | Checklist de requisitos de transparencia + risk score FE 0–40 |
-| "¿Cómo implemento el portal de datos del usuario?" | `/frontend-privacy/user-controls` | FE | Flujo UX de solicitudes ARCO + validación técnica |
-| "¿Cómo protejo estos datos técnicamente?" | `/backend-security/data-protection` | BE | Guía de cifrado/hashing/retención + risk score BE 0–50 |
-| "¿Está bien configurado mi RBAC y logging?" | `/backend-security/access-control` | BE | Auditoría de controles de acceso + risk score BE 0–40 |
-| "¿Cuánto tiempo debo conservar estos datos?" | `/backend-security/data-lifecycle` | BE | Política de retención por tipo de dato y jurisdicción |
+| "¿Cómo implemento consentimiento granular?" | `/frontend-privacy/consentimiento` ✅ | FE | Guía de UI + registro de consentimiento + risk score FE 0–50 |
+| "¿Tengo la política de privacidad correcta?" | `/frontend-privacy/transparencia` ✅ | FE | Checklist de requisitos de transparencia + risk score FE 0–40 |
+| "¿Cómo implemento el portal de datos del usuario?" | `/frontend-privacy/user-controls` ✅ | FE | Flujo UX de solicitudes ARCO + validación técnica |
+| "¿Cómo protejo estos datos técnicamente?" | `/backend-security/data-protection` ✅ | BE | Guía de cifrado/hashing/retención + risk score BE 0–50 |
+| "¿Está bien configurado mi RBAC y logging?" | `/backend-security/access-control` ✅ | BE | Auditoría de controles de acceso + risk score BE 0–40 |
+| "¿Cuánto tiempo debo conservar estos datos?" | `/backend-security/data-lifecycle` ✅ | BE | Política de retención por tipo de dato y jurisdicción |
 
 ---
 
 ## Detalle de skills actuales
 
-### `/audit` ✅
+### `/audit` ✅ (v3 — loop iterativo)
 
-**Cuándo usarla:** Punto de entrada para cualquier proyecto. Cuando necesitas un panorama completo del riesgo legal antes de lanzar o internacionalizar.
+**Cuándo usarla:** Punto de entrada para cualquier proyecto. Cuando necesitas un panorama completo del riesgo legal antes de lanzar o internacionalizar. Desde v3 ejecuta un loop Evaluar → Corregir → Re-evaluar (estilo react-doctor) usando la CLI como fuente de verdad del score; ver `architecture/AGENT-CONTRACT.md`.
 
 **Input:** Descripción del proyecto (o skill hace preguntas si no se proporciona)
 
@@ -204,10 +207,10 @@ Legal Risk Score: 62/100 🟡 Medio
 | Definición de pilares | Qué es FE vs BE, con ejemplos concretos | [architecture/PILLAR-SEPARATION.md](../architecture/PILLAR-SEPARATION.md) |
 | Inventario de contenido | Dónde vive cada archivo, hacia dónde migra | [architecture/CONTENT-MAP.md](../architecture/CONTENT-MAP.md) |
 | Puntos de integración | Cuándo FE y BE deben coordinarse | [architecture/INTEGRATION-POINTS.md](../architecture/INTEGRATION-POINTS.md) |
-| Checklist de startup | Lista rápida para MVP | [knowledge/checklists/checklist-startup.md](../knowledge/checklists/checklist-startup.md) |
-| Checklist de datos sensibles | Guía detallada para datos de alto riesgo | [knowledge/checklists/checklist-datos-sensibles.md](../knowledge/checklists/checklist-datos-sensibles.md) |
-| Consentimiento por jurisdicción | Comparativa de requisitos de consentimiento | [knowledge/matrices/comparativa-consentimiento.md](../knowledge/matrices/comparativa-consentimiento.md) |
-| Derechos ARCO por jurisdicción | Plazos y requisitos por país | [knowledge/matrices/comparativa-derechos.md](../knowledge/matrices/comparativa-derechos.md) |
+| Matriz SDLC de cumplimiento | Acciones por capa (FE/BE/DevOps/Datos) con refs legales y de estándares | [knowledge/matrices/matriz-sdlc-cumplimiento.md](../knowledge/matrices/matriz-sdlc-cumplimiento.md) |
+| Consentimiento por jurisdicción | Comparativa de requisitos de consentimiento | [knowledge/pillar-frontend/matrices/consentimiento-por-jurisdiccion.md](../knowledge/pillar-frontend/matrices/consentimiento-por-jurisdiccion.md) |
+| Checklists por pilar | Listas de verificación FE y BE | [knowledge/pillar-frontend/checklists/](../knowledge/pillar-frontend/checklists/) · [knowledge/pillar-backend/checklists/](../knowledge/pillar-backend/checklists/) |
+| Contrato CLI↔LLM | Especificación del JSON de findings para agentes | [architecture/AGENT-CONTRACT.md](../architecture/AGENT-CONTRACT.md) |
 
 ---
 
