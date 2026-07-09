@@ -1,0 +1,51 @@
+---
+import type { Lang } from '../i18n/utils';
+import { useTranslations } from '../i18n/utils';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const cards = [
+  { title: t('formats.humans_title'), target: t('formats.humans_target'), tech: t('formats.humans_tech'), path: 'knowledge/' },
+  { title: t('formats.ai_title'), target: t('formats.ai_target'), tech: t('formats.ai_tech'), path: 'skills/' },
+  { title: t('formats.machines_title'), target: t('formats.machines_target'), tech: t('formats.machines_tech'), path: 'cli/rules/' },
+];
+---
+
+<section id="formats">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">{t('formats.eyebrow')}</p>
+      <h2>{t('formats.title')}</h2>
+      <p>{t('formats.subtitle')}</p>
+    </div>
+
+    <div class="grid grid-3">
+      {cards.map((c) => (
+        <article class="card">
+          <h3>{c.title}</h3>
+          <p class="target">{c.target}</p>
+          <p class="tech">{c.tech}</p>
+          <code class="path mono">{c.path}</code>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .target { color: var(--text); font-weight: 600; margin: 4px 0 2px; }
+  .tech { color: var(--text-muted); margin: 0 0 16px; }
+  .path {
+    display: inline-block;
+    font-size: 0.78rem;
+    color: var(--accent);
+    background: var(--bg-deep);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 4px 10px;
+  }
+</style>

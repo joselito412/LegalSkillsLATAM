@@ -1,0 +1,93 @@
+---
+import type { Lang } from '../i18n/utils';
+import { useTranslations } from '../i18n/utils';
+import { SITE } from '../config';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<section id="hero" class="hero">
+  <div class="container grid hero-grid">
+    <div class="copy">
+      <p class="badge mono">{t('hero.badge')}</p>
+      <h1>{t('hero.title')}</h1>
+      <p class="subtitle">{t('hero.subtitle')}</p>
+      <div class="ctas">
+        <a class="btn btn-primary" href={SITE.githubUrl} target="_blank" rel="noopener">
+          {t('hero.cta_install')}
+        </a>
+        <a class="btn btn-ghost" href={SITE.githubUrl} target="_blank" rel="noopener">
+          {t('hero.cta_github')} ↗
+        </a>
+      </div>
+    </div>
+
+    <div class="terminal" role="img" aria-label="Legal Risk Score demo">
+      <div class="term-bar">
+        <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+        <span class="term-title mono">{t('hero.term_title')}</span>
+      </div>
+      <pre class="term-body mono"><span class="prompt">$</span> <span class="cmd">{t('hero.term_cmd')}</span>
+<span class="out">{t('hero.term_out1')}</span>
+<span class="out">{t('hero.term_out2')}</span>
+<span class="score">{t('hero.term_score')}</span>
+<span class="verdict">{t('hero.term_verdict')}</span></pre>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero { padding-top: 64px; padding-bottom: 64px; }
+  .hero-grid { gap: 44px; align-items: center; }
+  @media (min-width: 940px) {
+    .hero-grid { grid-template-columns: 1.05fr 1fr; }
+  }
+  .badge {
+    display: inline-block;
+    font-size: 0.76rem;
+    color: var(--text-muted);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 6px 14px;
+    margin-bottom: 22px;
+  }
+  .subtitle { color: var(--text-muted); font-size: 1.12rem; max-width: 34em; }
+  .ctas { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 30px; }
+
+  .terminal {
+    background: var(--bg-deep);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: 0 24px 60px -30px rgba(0, 0, 0, 0.8);
+  }
+  .term-bar {
+    display: flex; align-items: center; gap: 8px;
+    padding: 11px 14px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+  .dot { width: 11px; height: 11px; border-radius: 50%; display: inline-block; }
+  .dot.r { background: var(--risk-high); }
+  .dot.y { background: var(--risk-mid); }
+  .dot.g { background: var(--risk-low); }
+  .term-title { margin-left: 8px; font-size: 0.76rem; color: var(--text-faint); }
+  .term-body {
+    margin: 0;
+    padding: 20px;
+    font-size: 0.82rem;
+    line-height: 1.9;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  .prompt { color: var(--risk-low-bright); }
+  .cmd { color: var(--text); }
+  .out { color: var(--text-muted); }
+  .score { color: var(--accent); font-weight: 700; }
+  .verdict { color: var(--risk-high); font-weight: 700; }
+</style>

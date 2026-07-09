@@ -1,0 +1,68 @@
+---
+import type { Lang } from '../i18n/utils';
+import { useTranslations } from '../i18n/utils';
+import { SITE } from '../config';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="top">
+      <div class="brand">
+        <img src="/logo-mark.svg" alt="" width="30" height="30" />
+        <div>
+          <strong>{SITE.name}</strong>
+          <span class="descriptor mono">{SITE.descriptor}</span>
+        </div>
+      </div>
+      <p class="tagline">{t('footer.tagline')}</p>
+    </div>
+
+    <p class="disclaimer">⚠️ {t('footer.disclaimer')}</p>
+
+    <div class="bottom">
+      <span>© {year} · {t('footer.license')}</span>
+      <a href={SITE.githubUrl} target="_blank" rel="noopener">GitHub ↗</a>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    border-top: 1px solid var(--border);
+    background: var(--bg-deep);
+    padding: 48px 0 40px;
+    margin-top: 40px;
+  }
+  .top {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px 40px;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .brand { display: flex; align-items: center; gap: 12px; }
+  .descriptor { display: block; color: var(--text-faint); font-size: 0.78rem; letter-spacing: 0.08em; }
+  .tagline { color: var(--text-muted); margin: 0; max-width: 420px; }
+  .disclaimer {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    border-left: 3px solid var(--risk-mid);
+    padding-left: 14px;
+    margin: 28px 0;
+  }
+  .bottom {
+    display: flex;
+    justify-content: space-between;
+    color: var(--text-faint);
+    font-size: 0.85rem;
+    border-top: 1px solid var(--border);
+    padding-top: 20px;
+  }
+</style>
