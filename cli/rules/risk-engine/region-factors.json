@@ -1,0 +1,41 @@
+{
+  "version": "1.0.0",
+  "last_updated": "2026-07-09",
+  "review_status": "pending_legal_validation",
+  "description": "Factor de rigor (F_rigor) por bloque regulatorio para la fórmula del Legal Risk Score: Risk Score = min(100, (C_base + Σ Penalizadores) × F_rigor). Parametriza el rigor por bloque en vez de por país suelto. Introducido en el rebrand a Privacy Compliance Skills (UE · USA · LATAM).",
+  "formula_reference": "risk-engine/score-formula-v2.json",
+  "resolution_rule": "Cuando un sistema aplica a varios bloques/jurisdicciones, usar el F_rigor MÁS ALTO de los aplicables (peor caso). Para USA multi-estatal, aplicar además el penalizador us_multistate_exposure.",
+  "blocks": {
+    "eu": {
+      "label": "Unión Europea (GDPR)",
+      "f_rigor": 1.25,
+      "rationale": "Techo global de exigencia: bases de licitud, consentimiento inequívoco/explícito, derechos amplios, brechas 72h, sanciones hasta 4% de facturación global.",
+      "rules_ref": "eu/gdpr.json"
+    },
+    "us": {
+      "label": "Estados Unidos (CCPA/CPRA + estatal)",
+      "f_rigor": 1.10,
+      "rationale": "Alto pero fragmentado (opt-out, sectorial + mosaico estatal). El riesgo efectivo escala con el número de estados aplicables.",
+      "rules_ref": "us/usa-federal.json",
+      "scaling_note": "Sugerido: +0.02 por cada estado adicional con ley integral aplicable, cap en 1.20. Implementar en el scorer (Claude Code)."
+    },
+    "latam": {
+      "label": "Latinoamérica",
+      "f_rigor": 1.00,
+      "rationale": "Base de referencia del proyecto.",
+      "per_country_overrides": {
+        "BR": { "f_rigor": 1.15, "rationale": "Brasil (LGPD + ANPD) es el techo regulatorio regional." },
+        "CL": { "f_rigor": 1.10, "rationale": "Chile Ley 21.719 (vigencia 01-12-2026) alinea con GDPR: APDP, multas hasta 20,000 UTM." },
+        "CO": { "f_rigor": 1.00 },
+        "MX": { "f_rigor": 1.00 },
+        "AR": { "f_rigor": 1.00 },
+        "PE": { "f_rigor": 1.00 },
+        "EC": { "f_rigor": 1.00 }
+      }
+    }
+  },
+  "metadata": {
+    "legal_review_pending": true,
+    "note": "Guía informativa. No constituye asesoría jurídica. Los factores son heurísticas de priorización de riesgo, no medidas legales oficiales."
+  }
+}

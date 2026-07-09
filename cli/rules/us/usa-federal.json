@@ -1,0 +1,171 @@
+{
+  "$schema": "../schema/country-rules.schema.json",
+  "version": "1.0.0",
+  "last_reviewed": "2026-07-09",
+  "review_status": "pending_legal_validation",
+  "reviewed_by": null,
+  "editorial_note": "Bloque USA — primer nivel (rebrand 2026-07). Baseline modelado sobre CCPA/CPRA (California) por ser el estándar de facto más estricto y con regulador dedicado (CPPA). EE.UU. NO tiene ley federal integral de privacidad; el cumplimiento real depende del mosaico de leyes estatales (ver us/state-matrix.json) más leyes sectoriales federales (HIPAA, COPPA, GLBA, FERPA). Datos verificados jul-2026 contra fuentes públicas (CPPA, OAG California); PENDIENTE de validación por abogado de privacidad de EE.UU. No constituye asesoría jurídica.",
+  "country": {
+    "code": "US",
+    "name": "Estados Unidos",
+    "flag": "🇺🇸",
+    "rigor_level": "high",
+    "rigor_factor": 1.10,
+    "note": "Modelo fragmentado (sectoral + estatal), sin ley federal integral. El riesgo escala con el número de estados donde residen los usuarios. CCPA/CPRA se usa como baseline conservador."
+  },
+  "primary_law": {
+    "name": "California Consumer Privacy Act, reformada por la California Privacy Rights Act",
+    "acronym": "CCPA / CPRA",
+    "number": "Cal. Civ. Code §1798.100 et seq. (CCPA 2018) · Prop. 24 (CPRA 2020)",
+    "effective_date": "2020-01-01",
+    "cpra_effective_date": "2023-01-01",
+    "regulator": {
+      "name": "California Privacy Protection Agency (CPPA)",
+      "acronym": "CPPA",
+      "website": "https://cppa.ca.gov",
+      "note": "Primer regulador estatal dedicado de privacidad en EE.UU. (creado por la CPRA). La Fiscalía General de California (OAG) conserva potestad de aplicación concurrente."
+    },
+    "extraterritorial": true,
+    "extraterritorial_note": "Aplica a negocios con ánimo de lucro que recolectan datos de residentes de California y cruzan cualquiera de los umbrales, sin importar dónde esté la empresa.",
+    "applicability_thresholds": {
+      "logic": "Aplica si el negocio cumple AL MENOS UNO de estos umbrales",
+      "thresholds": [
+        "Ingresos brutos anuales superiores a USD 26,625,000 (umbral ajustado por inflación, vigente 2026)",
+        "Compra, vende o comparte datos personales de 100,000 o más consumidores u hogares de California al año",
+        "Obtiene el 50% o más de sus ingresos anuales de la venta o el intercambio (share) de datos personales"
+      ]
+    },
+    "no_federal_law_note": "No existe una ley federal integral de privacidad del consumidor en EE.UU. (a jul-2026). La protección federal es sectorial."
+  },
+  "data_categories": {
+    "personal": {
+      "label": "Personal Information (PI)",
+      "description": "Información que identifica, se relaciona con, describe o razonablemente puede vincularse, directa o indirectamente, con un consumidor u hogar concreto.",
+      "examples": [
+        "nombre, alias, dirección postal",
+        "identificadores únicos y online (IP, cookie ID, device ID)",
+        "email, número de teléfono",
+        "historial de navegación y de compras",
+        "datos de geolocalización",
+        "inferencias para crear un perfil"
+      ],
+      "base_score": 40,
+      "legal_basis_required": false,
+      "note": "El modelo de EE.UU. es de opt-out (no requiere base legal previa como el GDPR), pero exige aviso en la recolección y respetar el opt-out de venta/intercambio."
+    },
+    "sensitive": {
+      "label": "Sensitive Personal Information (SPI)",
+      "description": "Subcategoría introducida por la CPRA. Incluye SSN, licencia, pasaporte; login y credenciales; geolocalización precisa; origen racial/étnico, religión; contenido de comunicaciones privadas; datos genéticos, biométricos, de salud, de vida u orientación sexual; y datos de neuronales (neural data).",
+      "examples": [
+        "Social Security / driver's license / passport number",
+        "credenciales de cuenta con contraseña",
+        "geolocalización precisa",
+        "origen racial o étnico, creencias religiosas, afiliación sindical",
+        "datos genéticos y biométricos",
+        "datos de salud, vida u orientación sexual",
+        "neural data (dato neuronal — California es de los más amplios)"
+      ],
+      "base_score": 80,
+      "consumer_right": "Derecho a LIMITAR el uso y divulgación de SPI (Right to Limit).",
+      "legal_reference": "Cal. Civ. Code §1798.121"
+    },
+    "minors": {
+      "label": "Datos de menores",
+      "description": "Los datos de consumidores menores de 16 años se tratan como SPI. Venta/intercambio requiere opt-in.",
+      "age_threshold_opt_in": 16,
+      "rules": [
+        "Menores de 13: se requiere consentimiento verificable del padre/madre o tutor (alineado con COPPA federal)",
+        "13 a 15 años: se requiere opt-in afirmativo del propio menor para vender/compartir sus datos",
+        "Umbral general de daño reputacional bajo COPPA: 13 años"
+      ],
+      "base_score": 80,
+      "additional_penalizer": 30
+    }
+  },
+  "consumer_rights": {
+    "framework": "CCPA/CPRA — derechos KLOC + Limit",
+    "response_deadline_days": 45,
+    "extension_allowed_days": 45,
+    "rights": [
+      { "name": "Know / Access", "description": "Saber qué PI se recolecta, usa, vende o comparte, y acceder a ella.", "legal_ref": "§1798.110 / §1798.115" },
+      { "name": "Delete", "description": "Solicitar la eliminación de la PI recolectada (con excepciones).", "legal_ref": "§1798.105" },
+      { "name": "Correct", "description": "Corregir PI inexacta (introducido por la CPRA).", "legal_ref": "§1798.106" },
+      { "name": "Opt-out of Sale/Sharing", "description": "Rechazar la venta o el intercambio de PI para publicidad conductual cross-context. Debe honrarse la señal Global Privacy Control (GPC).", "legal_ref": "§1798.120" },
+      { "name": "Limit use of SPI", "description": "Limitar el uso de SPI a lo necesario para prestar el servicio.", "legal_ref": "§1798.121" },
+      { "name": "Non-discrimination", "description": "No sufrir discriminación por ejercer derechos.", "legal_ref": "§1798.125" }
+    ],
+    "opt_out_mechanisms": [
+      "Enlace 'Do Not Sell or Share My Personal Information'",
+      "Enlace 'Limit the Use of My Sensitive Personal Information' (o un link combinado)",
+      "Reconocimiento de la señal Global Privacy Control (GPC) a nivel navegador"
+    ]
+  },
+  "privacy_notice": {
+    "required": true,
+    "when": "en o antes del punto de recolección",
+    "must_include": [
+      "categorías de PI y SPI recolectadas y sus finalidades",
+      "si se vende o comparte PI/SPI y a qué categorías de terceros",
+      "periodos de retención por categoría",
+      "descripción de los derechos del consumidor y cómo ejercerlos",
+      "enlaces de opt-out y de limitación de SPI"
+    ],
+    "legal_reference": "§1798.100, §1798.130 y regulaciones CPPA"
+  },
+  "admt_and_assessments": {
+    "note": "En 2025 la CPPA finalizó regulaciones sobre tecnología de decisiones automatizadas (ADMT), evaluaciones de riesgo (risk assessments) y auditorías de ciberseguridad; vigentes desde el 01-01-2026.",
+    "requirements": [
+      "Evaluación de riesgo previa para tratamientos de alto riesgo",
+      "Derechos de acceso y opt-out frente a ciertos usos de ADMT",
+      "Auditorías de ciberseguridad periódicas para negocios cuyo tratamiento implica riesgo significativo"
+    ],
+    "effective_date": "2026-01-01"
+  },
+  "breach_and_private_action": {
+    "private_right_of_action": true,
+    "description": "La CCPA otorga acción privada al consumidor ante brechas de seguridad de cierta PI no cifrada/no redactada por falta de medidas de seguridad razonables.",
+    "statutory_damages": "USD 100 a USD 750 por consumidor y por incidente, o daños reales (el mayor)",
+    "legal_reference": "§1798.150",
+    "state_breach_laws_note": "Los 50 estados tienen leyes de notificación de brechas (data breach notification) con plazos y umbrales propios; verificar el estado de residencia de los afectados."
+  },
+  "sectoral_federal_laws": [
+    { "acronym": "HIPAA", "domain": "Salud", "scope": "Información médica protegida (PHI) en manos de entidades cubiertas y business associates.", "regulator": "HHS / OCR" },
+    { "acronym": "COPPA", "domain": "Menores < 13", "scope": "Servicios online dirigidos a menores de 13; requiere consentimiento parental verificable.", "regulator": "FTC" },
+    { "acronym": "GLBA", "domain": "Financiero", "scope": "Instituciones financieras: aviso de privacidad y salvaguardas (Safeguards Rule).", "regulator": "FTC / agencias bancarias" },
+    { "acronym": "FERPA", "domain": "Educación", "scope": "Registros educativos de estudiantes.", "regulator": "Dept. of Education" },
+    { "acronym": "FTC Act §5", "domain": "Transversal", "scope": "Prácticas desleales o engañosas — base de enforcement de privacidad a nivel federal.", "regulator": "FTC" }
+  ],
+  "sanctions": {
+    "authority": "CPPA y/o California OAG (California); FTC y reguladores sectoriales a nivel federal",
+    "ccpa_fines": {
+      "per_violation": "USD 2,500 por violación",
+      "per_intentional_or_minor_violation": "USD 7,500 por violación intencional o que involucre PI de menores",
+      "note": "La CPRA eliminó el periodo de subsanación (cure period) automático; la agencia decide caso por caso."
+    },
+    "sectoral_examples": [
+      "HIPAA: multas por nivel de culpabilidad, hasta topes anuales por categoría de violación",
+      "COPPA: la FTC ha impuesto sanciones multimillonarias (p. ej. casos de video y publicidad dirigida a menores)"
+    ],
+    "legal_reference": "§1798.155 (CCPA/CPRA)"
+  },
+  "penalizers": [
+    { "id": "us_no_optout_link", "description": "Sin enlace 'Do Not Sell or Share' cuando se vende/comparte PI", "score": 20, "applies_when": "el negocio vende o comparte PI para publicidad conductual y no ofrece el mecanismo de opt-out ni honra GPC", "pillar": "frontend" },
+    { "id": "us_no_spi_limit", "description": "Sin mecanismo para limitar el uso de SPI", "score": 15, "applies_when": "se recolecta SPI (§1798.121) y no se ofrece el derecho a limitar su uso", "pillar": "frontend" },
+    { "id": "us_no_collection_notice", "description": "Aviso en la recolección ausente o incompleto", "score": 15, "applies_when": "no se informa en o antes de la recolección las categorías, finalidades, venta/intercambio y retención", "pillar": "frontend" },
+    { "id": "us_ignores_gpc", "description": "No se respeta la señal Global Privacy Control", "score": 15, "applies_when": "el sitio no reconoce GPC como opt-out válido de venta/intercambio", "pillar": "backend" },
+    { "id": "us_minors_optin", "description": "Venta/intercambio de datos de menores sin opt-in", "score": 30, "applies_when": "se venden/comparten datos de usuarios menores de 16 sin opt-in (o consentimiento parental si <13)", "pillar": "both" },
+    { "id": "us_no_reasonable_security", "description": "Falta de medidas de seguridad razonables (expone a acción privada)", "score": 25, "applies_when": "PI sensible almacenada sin cifrado/redacción ni salvaguardas razonables — riesgo de private right of action", "pillar": "backend" },
+    { "id": "us_no_risk_assessment_admt", "description": "Sin evaluación de riesgo para ADMT / tratamiento de alto riesgo", "score": 15, "applies_when": "uso de decisiones automatizadas o tratamiento de alto riesgo sin la evaluación exigida por las regulaciones CPPA vigentes desde 2026", "pillar": "backend" },
+    { "id": "us_multistate_exposure", "description": "Exposición multi-estatal no mapeada", "score": 10, "applies_when": "el producto tiene usuarios en varios estados con ley integral y no se ha mapeado qué leyes estatales aplican (ver state-matrix.json)", "pillar": "both" }
+  ],
+  "latam_relevance": {
+    "note": "Cualquier startup LATAM con usuarios en California (o en otros estados con ley integral) queda sujeta a CCPA/CPRA si cruza los umbrales. A diferencia del GDPR, el modelo es de opt-out, pero las obligaciones de aviso, opt-out de venta/intercambio y trato de SPI son estrictas y con regulador dedicado (CPPA)."
+  },
+  "metadata": {
+    "version": "1.0.0",
+    "last_updated": "2026-07-09",
+    "legal_review_pending": true,
+    "block": "us",
+    "note": "Guía informativa comparativa. No constituye ni sustituye asesoría jurídica especializada. Complementar con us/state-matrix.json para cobertura multi-estatal."
+  }
+}
