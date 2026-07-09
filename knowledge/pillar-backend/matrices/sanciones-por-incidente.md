@@ -13,7 +13,7 @@
 |---|---|---|---|---|
 | 🇧🇷 Brasil | LGPD | ANPD | R$50.000.000 por infracción o 2% del facturamiento en Brasil (el mayor) | ~$9M USD |
 | 🇨🇴 Colombia | Ley 1581 | SIC | 2,000 SMLMV | ~$600K USD (varía con SMLMV) |
-| 🇲🇽 México | LFPDPPP | INAI | 320,000 días de SMG + 3-6 años de prisión para casos graves | ~$2M USD + penal |
+| 🇲🇽 México | LFPDPPP 2025 | SABG (ex-INAI) | 320,000 UMA (duplicable con datos sensibles) + prisión hasta 5 años | ~$2M USD + penal |
 | 🇪🇺 GDPR | GDPR | Autoridades nacionales | €20.000.000 o 4% facturación mundial anual | ~$22M USD |
 | 🇨🇱 Chile | Ley 21.719 | APDP | Pendiente regulación secundaria (ley vigente 2026) | — |
 | 🇪🇨 Ecuador | LOPDP | DINARDAP | $500K USD máximo | $500K USD |

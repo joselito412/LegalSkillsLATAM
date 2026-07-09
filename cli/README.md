@@ -84,6 +84,20 @@ cli/
 └── tests/
 ```
 
+## Modo agente (LLMs)
+
+La CLI es la **fuente de verdad del score** para agentes de IA. La skill `/audit` de LegalSkillsLATAM la invoca en un loop Evaluar → Corregir → Re-evaluar (estilo react-doctor):
+
+```bash
+npx legalskills-latam audit --config --json   # emite el contrato JSON para el agente
+```
+
+- Contrato de datos (findings con `fix_hint`, `legal_refs`, `config_key`): ver [`architecture/AGENT-CONTRACT.md`](../architecture/AGENT-CONTRACT.md)
+- Los agentes **no deben recalcular la fórmula**: invocan la CLI e interpretan su output
+- Exit codes: `0` pasa el umbral · `1` no pasa (`--fail-on`, default 71) · `2` config inválida
+
+**Próximamente (`v0.4`):** comando `lls doctor` con `--topic` y `--baseline` para el loop por temas, y penalizadores DevOps (`rules/risk-engine/devops-penalizers.json`: staging obligatorio, secretos, datos de prod fuera de prod, etc.). Ver `PLAN-CUMPLIMIENTO-SDLC-Y-CLI-2026-07.md`.
+
 ## Alias corto
 
 ```bash

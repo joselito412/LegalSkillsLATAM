@@ -78,10 +78,11 @@ Plazos de referencia (verificar con abogado según el sector y jurisdicción esp
 
 - [ ] Existe un plan de respuesta a brechas de seguridad con roles y plazos definidos
 - [ ] Documentados los plazos de notificación por jurisdicción:
-  - Brasil (LGPD): referencia de mercado ~72h a ANPD
+  - Brasil (LGPD): **3 días hábiles** a ANPD y titulares (Resolução CD/ANPD nº 15/2024)
   - GDPR: 72h obligatorias a la Autoridad de Control
   - Colombia: "tan pronto como sea posible" a SIC
-  - México: "a la brevedad posible" al INAI
+  - México: "a la brevedad posible" a la SABG (ex-INAI)
+  - Perú: 48 horas (Reglamento D.S. 016-2024-JUS)
 - [ ] El plan incluye el proceso para identificar **qué datos y qué usuarios** se vieron afectados
 - [ ] Existe capacidad técnica para **revocar accesos** en cuestión de minutos ante un incidente
 - [ ] Logs de acceso a datos sensibles conservados por mínimo **12 meses** para investigación post-incidente

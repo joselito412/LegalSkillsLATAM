@@ -1,0 +1,115 @@
+{
+  "$schema": "https://legalskills-latam.dev/schemas/score-formula.v1.json",
+  "version": "1.0.0",
+  "last_reviewed": "2026-07-08",
+  "review_status": "pending_legal_validation",
+  "reviewed_by": null,
+  "editorial_note": "Catálogo de penalizadores del sub-pilar DevOps (Entornos/Pipeline/Operación). Se suman al Pilar Backend en la fórmula combinada (compatibilidad con score 0-100), pero el output los muestra en sub-panel propio '⚙️ DevOps'. Ver knowledge/matrices/matriz-sdlc-cumplimiento.md para el detalle de cada control. Generado 2026-07-08. PENDIENTE: integración en scorer.ts (ver architecture/AGENT-CONTRACT.md y PLAN-CUMPLIMIENTO-SDLC-Y-CLI-2026-07.md, Fase 1.3).",
+  "pillar": "devops",
+  "rolls_up_to": "backend",
+  "max_score": 30,
+  "description": "Penalizadores del sub-pilar DevOps — prácticas de entorno, pipeline y operación exigidas por el deber de seguridad y privacidad por diseño. Owner: CTO + DevOps Lead. Validación: Abogado de data governance.",
+
+  "penalizers": [
+    {
+      "id": "do_no_staging_env",
+      "label": "Sin entorno de staging previo a producción",
+      "description": "Los cambios que tocan datos personales se despliegan directamente a producción sin pasar por un entorno de staging equivalente",
+      "score": 15,
+      "pillar": "devops",
+      "topic": "devops",
+      "legal_refs": ["GDPR Art. 25 (privacidad por diseño)", "LGPD Art. 46 §2"],
+      "standards_refs": ["SOC 2 CC8.1", "ISO 27001 A.8.31-A.8.32"],
+      "config_key": "has_staging_env",
+      "fix_hint": "Crear un entorno de staging con la misma topología que producción y bloquear el deploy directo a prod en el pipeline (branch protection + environment rules).",
+      "applies_when": "no existe entorno de staging, o el pipeline permite desplegar a producción sin pasar por él"
+    },
+    {
+      "id": "do_prod_data_outside_prod",
+      "label": "Datos reales de producción en dev/staging",
+      "description": "Se usan dumps o copias de la base de producción en entornos de desarrollo o pruebas",
+      "score": 20,
+      "pillar": "devops",
+      "topic": "devops",
+      "legal_refs": ["GDPR Art. 5.1.b (limitación de finalidad)", "LGPD Art. 6.I"],
+      "standards_refs": ["ISO 27001 A.8.33"],
+      "config_key": "uses_prod_data_outside_prod",
+      "inverted": true,
+      "fix_hint": "Sustituir dumps de producción por datos sintéticos o enmascarados (faker, anonimización irreversible). Revocar accesos de dev a la base de prod.",
+      "applies_when": "config_key es true — el equipo usa datos reales fuera de producción"
+    },
+    {
+      "id": "do_no_secrets_manager",
+      "label": "Secretos y credenciales sin gestor dedicado",
+      "description": "Credenciales, llaves de API o certificados en el repositorio, en .env versionados o compartidos por chat",
+      "score": 20,
+      "pillar": "devops",
+      "topic": "devops",
+      "legal_refs": ["GDPR Art. 32", "LGPD Art. 46", "Ley 1581 Art. 4.g"],
+      "standards_refs": ["OWASP ASVS V6", "ISO 27001 A.8.24"],
+      "config_key": "has_secrets_manager",
+      "fix_hint": "Migrar secretos a un gestor (Vault, AWS Secrets Manager, GCP Secret Manager), rotar todas las credenciales expuestas y añadir escaneo de secretos (gitleaks) al CI.",
+      "applies_when": "no hay gestor de secretos, o existen credenciales en el historial del repositorio"
+    },
+    {
+      "id": "do_pii_in_logs",
+      "label": "Logs de aplicación con PII sin enmascarar",
+      "description": "Los logs registran emails, documentos de identidad, tokens o datos sensibles en claro",
+      "score": 10,
+      "pillar": "devops",
+      "topic": "devops",
+      "legal_refs": ["GDPR Art. 5.1.c (minimización)", "LGPD Art. 6.III"],
+      "standards_refs": ["OWASP ASVS V7.1"],
+      "config_key": "logs_contain_pii",
+      "inverted": true,
+      "fix_hint": "Añadir enmascaramiento en la capa de logging (redactar email, tokens, IDs de documento) y auditar los logs existentes antes de su retención.",
+      "applies_when": "config_key es true — la telemetría contiene PII en claro"
+    },
+    {
+      "id": "do_no_dependency_scanning",
+      "label": "Sin escaneo de dependencias ni SAST en CI",
+      "description": "El pipeline no verifica vulnerabilidades conocidas en dependencias ni patrones inseguros en el código propio",
+      "score": 10,
+      "pillar": "devops",
+      "topic": "devops",
+      "legal_refs": ["GDPR Art. 32 (seguridad del tratamiento)", "LGPD Art. 46"],
+      "standards_refs": ["OWASP ASVS V10", "NIST SSDF PW.4"],
+      "config_key": "has_dependency_scanning",
+      "fix_hint": "Activar Dependabot/renovate + npm audit (o equivalente) y un SAST (Semgrep, CodeQL) como checks obligatorios del pipeline.",
+      "applies_when": "el CI no tiene pasos de SCA/SAST, o sus hallazgos no bloquean el merge"
+    },
+    {
+      "id": "do_no_tested_backups",
+      "label": "Sin backups cifrados con restauración probada",
+      "description": "No hay backups, no están cifrados, o nunca se ha probado una restauración completa",
+      "score": 10,
+      "pillar": "devops",
+      "topic": "devops",
+      "legal_refs": ["GDPR Art. 32.1.c (disponibilidad y resiliencia)", "LGPD Art. 46"],
+      "standards_refs": ["ISO 27001 A.8.13", "SOC 2 A1.2"],
+      "config_key": "has_tested_backups",
+      "fix_hint": "Configurar backups automáticos cifrados y calendarizar una prueba de restauración documentada al menos cada semestre.",
+      "applies_when": "no existen backups cifrados o no hay evidencia de restauración probada"
+    },
+    {
+      "id": "do_no_ci_risk_gate",
+      "label": "Sin gate de riesgo legal en el pipeline",
+      "description": "El pipeline no ejecuta la auditoría legal automatizada como check del deploy",
+      "score": 5,
+      "pillar": "devops",
+      "topic": "devops",
+      "legal_refs": [],
+      "standards_refs": ["Compliance-as-Code (control interno LegalSkillsLATAM)"],
+      "config_key": "has_ci_risk_gate",
+      "fix_hint": "Añadir `npx legalskills-latam audit --config --fail-on 71` (51 si hay datos sensibles) como job del pipeline de CI.",
+      "applies_when": "el CI no ejecuta la CLI de LegalSkillsLATAM como gate"
+    }
+  ],
+
+  "scoring_rules": {
+    "max_total": 30,
+    "note": "La suma de penalizadores DevOps activos se capea a 30 puntos y se suma al Pilar Backend antes del cap de 50 de ese pilar. El score combinado 0-100 no cambia de fórmula (backward compatible con score-formula-v2.json).",
+    "cap_behavior": "min(sum_active_devops_penalizers, 30) → se agrega a be_raw antes de min(50)",
+    "config_keys_note": "Los campos con 'inverted: true' penalizan cuando el config_key es true (presencia del riesgo); el resto penaliza cuando es false (ausencia del control)."
+  }
+}

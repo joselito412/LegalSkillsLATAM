@@ -13,9 +13,10 @@ Usa este árbol para llegar a la skill correcta en 3 pasos o menos.
 ```
 ¿Cuál es tu objetivo?
 │
-├── 1. AUDITORÍA COMPLETA (primer análisis del proyecto)
+├── 1. AUDITORÍA COMPLETA (primer análisis del proyecto — o loop de corrección)
 │   └── /audit
-│       Output: Risk Score 0–100 + paneles FE + BE + 2 acciones
+│       Output: Risk Score 0–100 + paneles FE + BE (sub-panel DevOps) + 2 acciones
+│       v3: loop Evaluar → Corregir → Re-evaluar hasta score aceptable (AGENT-CONTRACT.md)
 │
 ├── 2. AUDITORÍA DE UN PILAR ESPECÍFICO
 │   │
@@ -89,13 +90,17 @@ Usa este árbol para llegar a la skill correcta en 3 pasos o menos.
 
 ## Skills actualmente disponibles
 
+> 📌 Esta tabla es la **fuente canónica** del estado de las skills. README y `_SKILLS-INDEX.md` la referencian.
+
 | Skill | Estado | Pilar | Score |
 |---|---|---|---|
-| `/audit` | ✅ v2 (dual FE/BE) | Ambos | 0–100 |
+| `/audit` | ✅ v3 (loop iterativo CLI+LLM) | Ambos + DevOps | 0–100 |
 | `/frontend-privacy/consentimiento` | ✅ v1 | Frontend | 0–50 |
 | `/frontend-privacy/transparencia` | ✅ v1 | Frontend | 0–40 |
+| `/frontend-privacy/user-controls` | ✅ v1 | Frontend | Flujo ARCO |
 | `/backend-security/data-protection` | ✅ v1 | Backend | 0–50 |
 | `/backend-security/access-control` | ✅ v1 | Backend | 0–40 |
+| `/backend-security/data-lifecycle` | ✅ v1 | Backend | Retención |
 | `/clasificar-datos` | ✅ v1 | Backend | Clasificación |
 | `/privacy-check` | 🔄 Mantener (deprecar en v0.4) | Ambos | Hallazgos |
 | `/risk-score` | 🔄 Mantener (deprecar en v0.4) | Ambos | 0–100 |

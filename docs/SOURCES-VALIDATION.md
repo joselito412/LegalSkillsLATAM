@@ -16,6 +16,21 @@ Para cada fila, el abogado revisor debe:
 
 ---
 
+## 🔄 Ronda de verificación de vigencia — 2026-07-08
+
+Verificación editorial de vigencia normativa realizada con fuentes secundarias confiables (firmas legales, IAPP, textos oficiales). **No sustituye la revisión de pares artículo por artículo de las tablas siguientes.**
+
+| Jurisdicción | Hallazgo verificado | Fuente de referencia | Acción tomada en el repo |
+|---|---|---|---|
+| 🇲🇽 México | **Nueva LFPDPPP** publicada en DOF el 20-03-2025, vigente desde 21-03-2025; abroga la ley de 2010. INAI extinto; autoridad ahora es la **Secretaría Anticorrupción y Buen Gobierno (SABG)**. Multas de 100 a 320,000 UMA (Arts. 58–64), duplicables con datos sensibles. | [DOF 20-03-2025](https://www.dof.gob.mx/index_113.php?year=2025&month=03&day=20) · [Garrigues](https://www.garrigues.com/es_ES/noticia/mexico-nueva-ley-federal-proteccion-datos-personales-posesion-particulares-introduce) · [IAPP](https://iapp.org/news/a/entendiendo-la-ley-federal-de-protecci-n-de-datos-personales-en-posesi-n-de-los-particulares-en-mexico) | `mexico.json` v1.1.0 actualizado (ley, autoridad, sanciones UMA). Secciones de detalle marcadas para re-validación contra texto 2025. |
+| 🇨🇱 Chile | **Ley 21.719** (DO 13-12-2024) reforma integral de la Ley 19.628; **entra en vigencia el 01-12-2026**. Crea la Agencia de Protección de Datos Personales (APDP); multas hasta 20,000 UTM; Registro Nacional de Sanciones. | [BCN LeyChile](https://www.bcn.cl/leychile/navegar?idNorma=1209272) | Cobertura del README actualizada con `enforcement_date`. Pendiente: crear `chile.json` (sesión de código / v0.5). |
+| 🇧🇷 Brasil | **Resolução CD/ANPD nº 15/2024 (RCIS)**: comunicación de incidentes a ANPD y titulares en **3 días hábiles** (doble para pequeño porte, Res. 2/2022); complemento en 20 días hábiles; registro interno de incidentes por 5 años. | [gov.br/ANPD](https://www.gov.br/anpd/pt-br/assuntos/noticias/anpd-aprova-o-regulamento-de-comunicacao-de-incidente-de-seguranca) · [Texto RCIS](https://www.lgpd.ms.gov.br/wp-content/uploads/2024/05/REGULAMENTO-DE-COMUNICACAO-DE-INCIDENTE-DE-SEGURANCA-ABRIL-2024-ANPD-.pdf) | `brasil.json` v1.1.0 actualizado (breach_notification con práctica regulatoria). |
+| 🇵🇪 Perú | **Nuevo Reglamento** de la Ley 29733: **D.S. 016-2024-JUS** (30-11-2024), vigente desde 31-03-2025. Notificación de brechas en 48 horas; Oficial de Datos Personales (implementación escalonada 1–4 años); portabilidad; alcance extraterritorial. | [El Peruano](https://busquedas.elperuano.pe/dispositivo/SE/2349653-1) · [IAPP](https://iapp.org/news/a/se-publica-el-nuevo-reglamento-de-protecci-n-de-datos-personales-en-per-) | Cobertura del README actualizada. Pendiente: matrices que citen el reglamento de 2013 deben migrar al D.S. 016-2024-JUS. |
+| 🇪🇨 Ecuador | Reglamento LOPDP vigente: **Decreto Ejecutivo 904** (06-11-2023). Superintendencia de Protección de Datos Personales operativa; régimen sancionatorio vigente desde 26-05-2023 (multas 0.7%–1% del volumen de negocio). | [Texto DE-904](https://www.telecomunicaciones.gob.ec/wp-content/uploads/2023/11/Decreto-Ejecutivo-No.-904.pdf) | Cobertura del README actualizada. |
+| 🇦🇷 Argentina | Ley 25.326 **sigue vigente sin reforma aprobada**. Proyectos de reforma en debate legislativo (2025–2026), inspirados en el anteproyecto AAIP, alineados a GDPR/LGPD. | [IAPP](https://iapp.org/news/a/novedades-legislativas-en-argentina-sobre-protecci-n-de-datos-personales-e-inteligencia-artificial) · [AAIP](https://www.argentina.gob.ar/aaip/datospersonales/proyecto-ley-datos-personales) | Sin cambio de reglas. Monitorear en cada ronda de verificación. |
+
+---
+
 ## 🇧🇷 Brasil — LGPD (Lei 13.709/2018)
 
 **Texto oficial:** https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709.htm
@@ -56,11 +71,13 @@ Para cada fila, el abogado revisor debe:
 
 ---
 
-## 🇲🇽 México — LFPDPPP (2010)
+## 🇲🇽 México — LFPDPPP
 
-**Texto oficial DOF:** https://www.dof.gob.mx/nota_detalle.php?codigo=5150631&fecha=05/07/2010
-**Reglamento:** https://www.dof.gob.mx/nota_detalle.php?codigo=5280098&fecha=21/12/2011
-**Autoridad INAI:** https://home.inai.org.mx
+> ⚠️ **AVISO (2026-07-08):** La LFPDPPP de 2010 fue **abrogada** por la nueva LFPDPPP publicada en DOF el 20-03-2025. Los claims de esta tabla se redactaron bajo la ley de 2010: la revisión de pares debe validarlos contra el **texto de 2025** y actualizar la numeración de artículos. La autoridad ya no es el INAI sino la Secretaría Anticorrupción y Buen Gobierno.
+
+**Texto vigente (2025):** https://www.diputados.gob.mx/LeyesBiblio/pdf/LFPDPPP.pdf
+**Ley abrogada (2010, referencia histórica):** https://www.dof.gob.mx/nota_detalle.php?codigo=5150631&fecha=05/07/2010
+**Reglamento 2011 (verificar vigencia parcial):** https://www.dof.gob.mx/nota_detalle.php?codigo=5280098&fecha=21/12/2011
 
 | Claim en el repositorio | Archivo | Artículo | Texto de la ley (extracto) | Revisión |
 |---|---|---|---|---|

@@ -1,10 +1,10 @@
 {
   "$schema": "../schema/country-rules.schema.json",
-  "version": "1.0.0",
-  "last_reviewed": "2026-01-01",
+  "version": "1.1.0",
+  "last_reviewed": "2026-07-08",
   "review_status": "pending_legal_validation",
   "reviewed_by": null,
-  "editorial_note": "Generado por equipo editorial LegalSkillsLATAM. Pendiente de validación por abogado experto en derecho brasileño. No constituye asesoría jurídica.",
+  "editorial_note": "Actualizado 2026-07-08: integrada la práctica regulatoria de la ANPD (Resolução CD/ANPD nº 15/2024 — comunicación de incidentes en 3 días hábiles). Pendiente de validación por abogado experto en derecho brasileño. No constituye asesoría jurídica.",
   "country": {
     "code": "BR",
     "name": "Brasil",
@@ -217,8 +217,16 @@
     "required": true,
     "notify_authority": {
       "entity": "ANPD",
-      "deadline": "prazo razoável — ANPD pode definir prazo específico. Referência de mercado: 72 horas.",
-      "condition": "incidente de segurança que possa acarretar risco ou dano relevante aos titulares"
+      "deadline": "3 dias úteis contados do conhecimento de que o incidente afetou dados pessoais (Regulamento de Comunicação de Incidente de Segurança — Resolução CD/ANPD nº 15/2024). Prazo em dobro para agentes de tratamento de pequeno porte (Resolução CD/ANPD nº 2/2022).",
+      "condition": "incidente de segurança que possa acarretar risco ou dano relevante aos titulares (envolvimento de dados sensíveis, de menores, financeiros, credenciais de autenticação ou tratamento em larga escala)",
+      "regulatory_practice": {
+        "source": "Resolução CD/ANPD nº 15, de 24 de abril de 2024 (RCIS)",
+        "rules": [
+          "Comunicação à ANPD e aos titulares em 3 dias úteis",
+          "Informações complementares podem ser apresentadas em até 20 dias úteis, de forma fundamentada",
+          "Registro interno de TODOS os incidentes (comunicados ou não) por no mínimo 5 anos"
+        ]
+      }
     },
     "notify_subjects": {
       "required": true,

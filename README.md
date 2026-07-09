@@ -3,9 +3,7 @@
 **Estándar Abierto de Cumplimiento Legal para Desarrolladores en Latinoamérica**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![Security: Trust Hub](https://img.shields.io/badge/Trust%20Hub-95%2F100-brightgreen)](docs/SECURITY.md)
-[![Security: Socket](https://img.shields.io/badge/Socket-82%2F100-yellow)](docs/SECURITY.md)
-[![Security: Snyk](https://img.shields.io/badge/Snyk%20W011-76%2F100-yellow)](docs/SECURITY.md)
+[![SkillSpector: LOW · SAFE](https://img.shields.io/badge/SkillSpector-LOW%20%C2%B7%208.3%2F100-brightgreen)](docs/SECURITY.md)
 [![Version](https://img.shields.io/badge/version-0.1.1-blue)](docs/ROADMAP.md)
 
 <p align="center">
@@ -37,7 +35,7 @@ El proyecto opera en **tres formatos simultáneos**:
 
 > 🔨 **Lo que ya funciona bien**
 >
-> El motor técnico está consolidado: las 5 skills de Claude, la CLI con output visual, el algoritmo de Legal Risk Score (0–100), las reglas JSON por país, los dos pilares Frontend/Backend y la arquitectura del repositorio.
+> El motor técnico está consolidado: las 6 skills de Claude, la CLI con output visual, el algoritmo de Legal Risk Score (0–100), las reglas JSON por país, los dos pilares Frontend/Backend y la arquitectura del repositorio.
 >
 > 📌 **Lo que sigue pendiente: verificación de pares**
 >
@@ -94,11 +92,20 @@ Risk Score = min(100, (C_base + Σ Penalizadores) × F_rigor)
 
 | Skill | Comando | Descripción |
 |---|---|---|
+| 🔍 **Audit (punto de entrada)** | `/audit` | Auditoría iterativa completa: loop Evaluar → Corregir → Re-evaluar con score 0–100 y paneles FE/BE/DevOps |
 | 🗂️ Clasificar Datos | `/clasificar-datos` | Clasifica cualquier campo o tabla según su nivel de sensibilidad legal por jurisdicción |
-| 🔍 Privacy Check | `/privacy-check` | Audita un feature, endpoint o esquema de base de datos |
-| ⚖️ Risk Score | `/risk-score` | Calcula el Legal Risk Score (0–100) con semáforo y acciones |
+| 🖥️ Consentimiento (FE) | `/frontend-privacy/consentimiento` | Audita el flujo de consentimiento granular y su registro |
+| 🖥️ Transparencia (FE) | `/frontend-privacy/transparencia` | Verifica política de privacidad, cookies y avisos |
+| 🖥️ User Controls (FE) | `/frontend-privacy/user-controls` | Flujo UX del portal de derechos del usuario (ARCO) |
+| ⚙️ Data Protection (BE) | `/backend-security/data-protection` | Cifrado, hashing, retención y DPA |
+| ⚙️ Access Control (BE) | `/backend-security/access-control` | RBAC y audit logging |
+| ⚙️ Data Lifecycle (BE) | `/backend-security/data-lifecycle` | Política de retención y purga por tipo de dato |
 | 🌎 Matriz Normativa | `/matriz-normativa` | Compara leyes LATAM vs GDPR vs CCPA en cualquier dimensión |
 | 📋 Derechos Usuario | `/derechos-usuario` | Genera el protocolo de respuesta a solicitudes ARCO/ARSOP |
+| 🔍 Privacy Check | `/privacy-check` | Audita un feature, endpoint o schema *(se deprecará en v0.4 — usa `/audit`)* |
+| ⚖️ Risk Score | `/risk-score` | Solo el score 0–100 *(se deprecará en v0.4 — usa `/audit`)* |
+
+> Estado canónico de cada skill: [`skills/_routing.md`](skills/_routing.md)
 
 ---
 
@@ -106,15 +113,17 @@ Risk Score = min(100, (C_base + Σ Penalizadores) × F_rigor)
 
 | País | Ley Principal | Estado |
 |---|---|---|
-| 🇨🇴 Colombia | Ley 1581 de 2012 (Hábeas Data) | ✅ Incluido |
-| 🇲🇽 México | LFPDPPP 2010 | ✅ Incluido |
-| 🇧🇷 Brasil | LGPD 2020 *(techo regulatorio regional)* | ✅ Incluido |
-| 🇨🇱 Chile | Ley 19.628 | ✅ Incluido |
-| 🇦🇷 Argentina | Ley 25.326 | ✅ Incluido |
-| 🇵🇪 Perú | Ley 29733 | ✅ Incluido |
-| 🇪🇨 Ecuador | LOPDP 2021 | ✅ Incluido |
+| 🇨🇴 Colombia | Ley 1581 de 2012 (Hábeas Data) + Decretos 1377/2013 y 1074/2015 | ✅ Incluido |
+| 🇲🇽 México | **Nueva LFPDPPP (DOF 20-03-2025)** — abroga la ley de 2010; autoridad: SABG (ex-INAI); multas en UMA | ✅ Incluido *(actualizado jul-2026)* |
+| 🇧🇷 Brasil | LGPD 2018 + Resoluciones ANPD *(techo regulatorio regional; incidentes: 3 días hábiles, Res. 15/2024)* | ✅ Incluido *(actualizado jul-2026)* |
+| 🇨🇱 Chile | Ley 19.628 → **Ley 21.719 entra en vigencia el 01-12-2026** (APDP, multas hasta 20,000 UTM) | ✅ Incluido ⏳ *(transición dic-2026)* |
+| 🇦🇷 Argentina | Ley 25.326 *(proyectos de reforma en debate legislativo 2025-2026)* | ✅ Incluido |
+| 🇵🇪 Perú | Ley 29733 + **nuevo Reglamento D.S. 016-2024-JUS** (vigente mar-2025; brechas: 48h) | ✅ Incluido *(actualizado jul-2026)* |
+| 🇪🇨 Ecuador | LOPDP 2021 + Reglamento DE-904/2023 (Superintendencia operativa) | ✅ Incluido |
 | 🇪🇺 Unión Europea | GDPR 2018 *(referente global)* | ✅ Contraste |
 | 🇺🇸 Estados Unidos | CCPA / NIST | ✅ Contraste |
+
+> Verificación de vigencia: [`docs/SOURCES-VALIDATION.md`](docs/SOURCES-VALIDATION.md) — ronda 2026-07-08.
 
 ---
 
@@ -125,8 +134,7 @@ LegalSkillsLATAM/
 │
 ├── assets/                  # Diagramas y recursos visuales
 │   ├── architecture.svg     # Diagrama de arquitectura del proyecto
-│   ├── risk-score-demo.svg  # Ejemplo de output del Risk Score
-│   └── security-audits.svg  # Estado de compliance de audits
+│   └── risk-score-demo.svg  # Ejemplo de output del Risk Score
 │
 ├── .claude-plugin/          # Metadata del plugin de Claude
 │   └── plugin.json
@@ -155,19 +163,22 @@ LegalSkillsLATAM/
 
 ## Seguridad
 
-![Security Audit Compliance](assets/security-audits.svg)
+LegalSkillsLATAM se evalúa con [**SkillSpector v2.1.1**](https://github.com/NVIDIA/skillspector) (NVIDIA) — el scanner de referencia para skills de agentes de IA. Cobertura: 64 patrones / 16 categorías. Análisis estático reproducible offline.
 
-LegalSkillsLATAM se evalúa frente a los **tres audits de referencia** del ecosistema de skills para agentes de IA. La remediación de seguridad **v0.1.1** elevó el score combinado de **75 → 84/100**.
+| Skill | Score | Severidad | Recomendación |
+|---|---|---|---|
+| `audit` | 25 / 100 | MEDIUM | CAUTION (1 falso positivo P1) |
+| `clasificar-datos` | 0 / 100 | LOW | **SAFE** |
+| `derechos-usuario` | 0 / 100 | LOW | **SAFE** |
+| `matriz-normativa` | 0 / 100 | LOW | **SAFE** |
+| `privacy-check` | 25 / 100 | MEDIUM | CAUTION (1 falso positivo P1) |
+| `risk-score` | 0 / 100 | LOW | **SAFE** |
 
-| Auditor | Score v0.1.0 → v0.1.1 | Estado |
-|---|---|---|
-| 🛡️ **Gen Agent Trust Hub** | 87 → **95/100** | ✅ Objetivo alcanzado (≥ 95) |
-| 🔌 **Socket** | 79 → **82/100** | ⚠️ PASS parcial — cobertura npm completa en Fase 2 |
-| 🐍 **Snyk W011** *(prompt injection)* | 58 → **76/100** | ⚠️ PASS parcial — mitigación conductual completa, enforcement técnico diferido |
+**Promedio: 8.3/100 — LOW · SAFE.** 4/6 skills sin findings; los 2 HIGH son frases adversariales dentro de `TEST-CASES.md`, esperadas como evidencia de que el aislamiento de contenido funciona.
 
-**Qué se reforzó en v0.1.1:** principio de *Content Isolation* en las 6 skills, 17 test cases de inyección (español, inglés y código), reglas de detección estructural sin palabras clave, y *permission manifests* por skill.
+**Refuerzos v0.1.1:** *Content Isolation* (OWASP LLM01) en las 6 skills, 17 test cases de inyección (ES/EN/código), detección estructural sin keywords, *permission manifests* por skill.
 
-> Los scores son estimaciones internas contra los criterios de cada auditor; aún no se ha ejecutado ningún scan externo. Análisis completo y gaps residuales documentados en [`docs/SECURITY.md`](docs/SECURITY.md).
+> Análisis completo, falsos positivos explicados y comandos para reproducir el scan en [`docs/SECURITY.md`](docs/SECURITY.md).
 
 ---
 
@@ -182,6 +193,7 @@ git clone https://github.com/joselito412/LegalSkillsLATAM.git
 Una vez instalado, las skills se activan desde cualquier conversación de Claude:
 
 ```
+/audit "app de telemedicina con video, recetas y pagos en Colombia y México"
 /risk-score "Mi app de salud que captura diagnósticos médicos, opera en Colombia"
 /clasificar-datos "tabla: usuarios(id, email, huella_digital, fecha_nacimiento)"
 /privacy-check "endpoint POST /registro que guarda IP y fingerprint del dispositivo"
