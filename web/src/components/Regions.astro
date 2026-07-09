@@ -1,0 +1,89 @@
+---
+import type { Lang } from '../i18n/utils';
+import { useTranslations } from '../i18n/utils';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const eu = [{ flag: '🇪🇺', name: 'GDPR', law: 'Reg. (UE) 2016/679' }];
+
+const us = [
+  { flag: '🇺🇸', name: 'CCPA / CPRA', law: 'California · CPPA' },
+  { flag: '🇺🇸', name: '~20 state laws', law: 'VA · CO · CT · TX · UT · OR…' },
+  { flag: '🏛️', name: 'HIPAA · COPPA · GLBA', law: 'Federal sectoral' },
+];
+
+const latam = [
+  { flag: '🇨🇴', name: 'Colombia', law: 'Ley 1581/2012' },
+  { flag: '🇲🇽', name: 'México', law: 'LFPDPPP 2025' },
+  { flag: '🇧🇷', name: 'Brasil', law: 'LGPD' },
+  { flag: '🇨🇱', name: 'Chile', law: 'Ley 21.719' },
+  { flag: '🇦🇷', name: 'Argentina', law: 'Ley 25.326' },
+  { flag: '🇵🇪', name: 'Perú', law: 'Ley 29733' },
+  { flag: '🇪🇨', name: 'Ecuador', law: 'LOPDP 2021' },
+];
+
+const blocks = [
+  { title: '🇪🇺 Unión Europea', status: t('regions.eu_status'), level: t('regions.level_own'), levelClass: 'own', items: eu },
+  { title: '🇺🇸 Estados Unidos', status: t('regions.us_status'), level: t('regions.level_progress'), levelClass: 'progress', items: us },
+  { title: '🌎 Latinoamérica', status: t('regions.latam_status'), level: t('regions.level_own'), levelClass: 'own', items: latam },
+];
+---
+
+<section id="regions">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">{t('regions.eyebrow')}</p>
+      <h2>{t('regions.title')}</h2>
+      <p>{t('regions.subtitle')}</p>
+    </div>
+
+    <div class="grid grid-3">
+      {blocks.map((b) => (
+        <article class="card block">
+          <div class="block-head">
+            <h3>{b.title}</h3>
+            <span class={`level ${b.levelClass}`}>{b.level}</span>
+          </div>
+          <p class="status">{b.status}</p>
+          <div class="badges">
+            {b.items.map((i) => (
+              <span class="badge mono"><span class="flag">{i.flag}</span> {i.name}<em>{i.law}</em></span>
+            ))}
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .block-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+  .level {
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    padding: 3px 8px;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+  .level.own { color: var(--risk-low-bright); border: 1px solid rgba(46, 160, 67, 0.4); background: rgba(46, 160, 67, 0.1); }
+  .level.progress { color: var(--risk-mid); border: 1px solid rgba(210, 153, 34, 0.4); background: rgba(210, 153, 34, 0.1); }
+  .status { color: var(--text-muted); font-size: 0.9rem; margin: 8px 0 16px; }
+  .badges { display: flex; flex-direction: column; gap: 8px; }
+  .badge {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    font-size: 0.82rem;
+    color: var(--text);
+    background: var(--bg-deep);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 7px 11px;
+  }
+  .badge em { color: var(--text-faint); font-style: normal; margin-left: auto; font-size: 0.74rem; }
+  .flag { font-style: normal; }
+</style>

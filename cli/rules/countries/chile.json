@@ -1,0 +1,118 @@
+{
+  "$schema": "../schema/country-rules.schema.json",
+  "version": "1.0.0",
+  "last_reviewed": "2026-07-09",
+  "review_status": "pending_legal_validation",
+  "reviewed_by": null,
+  "editorial_note": "Chile — creado en el rebrand 2026-07. La Ley 21.719 (publicada dic-2024) reforma integralmente el régimen y ENTRA EN VIGENCIA el 01-12-2026, sustituyendo el modelo de la Ley 19.628. Crea la Agencia de Protección de Datos Personales (APDP) y alinea el marco con estándares GDPR (bases de licitud, derechos ARCOP, sanciones por ingresos). Datos por verificar contra el texto vigente en la revisión de pares. No constituye asesoría jurídica.",
+  "country": {
+    "code": "CL",
+    "name": "Chile",
+    "flag": "🇨🇱",
+    "rigor_level": "strict",
+    "rigor_factor": 1.10,
+    "note": "Transición 2026: de la Ley 19.628 (1999) a la Ley 21.719, la reforma más profunda de la región reciente. Modelo GDPR-like con autoridad dedicada (APDP)."
+  },
+  "primary_law": {
+    "name": "Ley 21.719 que regula la protección y el tratamiento de los datos personales y crea la Agencia de Protección de Datos Personales",
+    "acronym": "Ley 21.719",
+    "number": "Ley 21.719 (Diario Oficial dic-2024)",
+    "replaces": "Ley 19.628 sobre protección de la vida privada (1999)",
+    "effective_date": "2026-12-01",
+    "regulator": {
+      "name": "Agencia de Protección de Datos Personales",
+      "acronym": "APDP",
+      "note": "Autoridad de control dedicada creada por la Ley 21.719 (nueva; en implementación hacia la vigencia)."
+    },
+    "gdpr_alignment": "high",
+    "notes": "Introduce principios GDPR-like (licitud, finalidad, proporcionalidad, minimización, calidad, responsabilidad proactiva), bases de licitud, DPO en ciertos casos, notificación de brechas y régimen sancionatorio por tramos según ingresos."
+  },
+  "data_categories": {
+    "personal": {
+      "label": "Datos personales",
+      "description": "Cualquier información vinculada o referida a una persona natural identificada o identificable.",
+      "examples": ["nombre", "RUT", "correo electrónico", "dirección IP", "geolocalización", "datos de contacto"],
+      "base_score": 40,
+      "legal_basis_required": true,
+      "legal_bases": [
+        "consentimiento del titular",
+        "ejecución o celebración de un contrato",
+        "cumplimiento de una obligación legal",
+        "interés legítimo del responsable",
+        "otras bases previstas en la ley"
+      ]
+    },
+    "sensitive": {
+      "label": "Datos personales sensibles",
+      "description": "Datos que revelan origen étnico/racial, afiliación política/sindical, convicciones religiosas o filosóficas, datos de salud, perfil biológico humano, datos biométricos, y datos sobre la vida u orientación sexual.",
+      "examples": ["salud", "datos biométricos", "origen étnico o racial", "convicciones religiosas", "vida u orientación sexual", "afiliación sindical o política"],
+      "base_score": 80,
+      "consent_required": true,
+      "note": "Tratamiento restringido; requiere consentimiento u otra base cualificada prevista en la ley."
+    },
+    "minors": {
+      "label": "Datos de niños, niñas y adolescentes",
+      "description": "Tratamiento con interés superior del niño y consentimiento de quien ejerce la patria potestad según la edad.",
+      "base_score": 80,
+      "additional_penalizer": 30
+    }
+  },
+  "data_subject_rights": {
+    "framework": "Derechos ARCOP (Ley 21.719)",
+    "acronym_meaning": {
+      "A": "Acceso",
+      "R": "Rectificación",
+      "C": "Cancelación/Supresión",
+      "O": "Oposición",
+      "P": "Portabilidad"
+    },
+    "rights": [
+      { "name": "Acceso", "description": "Conocer los datos tratados y las condiciones del tratamiento." },
+      { "name": "Rectificación", "description": "Corregir datos inexactos, desactualizados o incompletos." },
+      { "name": "Supresión/Cancelación", "description": "Eliminar datos cuando proceda." },
+      { "name": "Oposición", "description": "Oponerse a determinados tratamientos." },
+      { "name": "Portabilidad", "description": "Recibir y transferir los datos en formato estructurado y de uso común." }
+    ]
+  },
+  "breach_notification": {
+    "required": true,
+    "notify_authority": {
+      "entity": "Agencia de Protección de Datos Personales (APDP)",
+      "condition": "vulneraciones de seguridad que afecten datos personales, especialmente sensibles",
+      "deadline": "sin dilaciones indebidas (plazo específico por confirmar en el reglamento)"
+    },
+    "notify_subjects": { "required": true, "condition": "cuando exista riesgo para los derechos del titular" }
+  },
+  "dpo": {
+    "required_when": ["tratamientos de alto riesgo o a gran escala (según la ley y su reglamento)"],
+    "title": "Delegado de Protección de Datos / Encargado de prevención",
+    "note": "Figura reforzada respecto del régimen anterior; verificar supuestos exactos en el reglamento."
+  },
+  "international_transfer": {
+    "allowed": true,
+    "mechanisms": ["países con nivel adecuado", "cláusulas contractuales / garantías apropiadas", "consentimiento del titular", "normas corporativas vinculantes"],
+    "note": "Modelo GDPR-like de transferencias con garantías."
+  },
+  "sanctions": {
+    "authority": "Agencia de Protección de Datos Personales (APDP)",
+    "regime": "Infracciones clasificadas (leves, graves, gravísimas) con multas en UTM y posibilidad de escalar según ingresos.",
+    "max_fine": "hasta 20,000 UTM (infracciones gravísimas); posibilidad de multas por porcentaje de ingresos anuales en ciertos casos",
+    "note": "Verificar tramos y topes exactos y la conversión UTM vigente en la revisión de pares.",
+    "legal_ref": "Ley 21.719 (título sancionatorio)"
+  },
+  "penalizers": [
+    { "id": "cl_no_legal_basis", "description": "Tratamiento sin base de licitud documentada", "score": 20, "applies_when": "no se identificó ni documentó una base de licitud para cada finalidad", "pillar": "both" },
+    { "id": "cl_sensitive_without_consent", "description": "Datos sensibles sin consentimiento u otra base cualificada", "score": 25, "applies_when": "tratamiento de datos sensibles sin la base reforzada exigida", "pillar": "frontend" },
+    { "id": "cl_no_privacy_info", "description": "Sin información/aviso de tratamiento al titular", "score": 15, "applies_when": "no se informa finalidad, base, derechos y responsable al momento de recabar", "pillar": "frontend" },
+    { "id": "cl_no_breach_procedure", "description": "Sin procedimiento de notificación de brechas a la APDP", "score": 20, "applies_when": "ausencia de plan de detección y notificación de incidentes", "pillar": "backend" },
+    { "id": "cl_minors_data", "description": "Datos de menores sin consentimiento del representante", "score": 30, "applies_when": "el servicio puede tener usuarios menores de edad sin verificación", "pillar": "both" },
+    { "id": "cl_uncontrolled_transfer", "description": "Transferencia internacional sin garantías", "score": 20, "applies_when": "datos transferidos fuera de Chile sin nivel adecuado ni garantías apropiadas", "pillar": "backend" }
+  ],
+  "metadata": {
+    "version": "1.0.0",
+    "last_updated": "2026-07-09",
+    "legal_review_pending": true,
+    "transition": "Ley 19.628 → Ley 21.719 (vigencia 01-12-2026)",
+    "note": "Guía informativa. No constituye ni sustituye asesoría jurídica especializada."
+  }
+}

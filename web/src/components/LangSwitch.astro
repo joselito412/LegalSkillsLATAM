@@ -1,0 +1,32 @@
+---
+import type { Lang } from '../i18n/utils';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+
+// Route without the locale prefix, so we can swap languages in place.
+const path = Astro.url.pathname.replace(/^\/en(?=\/|$)/, '') || '/';
+const esHref = path;
+const enHref = path === '/' ? '/en/' : `/en${path}`;
+---
+
+<div class="lang-switch mono">
+  <a href={esHref} class={lang === 'es' ? 'on' : ''} aria-current={lang === 'es'}>ES</a>
+  <span class="sep">/</span>
+  <a href={enHref} class={lang === 'en' ? 'on' : ''} aria-current={lang === 'en'}>EN</a>
+</div>
+
+<style>
+  .lang-switch {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.82rem;
+    color: var(--text-faint);
+  }
+  .lang-switch a { color: var(--text-muted); }
+  .lang-switch a.on { color: var(--text); font-weight: 700; }
+  .lang-switch .sep { color: var(--border); }
+</style>

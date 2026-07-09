@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://privacycomplianceskills.dev/schemas/us-state-matrix.v1.json",
+  "title": "Privacy Compliance Skills — US State Privacy Law Matrix Schema",
+  "description": "Esquema de validación para la matriz comparativa de leyes estatales integrales de privacidad de EE.UU. (cli/rules/us/state-matrix.json).",
+  "version": "1.0.0",
+  "type": "object",
+  "required": ["as_of", "review_status", "states"],
+  "additionalProperties": true,
+  "properties": {
+    "as_of": { "type": "string", "description": "Fecha de corte de la verificación (YYYY-MM-DD)." },
+    "review_status": {
+      "type": "string",
+      "enum": ["pending_legal_validation", "under_review", "validated"]
+    },
+    "editorial_note": { "type": "string" },
+    "count": { "type": "integer" },
+    "dimensions": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "states": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["code", "name", "law", "effective"],
+        "additionalProperties": true,
+        "properties": {
+          "code": { "type": "string", "pattern": "^[A-Z]{2}$" },
+          "name": { "type": "string" },
+          "law": { "type": "string" },
+          "acronym": { "type": "string" },
+          "effective": { "type": "string" },
+          "applicability": { "type": "string" },
+          "sensitive_data": {
+            "type": "string",
+            "enum": ["opt-in", "opt-out", "notice-only", "n/a"]
+          },
+          "private_right_of_action": { "type": "boolean" },
+          "cure_period": {
+            "type": "string",
+            "enum": ["permanent", "temporary", "none", "unknown"]
+          },
+          "universal_opt_out": { "type": "boolean" },
+          "regulator": { "type": "string" },
+          "note": { "type": "string" },
+          "verify": { "type": "boolean" }
+        }
+      }
+    }
+  }
+}

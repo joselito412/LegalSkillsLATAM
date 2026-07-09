@@ -1,0 +1,71 @@
+---
+import type { Lang } from '../i18n/utils';
+import { useTranslations, localizePath } from '../i18n/utils';
+import { SITE } from '../config';
+import LangSwitch from './LangSwitch.astro';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const home = localizePath('/', lang);
+---
+
+<header class="site-header">
+  <div class="container inner">
+    <a href={home} class="brand" aria-label={SITE.name}>
+      <img src="/logo-mark.svg" alt="" width="34" height="34" />
+      <span class="brand-text">
+        Privacy Compliance <span class="brand-skills">Skills</span>
+      </span>
+    </a>
+
+    <nav class="nav">
+      <a href="#risk">{t('nav.risk')}</a>
+      <a href="#regions">{t('nav.regions')}</a>
+      <a href="#contribute">{t('nav.contribute')}</a>
+      <a href={SITE.githubUrl} target="_blank" rel="noopener">{t('nav.github')} ↗</a>
+      <LangSwitch lang={lang} />
+    </nav>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    backdrop-filter: blur(10px);
+    background: rgba(13, 17, 23, 0.75);
+    border-bottom: 1px solid var(--border);
+  }
+  .inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 62px;
+  }
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--text);
+    font-weight: 700;
+    font-size: 0.98rem;
+  }
+  .brand:hover { text-decoration: none; }
+  .brand-skills { font-family: var(--font-mono); color: var(--risk-low-bright); }
+  .nav {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    font-size: 0.9rem;
+  }
+  .nav a { color: var(--text-muted); }
+  .nav a:hover { color: var(--text); text-decoration: none; }
+  @media (max-width: 720px) {
+    .brand-text { display: none; }
+    .nav { gap: 13px; font-size: 0.82rem; }
+  }
+</style>

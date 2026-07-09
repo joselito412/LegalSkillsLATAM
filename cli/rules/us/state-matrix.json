@@ -1,0 +1,44 @@
+{
+  "$schema": "../schema/us-state-matrix.schema.json",
+  "as_of": "2026-07-09",
+  "review_status": "pending_legal_validation",
+  "count": 19,
+  "editorial_note": "Matriz de las leyes estatales integrales de privacidad del consumidor vigentes en EE.UU. a jul-2026 (19 leyes integrales; el ecosistema suele citar '~20' según cómo se cuenten los casos límite). NO incluye leyes exclusivamente sectoriales: Washington (MHMDA) es de salud y Florida (FDBR) es de alcance acotado, por lo que se rastrean por separado. Fechas de vigencia, umbrales y periodos de subsanación (cure period) son aproximados y DEBEN verificarse contra el texto vigente de cada estado en la revisión de pares; varias leyes tienen cure periods que expiran (temporary). Ningún estado, salvo California para brechas, otorga private right of action. No constituye asesoría jurídica.",
+  "dimensions": [
+    "effective (fecha de vigencia)",
+    "applicability (umbral de aplicabilidad)",
+    "sensitive_data (opt-in vs opt-out)",
+    "private_right_of_action",
+    "cure_period",
+    "universal_opt_out (reconoce señal GPC/UOOM)"
+  ],
+  "baseline_reference": "us/usa-federal.json (CCPA/CPRA)",
+  "states": [
+    { "code": "CA", "name": "California", "law": "CCPA/CPRA", "effective": "2020-01-01 (CPRA 2023-01-01)", "applicability": "$26.625M ingresos, o 100k consumidores/hogares, o 50% ingresos por venta/share", "sensitive_data": "opt-out", "private_right_of_action": true, "cure_period": "none", "universal_opt_out": true, "regulator": "CPPA + OAG", "note": "Única con acción privada (solo brechas); regulador dedicado.", "verify": true },
+    { "code": "VA", "name": "Virginia", "law": "Virginia Consumer Data Protection Act", "acronym": "VCDPA", "effective": "2023-01-01", "applicability": "100k consumidores, o 25k + 50% ingresos por venta", "sensitive_data": "opt-in", "private_right_of_action": false, "cure_period": "permanent", "universal_opt_out": false, "regulator": "VA Attorney General", "verify": true },
+    { "code": "CO", "name": "Colorado", "law": "Colorado Privacy Act", "acronym": "CPA", "effective": "2023-07-01", "applicability": "100k consumidores, o 25k + ingresos por venta", "sensitive_data": "opt-in", "private_right_of_action": false, "cure_period": "temporary", "universal_opt_out": true, "regulator": "CO AG", "verify": true },
+    { "code": "CT", "name": "Connecticut", "law": "Connecticut Data Privacy Act", "acronym": "CTDPA", "effective": "2023-07-01", "applicability": "100k consumidores, o 25k + 25% ingresos por venta", "sensitive_data": "opt-in", "private_right_of_action": false, "cure_period": "temporary", "universal_opt_out": true, "regulator": "CT AG", "verify": true },
+    { "code": "UT", "name": "Utah", "law": "Utah Consumer Privacy Act", "acronym": "UCPA", "effective": "2023-12-31", "applicability": "$25M ingresos + 100k consumidores (o 25k + 50% ingresos por venta)", "sensitive_data": "opt-out", "private_right_of_action": false, "cure_period": "permanent", "universal_opt_out": false, "regulator": "UT AG / Div. Consumer Protection", "note": "Ley más laxa (business-friendly).", "verify": true },
+    { "code": "TX", "name": "Texas", "law": "Texas Data Privacy and Security Act", "acronym": "TDPSA", "effective": "2024-07-01", "applicability": "Hace negocios en TX, procesa/vende datos personales, y no es small business (SBA)", "sensitive_data": "opt-in", "private_right_of_action": false, "cure_period": "permanent", "universal_opt_out": true, "regulator": "TX AG", "note": "Umbral no basado en volumen sino en tamaño de empresa.", "verify": true },
+    { "code": "OR", "name": "Oregon", "law": "Oregon Consumer Privacy Act", "acronym": "OCPA", "effective": "2024-07-01", "applicability": "100k consumidores, o 25k + 25% ingresos por venta", "sensitive_data": "opt-in", "private_right_of_action": false, "cure_period": "temporary", "universal_opt_out": true, "regulator": "OR AG", "verify": true },
+    { "code": "MT", "name": "Montana", "law": "Montana Consumer Data Privacy Act", "acronym": "MCDPA", "effective": "2024-10-01", "applicability": "50k consumidores, o 25k + 25% ingresos por venta (umbral reducido)", "sensitive_data": "opt-in", "private_right_of_action": false, "cure_period": "temporary", "universal_opt_out": true, "regulator": "MT AG", "verify": true },
+    { "code": "DE", "name": "Delaware", "law": "Delaware Personal Data Privacy Act", "acronym": "DPDPA", "effective": "2025-01-01", "applicability": "35k consumidores, o 10k + 20% ingresos por venta (umbral bajo)", "sensitive_data": "opt-in", "private_right_of_action": false, "cure_period": "temporary", "universal_opt_out": true, "regulator": "DE DOJ", "verify": true },
+    { "code": "IA", "name": "Iowa", "law": "Iowa Consumer Data Protection Act", "acronym": "ICDPA", "effective": "2025-01-01", "applicability": "100k consumidores, o 25k + 50% ingresos por venta", "sensitive_data": "notice-only", "private_right_of_action": false, "cure_period": "permanent", "universal_opt_out": false, "regulator": "IA AG", "note": "Ley más laxa; sin opt-in para sensibles, solo aviso/opt-out.", "verify": true },
+    { "code": "NE", "name": "Nebraska", "law": "Nebraska Data Privacy Act", "acronym": "NDPA", "effective": "2025-01-01", "applicability": "Hace negocios en NE y no es small business (modelo TX)", "sensitive_data": "opt-in", "private_right_of_action": false, "cure_period": "permanent", "universal_opt_out": true, "regulator": "NE AG", "verify": true },
+    { "code": "NH", "name": "New Hampshire", "law": "New Hampshire Privacy Act", "acronym": "NHPA", "effective": "2025-01-01", "applicability": "35k consumidores, o 10k + 25% ingresos por venta", "sensitive_data": "opt-in", "private_right_of_action": false, "cure_period": "temporary", "universal_opt_out": true, "regulator": "NH AG", "verify": true },
+    { "code": "NJ", "name": "New Jersey", "law": "New Jersey Data Privacy Act", "acronym": "NJDPA", "effective": "2025-01-15", "applicability": "100k consumidores, o 25k + ingresos por venta", "sensitive_data": "opt-in", "private_right_of_action": false, "cure_period": "temporary", "universal_opt_out": true, "regulator": "NJ Div. Consumer Affairs", "verify": true },
+    { "code": "MN", "name": "Minnesota", "law": "Minnesota Consumer Data Privacy Act", "acronym": "MCDPA", "effective": "2025-07-31", "applicability": "100k consumidores, o 25k + 25% ingresos por venta", "sensitive_data": "opt-in", "private_right_of_action": false, "cure_period": "temporary", "universal_opt_out": true, "regulator": "MN AG", "note": "Incluye derechos reforzados sobre profiling.", "verify": true },
+    { "code": "TN", "name": "Tennessee", "law": "Tennessee Information Protection Act", "acronym": "TIPA", "effective": "2025-07-01", "applicability": "$25M ingresos + 175k consumidores (umbral alto)", "sensitive_data": "opt-in", "private_right_of_action": false, "cure_period": "permanent", "universal_opt_out": false, "regulator": "TN AG", "note": "Defensa por programa de privacidad conforme a NIST.", "verify": true },
+    { "code": "MD", "name": "Maryland", "law": "Maryland Online Data Privacy Act", "acronym": "MODPA", "effective": "2025-10-01", "applicability": "35k consumidores, o 10k + 20% ingresos por venta", "sensitive_data": "opt-in", "private_right_of_action": false, "cure_period": "temporary", "universal_opt_out": true, "regulator": "MD AG", "note": "De las más estrictas: minimización de datos reforzada y prohibición de venta de datos sensibles.", "verify": true },
+    { "code": "IN", "name": "Indiana", "law": "Indiana Consumer Data Protection Act", "acronym": "INCDPA", "effective": "2026-01-01", "applicability": "100k consumidores, o 25k + 50% ingresos por venta", "sensitive_data": "opt-in", "private_right_of_action": false, "cure_period": "permanent", "universal_opt_out": false, "regulator": "IN AG", "verify": true },
+    { "code": "KY", "name": "Kentucky", "law": "Kentucky Consumer Data Protection Act", "acronym": "KCDPA", "effective": "2026-01-01", "applicability": "100k consumidores, o 25k + 50% ingresos por venta", "sensitive_data": "opt-in", "private_right_of_action": false, "cure_period": "permanent", "universal_opt_out": false, "regulator": "KY AG", "verify": true },
+    { "code": "RI", "name": "Rhode Island", "law": "Rhode Island Data Transparency and Privacy Protection Act", "acronym": "RIDTPPA", "effective": "2026-01-01", "applicability": "35k consumidores, o 10k + 20% ingresos por venta", "sensitive_data": "opt-in", "private_right_of_action": false, "cure_period": "none", "universal_opt_out": true, "regulator": "RI AG", "verify": true }
+  ],
+  "metadata": {
+    "version": "1.0.0",
+    "last_updated": "2026-07-09",
+    "legal_review_pending": true,
+    "block": "us",
+    "note": "Guía informativa comparativa. No constituye ni sustituye asesoría jurídica. Fuente de referencia para /matriz-normativa (dimensiones USA)."
+  }
+}

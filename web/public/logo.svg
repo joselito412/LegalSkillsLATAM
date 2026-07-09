@@ -1,0 +1,116 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 480" width="100%" role="img" aria-label="Privacy Compliance Skills — UE · USA · LATAM">
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&amp;family=JetBrains+Mono:wght@500;700&amp;display=swap');
+      .sans { font-family: 'Space Grotesk','Inter',system-ui,-apple-system,sans-serif; }
+      .mono { font-family: 'JetBrains Mono','Fira Code',ui-monospace,monospace; }
+    </style>
+    <linearGradient id="shieldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#39D353"/>
+      <stop offset="55%" stop-color="#2EA043"/>
+      <stop offset="100%" stop-color="#1F6FEB"/>
+    </linearGradient>
+    <linearGradient id="nodeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#79C0FF"/>
+      <stop offset="100%" stop-color="#1F6FEB"/>
+    </linearGradient>
+    <radialGradient id="shieldFill" cx="50%" cy="38%" r="70%">
+      <stop offset="0%" stop-color="#12233A"/>
+      <stop offset="100%" stop-color="#0D1117"/>
+    </radialGradient>
+    <radialGradient id="glowBlue" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#1F6FEB" stop-opacity="0.20"/>
+      <stop offset="100%" stop-color="#1F6FEB" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="neon" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="4.5" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="softGlow" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="2.2" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1120" height="480" rx="26" fill="#0B0F13"/>
+  <ellipse cx="215" cy="220" rx="260" ry="240" fill="url(#glowBlue)"/>
+  <ellipse cx="930" cy="120" rx="220" ry="150" fill="url(#glowBlue)"/>
+
+  <!-- Circuit traces (left, subtle) -->
+  <g stroke="#1F6FEB" stroke-width="1.4" fill="none" opacity="0.35" stroke-linecap="round">
+    <path d="M28 96 H72 V132"/>
+    <path d="M40 300 H88 V262"/>
+    <path d="M24 200 H60"/>
+    <path d="M30 380 H92 V344"/>
+  </g>
+  <g fill="#1F6FEB" opacity="0.5">
+    <circle cx="28" cy="96" r="2.6"/><circle cx="72" cy="132" r="2.6"/>
+    <circle cx="40" cy="300" r="2.6"/><circle cx="60" cy="200" r="2.6"/>
+    <circle cx="30" cy="380" r="2.6"/><circle cx="92" cy="344" r="2.6"/>
+  </g>
+
+  <!-- ===== ISOTIPO: Data Isolation Shield ===== -->
+  <path d="M215 100 C175 100 150 106 142 113 C134 120 134 140 134 175 C134 245 162 300 215 342 C268 300 296 245 296 175 C296 140 296 120 288 113 C280 106 255 100 215 100 Z"
+        fill="url(#shieldFill)" stroke="url(#shieldGrad)" stroke-width="3.5" filter="url(#neon)"/>
+  <path d="M215 112 C181 112 160 117 153 123 C146 129 146 145 146 176 C146 238 170 288 215 326 C260 288 284 238 284 176 C284 145 284 129 277 123 C270 117 249 112 215 112 Z"
+        fill="none" stroke="#39D353" stroke-width="1" opacity="0.5"/>
+
+  <!-- Data node graph (icosahedron) -->
+  <g filter="url(#softGlow)">
+    <g stroke="url(#nodeGrad)" stroke-width="1.4" opacity="0.9" fill="none">
+      <path d="M215 158 L170 183 M215 158 L260 183 M170 183 L260 183"/>
+      <path d="M170 183 L177 240 M260 183 L253 240 M177 240 L253 240"/>
+      <path d="M177 240 L215 262 M253 240 L215 262"/>
+      <path d="M215 205 L215 158 M215 205 L170 183 M215 205 L260 183 M215 205 L177 240 M215 205 L253 240 M215 205 L215 262"/>
+    </g>
+    <g fill="url(#nodeGrad)">
+      <circle cx="215" cy="158" r="4"/><circle cx="170" cy="183" r="4"/><circle cx="260" cy="183" r="4"/>
+      <circle cx="177" cy="240" r="4"/><circle cx="253" cy="240" r="4"/><circle cx="215" cy="262" r="4"/>
+    </g>
+    <circle cx="215" cy="205" r="5.5" fill="#F0F6FC"/>
+  </g>
+  <g fill="#58A6FF" opacity="0.4">
+    <circle cx="160" cy="150" r="1.6"/><circle cx="272" cy="152" r="1.6"/>
+    <circle cx="150" cy="215" r="1.6"/><circle cx="282" cy="215" r="1.6"/>
+    <circle cx="215" cy="300" r="1.6"/>
+  </g>
+
+  <!-- ===== WORDMARK ===== -->
+  <text class="sans" x="430" y="198" fill="#F0F6FC" font-weight="700" font-size="80" letter-spacing="-2">Privacy</text>
+  <text class="sans" x="430" y="284" font-weight="700" font-size="68" letter-spacing="-2"><tspan fill="#F0F6FC">Compliance</tspan><tspan class="mono" fill="#39D353" font-weight="700" font-size="68"> Skills</tspan></text>
+
+  <!-- regions line -->
+  <text class="mono" x="432" y="338" font-weight="500" font-size="26" fill="#8B949E">regions: <tspan fill="#388BFD">[</tspan><tspan fill="#E3B341">"UE"</tspan>, <tspan fill="#E3B341">"USA"</tspan>, <tspan fill="#E3B341">"LATAM"</tspan><tspan fill="#388BFD">]</tspan></text>
+  <text class="mono" x="432" y="374" font-weight="500" font-size="22" fill="#6E7681">// protection: <tspan fill="#2DD4BF">isolated</tspan></text>
+
+  <!-- ===== Terminal card (top-right) ===== -->
+  <g>
+    <rect x="762" y="28" width="330" height="120" rx="10" fill="#0D1117" stroke="#30363D"/>
+    <circle cx="780" cy="46" r="3.5" fill="#F85149"/><circle cx="792" cy="46" r="3.5" fill="#D29922"/><circle cx="804" cy="46" r="3.5" fill="#2EA043"/>
+    <line x1="762" y1="60" x2="1092" y2="60" stroke="#30363D"/>
+    <text class="mono" x="778" y="84" font-size="12.5" fill="#8B949E"><tspan fill="#58A6FF">[AUDIT LOG]</tspan> Consent form v123 updated</text>
+    <text class="mono" x="778" y="106" font-size="12.5" fill="#8B949E"><tspan fill="#39D353">[COMPLIANCE CHECK]</tspan> GDPR criteria met</text>
+    <text class="mono" x="778" y="128" font-size="12.5" fill="#8B949E"><tspan fill="#D29922">[RISK ASSESSMENT]</tspan> PIA required for LATAM</text>
+  </g>
+
+  <!-- ===== Trust badges (bottom) ===== -->
+  <g class="mono" font-size="13" font-weight="500">
+    <circle cx="452" cy="428" r="16" fill="none" stroke="#484F58" stroke-width="1.3"/>
+    <circle cx="452" cy="428" r="8" fill="none" stroke="#484F58" stroke-width="1"/>
+    <line x1="436" y1="428" x2="468" y2="428" stroke="#484F58" stroke-width="1"/>
+    <line x1="452" y1="412" x2="452" y2="444" stroke="#484F58" stroke-width="1"/>
+    <text x="478" y="424" fill="#8B949E">GLOBAL PRIVACY</text>
+    <text x="478" y="440" fill="#6E7681">STANDARD</text>
+
+    <rect x="640" y="412" width="32" height="32" rx="16" fill="none" stroke="#484F58" stroke-width="1.3"/>
+    <g fill="#484F58"><circle cx="656" cy="420" r="1.4"/><circle cx="665" cy="424" r="1.4"/><circle cx="665" cy="432" r="1.4"/><circle cx="656" cy="436" r="1.4"/><circle cx="647" cy="432" r="1.4"/><circle cx="647" cy="424" r="1.4"/></g>
+    <text x="682" y="424" fill="#8B949E">EU-US SAFE DATA</text>
+    <text x="682" y="440" fill="#6E7681">FRAMEWORK</text>
+
+    <circle cx="884" cy="428" r="16" fill="none" stroke="#484F58" stroke-width="1.3"/>
+    <path d="M888 415 C878 419 882 428 879 434 C884 440 890 436 889 430 C894 428 892 420 888 415 Z" fill="none" stroke="#484F58" stroke-width="1.1"/>
+    <text x="910" y="424" fill="#8B949E">LATAM DATA LAW</text>
+    <text x="910" y="440" fill="#6E7681">COMPLIANT</text>
+  </g>
+</svg>

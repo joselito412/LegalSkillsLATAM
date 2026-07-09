@@ -1,0 +1,119 @@
+/* ============================================================
+   Privacy Compliance Skills — Design tokens (dark, IDE-native)
+   Palette mirrors the project's own risk-score semaphore.
+   ============================================================ */
+:root {
+  /* Surfaces */
+  --bg: #0D1117;
+  --bg-deep: #0B0F13;
+  --surface: #161B22;
+  --surface-2: #1C2129;
+  --border: #30363D;
+
+  /* Text */
+  --text: #F0F6FC;
+  --text-muted: #8B949E;
+  --text-faint: #6E7681;
+
+  /* Accents */
+  --accent: #58A6FF;
+  --accent-strong: #1F6FEB;
+
+  /* Risk semaphore */
+  --risk-low: #2EA043;
+  --risk-low-bright: #39D353;
+  --risk-mid: #D29922;
+  --risk-high: #F85149;
+  --code-red: #FF7B72;
+
+  /* Type */
+  --font-sans: "Space Grotesk", "Inter", system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", "Fira Code", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* Layout */
+  --maxw: 1120px;
+  --radius: 14px;
+  --radius-sm: 8px;
+}
+
+* { box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+  background: var(--bg);
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  color: var(--text);
+  background:
+    radial-gradient(1200px 600px at 80% -10%, rgba(88, 166, 255, 0.08), transparent 60%),
+    radial-gradient(900px 500px at 0% 0%, rgba(46, 160, 67, 0.06), transparent 55%),
+    var(--bg);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+h1, h2, h3 { line-height: 1.15; letter-spacing: -0.02em; margin: 0 0 0.4em; }
+h1 { font-size: clamp(2rem, 5vw, 3.4rem); font-weight: 700; }
+h2 { font-size: clamp(1.5rem, 3vw, 2.2rem); font-weight: 700; }
+h3 { font-size: 1.15rem; font-weight: 600; }
+
+code, kbd, .mono { font-family: var(--font-mono); }
+
+.container { max-width: var(--maxw); margin: 0 auto; padding: 0 24px; }
+
+section { padding: 72px 0; }
+.section-head { max-width: 720px; margin-bottom: 40px; }
+.section-head p { color: var(--text-muted); font-size: 1.05rem; }
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin: 0 0 10px;
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 12px 20px; border-radius: var(--radius-sm);
+  font-weight: 600; font-size: 0.95rem;
+  border: 1px solid transparent; cursor: pointer;
+  transition: transform 0.12s ease, background 0.12s ease, border-color 0.12s ease;
+}
+.btn:hover { text-decoration: none; transform: translateY(-1px); }
+.btn-primary { background: var(--risk-low); color: #04140A; border-color: var(--risk-low-bright); }
+.btn-primary:hover { background: var(--risk-low-bright); }
+.btn-ghost { background: transparent; color: var(--text); border-color: var(--border); }
+.btn-ghost:hover { border-color: var(--accent); }
+
+/* Cards */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  transition: border-color 0.15s ease, transform 0.15s ease;
+}
+.card:hover { border-color: var(--accent); transform: translateY(-2px); }
+
+.grid { display: grid; gap: 20px; }
+@media (min-width: 820px) {
+  .grid-3 { grid-template-columns: repeat(3, 1fr); }
+  .grid-2 { grid-template-columns: repeat(2, 1fr); }
+}
+
+.pill {
+  display: inline-block; font-family: var(--font-mono); font-size: 0.72rem;
+  padding: 3px 9px; border-radius: 999px; border: 1px solid var(--border);
+  color: var(--text-muted);
+}
+
+.muted { color: var(--text-muted); }
+.mono-accent { font-family: var(--font-mono); color: var(--accent); }

@@ -1,0 +1,20 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Hero from '../../components/Hero.astro';
+import Formats from '../../components/Formats.astro';
+import RiskMeter from '../../components/RiskMeter.astro';
+import Pillars from '../../components/Pillars.astro';
+import Regions from '../../components/Regions.astro';
+import Callout from '../../components/Callout.astro';
+
+const lang = 'en' as const;
+---
+
+<Layout lang={lang}>
+  <Hero lang={lang} />
+  <Formats lang={lang} />
+  <RiskMeter lang={lang} />
+  <Pillars lang={lang} />
+  <Regions lang={lang} />
+  <Callout lang={lang} />
+</Layout>

@@ -1,0 +1,17 @@
+{
+  "name": "privacy-compliance-skills-web",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Landing + docs (bilingual ES/EN) for Privacy Compliance Skills — UE · USA · LATAM.",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check"
+  },
+  "dependencies": {
+    "astro": "^4.16.18"
+  }
+}
