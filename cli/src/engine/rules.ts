@@ -65,18 +65,29 @@ export function loadFormula(): ScoreFormula {
 
 /**
  * Finds and returns the rule set for a given ISO country code.
- * Dynamically discovers all JSON files in countries/ and international/
- * so adding a new country file requires no code change.
+ * Dynamically discovers all JSON files in the three top-level blocks
+ * (eu/, us/, latam/) so adding a new country file requires no code change.
  *
- * Not called by the CLI wizard — reserved for the Phase 3 REST API layer.
+ * us/ also contains state-matrix.json, which is NOT a country-rules document
+ * (it validates against us-state-matrix.schema.json — no `country`/`iso_code`
+ * field) and is excluded explicitly so it can never be mismatched against an
+ * ISO code. usa-federal.json (US, CCPA/CPRA baseline) DOES load normally here
+ * — this function is pure data access (readdirSync + JSON.parse), not called
+ * by the CLI wizard/scorer today (reserved for the Phase 3 REST API layer),
+ * so returning it does not wire any USA-specific scoring logic.
+ * TODO(MOTOR-01..03/Fase 3): el motor de score para USA (escalado
+ * multi-estatal, us_multistate_exposure, strict_regimes) se cablea en la Fase
+ * 3 del roadmap — esta función solo expone los datos, no calcula nada.
  */
 export function loadCountry(isoCode: string): CountryRules | null {
-  const dirs = ["countries", "international"];
+  const dirs = ["eu", "us", "latam"];
   for (const dir of dirs) {
     const dirPath = join(RULES_ROOT, dir);
     let files: string[];
     try {
-      files = readdirSync(dirPath).filter((f) => f.endsWith(".json") && !f.startsWith("_"));
+      files = readdirSync(dirPath).filter(
+        (f) => f.endsWith(".json") && !f.startsWith("_") && f !== "state-matrix.json"
+      );
     } catch {
       continue;
     }

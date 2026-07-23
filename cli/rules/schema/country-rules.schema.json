@@ -13,7 +13,7 @@
     "last_reviewed": { "type": "string" },
     "review_status": {
       "type": "string",
-      "enum": ["pending_legal_validation", "under_review", "validated"]
+      "enum": ["pending_legal_validation", "verified_editorial", "under_review", "validated"]
     },
     "reviewed_by": { "type": ["string", "null"] },
     "editorial_note": { "type": "string" },

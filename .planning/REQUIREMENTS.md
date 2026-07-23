@@ -28,11 +28,11 @@
 
 ### ESTR — Estructura tri-bloque de reglas
 
-- [ ] **ESTR-01**: Crear `cli/rules/eu/` y mover `international/gdpr.json` → `eu/gdpr.json`
+- [x] **ESTR-01**: Crear `cli/rules/eu/` y mover `international/gdpr.json` → `eu/gdpr.json`
   - Criterios: archivo movido y validando contra su schema desde la nueva ruta · `international/` sin gdpr.json · rename preservado en git log.
-- [ ] **ESTR-02**: Crear `cli/rules/latam/` y mover `countries/*.json` (colombia, mexico, brasil, chile, _template)
+- [x] **ESTR-02**: Crear `cli/rules/latam/` y mover `countries/*.json` (colombia, mexico, brasil, chile, _template)
   - Criterios: `latam/` contiene exactamente lo que hoy está en `countries/` y `countries/` desaparece · cada JSON valida desde la nueva ruta · cero placeholders de AR/PE/EC.
-- [ ] **ESTR-03**: Actualizar loaders y referencias de rutas en `cli/src` al layout eu/us/latam
+- [x] **ESTR-03**: Actualizar loaders y referencias de rutas en `cli/src` al layout eu/us/latam
   - Criterios: build y tests verdes · smoke run de audit carga eu/, us/ y latam/ · grep de `rules/countries|rules/international` en código/scripts/docs técnicos = cero resultados activos.
 
 ### MOTOR — Motor de score (F_rigor, strict_regimes, USA, DevOps)
@@ -111,7 +111,7 @@
 
 ### QA — Tests, golden files y gates de CI
 
-- [ ] **QA-01**: Script npm que valida TODOS los JSON de `cli/rules/` contra sus schemas + workflow CI
+- [x] **QA-01**: Script npm que valida TODOS los JSON de `cli/rules/` contra sus schemas + workflow CI
   - Criterios: `npm run validate` recorre eu/, us/, latam/ y risk-engine/ listando cobertura · usa-federal y state-matrix validan contra sus schemas · CI falla ante un JSON inválido de prueba.
 - [ ] **QA-02**: Los 4 fixtures canónicos (cierra la discrepancia 3 vs 4)
   - (1) SaaS California, (2) health app UE, (3) fintech multi-estatal USA, (4) app LATAM CO+BR+CL; los fixtures 1, 4 y 2 son el eje bajo/medio/alto del loop.
@@ -192,10 +192,10 @@
 | MOTOR-07 | Phase 1 | Complete |
 | REL-01 | Phase 1 | Complete |
 | REL-02 | Phase 1 | Complete |
-| ESTR-01 | Phase 2 | Pending |
-| ESTR-02 | Phase 2 | Pending |
-| ESTR-03 | Phase 2 | Pending |
-| QA-01 | Phase 2 | Pending |
+| ESTR-01 | Phase 2 | Complete |
+| ESTR-02 | Phase 2 | Complete |
+| ESTR-03 | Phase 2 | Complete |
+| QA-01 | Phase 2 | Complete |
 | MOTOR-01 | Phase 3 | Pending |
 | MOTOR-02 | Phase 3 | Pending |
 | MOTOR-03 | Phase 3 | Pending |

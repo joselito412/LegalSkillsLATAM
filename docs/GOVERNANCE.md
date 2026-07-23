@@ -19,13 +19,13 @@ Abogado Experto   →   Reglas en JSON/MD   →   IA aplica las reglas   →   D
 
 ### Equipo Editorial (Abogados)
 - **Responsabilidad:** Redactar, validar y actualizar el contenido legal de `cli/rules/`, `knowledge/pillar-frontend/` y `knowledge/pillar-backend/`
-- **Gatekeeping:** Ningún archivo en `cli/rules/countries/` ni `cli/rules/international/` puede ser publicado sin su revisión
+- **Gatekeeping:** Ningún archivo en `cli/rules/latam/` ni `cli/rules/eu/` puede ser publicado sin su revisión
 - **Periodicidad de revisión:** Al menos cada 6 meses por país, o ante cambio normativo relevante
 
 **Separación por pilar (v0.3+):**
 - **Abogado de privacidad** → valida `knowledge/pillar-frontend/` (consentimiento, transparencia, UI)
 - **Abogado de data governance** → valida `knowledge/pillar-backend/` (cifrado, transferencias, ciclo de vida)
-- **Ambos** → validan `cli/rules/countries/` y skills que cubran los dos pilares (`skills/audit/`)
+- **Ambos** → validan `cli/rules/latam/` y skills que cubran los dos pilares (`skills/audit/`)
 
 ### Colaboradores Técnicos (Devs)
 - **Responsabilidad:** Infraestructura del repositorio, CLI, API, tests de schema JSON
@@ -90,7 +90,7 @@ Ninguna sesión de código, script o agente de IA escribe `review_status: "valid
 ### Cómo inicia una revisión un abogado/a colaborador/a
 
 1. Abre un issue con el template **["Revisión legal de una regla/matriz"](../.github/ISSUE_TEMPLATE/revision-legal.md)** (queda etiquetado `legal-review` automáticamente). No hace falta Git ni saber programar — ver [`CONTRIBUTING.md`](CONTRIBUTING.md).
-2. Identifica en el issue el archivo o los archivos que revisa (p. ej. `cli/rules/countries/colombia.json`, una matriz de `knowledge/`) y la jurisdicción.
+2. Identifica en el issue el archivo o los archivos que revisa (p. ej. `cli/rules/latam/colombia.json`, una matriz de `knowledge/`) y la jurisdicción.
 3. El equipo técnico confirma el alcance y marca la revisión como `under_review`.
 
 ### Qué revisa el par
