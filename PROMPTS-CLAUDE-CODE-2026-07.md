@@ -1,5 +1,7 @@
 # Prompts para sesiones de Claude Code — desarrollo & código
 
+> 📜 **Nota general (2026-07-23):** este documento queda como **registro histórico** de los hallazgos y prompts de la sesión de handoff 2026-07-09. La ejecución vigente del proyecto la supersede [`PLAN-GSD-V0.4-2026-07.md`](PLAN-GSD-V0.4-2026-07.md) y su carpeta [`.planning/`](.planning/). Las secciones "Sesión 0" y "H0" están además marcadas obsoletas por separado más abajo.
+
 > Complemento de `PLAN-REBRAND-Y-WEB-2026-07.md`. Esta sesión de Cowork dejó listo el **contenido** (logo, README bilingüe, `usa-federal.json`, `state-matrix.json` + schema, `region-factors.json`, `chile.json`, `plugin.json`). Lo que sigue es **código, wiring, tests, reorganización de archivos y deploy** — eso va en Claude Code (tiene el toolchain y auth de GitHub que Cowork no tiene).
 >
 > Cada bloque de abajo es un prompt listo para pegar. Ejecútalos **en orden** (A→F); A es prerequisito de B y C. Antes de empezar, en cada sesión: `git checkout -b <rama>` y al final `git commit` + `git push`.
@@ -7,6 +9,8 @@
 ---
 
 ## Sesión 0 — Terminar los commits pendientes (correr en TU terminal)
+
+> ⛔ **OBSOLETO (2026-07-23): no ejecutar.** El estado del repo cambió — los commits que esta sección buscaba cerrar ya se hicieron vía flujo rama + PR, sin manipulación de `.git`. La ejecución vigente vive en [`PLAN-GSD-V0.4-2026-07.md`](PLAN-GSD-V0.4-2026-07.md) y `.planning/` (ticket GOB-01). Lo que sigue queda como registro histórico.
 
 El entorno de Cowork logró crear el **commit 1** (`feat(brand): rebrand…` = README ES/EN, plan, logo, plugin.json) pero su `.git` montado no permite borrar archivos, así que git dejó un lock atascado y no pudo cerrar los 3 commits restantes. Los cambios están todos en disco. Corre esto en tu terminal (filesystem real, sin restricción) desde la raíz del repo:
 
@@ -224,6 +228,8 @@ La sesión de evaluación + validación jurídica (Cowork, 2026-07-09) dejó tra
 
 ### H0 — Commit del trabajo editorial nuevo (extiende la Sesión 0)
 
+> ⛔ **OBSOLETO (2026-07-23): no ejecutar.** El estado del repo cambió — el commit editorial que H0 pedía ya se hizo vía flujo rama + PR, sin manipulación de `.git`. La ejecución vigente vive en [`PLAN-GSD-V0.4-2026-07.md`](PLAN-GSD-V0.4-2026-07.md) y `.planning/` (ticket GOB-01). Lo que sigue queda como registro histórico.
+
 Añadir al commit inicial (o commit aparte) todo lo de las Olas 1-2 y la evaluación:
 `mexico.json` v1.2.0 (verificado contra texto oficial LFPDPPP 2025, reforma DOF 14-11-2025), `brasil.json` (Res. 19/2024 SCCs), `chile.json` (transición APDP + gracia PYME), `us/state-matrix.json` (nota de verificación), `docs/SOURCES-VALIDATION.md`, `docs/NORMAS-CITADAS.md`, `PLAN-CUMPLIMIENTO-SDLC-Y-CLI-2026-07.md`, `PLAN-INVESTIGACION-JURIDICA-Y-ANTIPATRONES-2026-07.md`, `knowledge/matrices/matriz-sdlc-cumplimiento.md`, `cli/rules/risk-engine/devops-penalizers.json`, `architecture/AGENT-CONTRACT.md`, `skills/audit/SKILL.md` v3, índices de skills.
 
@@ -248,4 +254,4 @@ Al wirear el bloque USA: el `state-matrix.json` ya tiene verificadas las entrada
 
 Ola 3 de investigación (crear `argentina.json`, `peru.json`, `ecuador.json`, `panama.json` + tablas de fuentes); Fase AP editorial (catálogo `knowledge/anti-patterns/` + skill `/fix`); iteración 2 del eval de `/audit` (distinguir `unknown` de `absent` en el fallback); verificación estado-por-estado completa con Descrybe (`verify_quote`) cuando el conector autentique.
 
-**Orden recomendado final:** 0 → H0 → A → B(+H1) → C(+H3) → D → E → F → G, con H2 dentro de la implementación del contrato (Fase 2.1 del plan de cumplimiento).
+**Orden recomendado final (histórico — ya no vigente):** ~~0 → H0~~ → A → B(+H1) → C(+H3) → D → E → F → G, con H2 dentro de la implementación del contrato (Fase 2.1 del plan de cumplimiento). Sesión 0 y H0 quedan tachadas por obsoletas (ver banners arriba); el orden de ejecución vigente es el roadmap GSD — ver [`PLAN-GSD-V0.4-2026-07.md`](PLAN-GSD-V0.4-2026-07.md) y [`.planning/ROADMAP.md`](.planning/ROADMAP.md) (Fases 1–8).
