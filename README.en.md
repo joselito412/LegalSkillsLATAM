@@ -146,9 +146,9 @@ Three blocks. The **Level** column is honest about each jurisdiction's real dept
 | 🇲🇽 Mexico | **New LFPDPPP (DOF 2025-03-20)** — repeals the 2010 law; SABG authority (ex-INAI); fines in UMA | ✅ Own rules *(updated Jul-2026)* |
 | 🇧🇷 Brazil | LGPD 2018 + ANPD Resolutions *(regional ceiling; incidents: 3 business days, Res. 15/2024)* | ✅ Own rules *(updated Jul-2026)* |
 | 🇨🇱 Chile | Ley 19.628 → **Ley 21.719 in force 2026-12-01** (APDP, fines up to 20,000 UTM) | ✅ Own rules ⏳ *(in force Dec-2026)* |
-| 🇦🇷 Argentina | Ley 25.326 *(reform bills under legislative debate 2025-2026)* | ✅ Own rules |
-| 🇵🇪 Peru | Ley 29733 + **Regulation D.S. 016-2024-JUS** (in force Mar-2025; breaches: 48h) | ✅ Own rules *(updated Jul-2026)* |
-| 🇪🇨 Ecuador | LOPDP 2021 + Regulation DE-904/2023 (Superintendency operational) | ✅ Own rules |
+| 🇦🇷 Argentina | Ley 25.326 *(reform bills under legislative debate 2025-2026)* | 📄 Matrices only — JSON rules under research (Wave 3) |
+| 🇵🇪 Peru | Ley 29733 + **Regulation D.S. 016-2024-JUS** (in force Mar-2025; breaches: 48h) | 📄 Matrices only — JSON rules under research (Wave 3) |
+| 🇪🇨 Ecuador | LOPDP 2021 + Regulation DE-904/2023 (Superintendency operational) | 📄 Matrices only — JSON rules under research (Wave 3) |
 
 > Currency-of-sources check: [`docs/SOURCES-VALIDATION.md`](docs/SOURCES-VALIDATION.md) — round 2026-07-08.
 
