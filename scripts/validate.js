@@ -17,8 +17,8 @@ const addFormats = require("ajv-formats");
 const ROOT = resolve(process.cwd());
 const SCHEMA_PATH = join(ROOT, "cli/rules/schema/country-rules.schema.json");
 const RULES_DIRS = [
-  join(ROOT, "cli/rules/countries"),
-  join(ROOT, "cli/rules/international"),
+  join(ROOT, "cli/rules/eu"),
+  join(ROOT, "cli/rules/latam"),
 ];
 const SKIP_FILES = ["_template.json"];
 

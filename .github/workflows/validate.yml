@@ -47,7 +47,7 @@ jobs:
           import { readFileSync, readdirSync } from 'fs';
           import { join } from 'path';
 
-          const dirs = ['cli/rules/countries', 'cli/rules/international', 'cli/rules/risk-engine'];
+          const dirs = ['cli/rules/eu', 'cli/rules/latam', 'cli/rules/risk-engine'];
           const required = ['version', 'last_reviewed', 'review_status', 'reviewed_by'];
           let failed = false;
 

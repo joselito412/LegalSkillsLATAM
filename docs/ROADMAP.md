@@ -20,8 +20,8 @@ Fundación  →   CLI Tool   →   Pilares FE/BE  →  Expansión  →  API / Sa
 ### Entregables
 
 - [x] 5 skills de Claude: `clasificar-datos`, `privacy-check`, `risk-score`, `matriz-normativa`, `derechos-usuario`
-- [x] `cli/rules/countries/colombia.json`, `brasil.json`, `mexico.json`
-- [x] `cli/rules/international/gdpr.json`
+- [x] `cli/rules/latam/colombia.json`, `brasil.json`, `mexico.json`
+- [x] `cli/rules/eu/gdpr.json`
 - [x] `cli/rules/risk-engine/score-formula.json` — motor de riesgo v1
 - [x] `cli/rules/schema/country-rules.schema.json` — esquema de validación
 - [x] `knowledge/checklists/checklist-startup.md` (movido a `_deprecated/` en v0.3)
@@ -165,10 +165,10 @@ El contenido actual es generado y revisado editorialmente, pero no validado por 
 
 | Archivo | Generado | Revisión legal | Validado |
 |---|---|---|---|
-| `cli/rules/countries/colombia.json` | ✅ | ⏳ Pendiente | ❌ |
-| `cli/rules/countries/brasil.json` | ✅ | ⏳ Pendiente | ❌ |
-| `cli/rules/countries/mexico.json` | ✅ | ⏳ Pendiente | ❌ |
-| `cli/rules/international/gdpr.json` | ✅ | ⏳ Pendiente | ❌ |
+| `cli/rules/latam/colombia.json` | ✅ | ⏳ Pendiente | ❌ |
+| `cli/rules/latam/brasil.json` | ✅ | ⏳ Pendiente | ❌ |
+| `cli/rules/latam/mexico.json` | ✅ | ⏳ Pendiente | ❌ |
+| `cli/rules/eu/gdpr.json` | ✅ | ⏳ Pendiente | ❌ |
 | `knowledge/pillar-frontend/` (8 checklists) | ✅ | ⏳ Pendiente | ❌ |
 | `knowledge/pillar-backend/` (9 checklists/arch) | ✅ | ⏳ Pendiente | ❌ |
 | Skills v0.3 (6 skills nuevas) | ✅ | ⏳ Pendiente | ❌ |
@@ -177,10 +177,10 @@ El contenido actual es generado y revisado editorialmente, pero no validado por 
 
 | País | Archivo | Prioridad | Razón |
 |---|---|---|---|
-| 🇪🇨 Ecuador | `cli/rules/countries/ecuador.json` | Alta | LOPDP muy alineada a GDPR — régimen estricto |
-| 🇨🇱 Chile | `cli/rules/countries/chile.json` | Alta | Ley 21.719 en vigencia desde 2026 |
-| 🇦🇷 Argentina | `cli/rules/countries/argentina.json` | Media | Reconocimiento adecuación UE en proceso |
-| 🇵🇪 Perú | `cli/rules/countries/peru.json` | Media | Ley 29733 + nueva reglamentación |
+| 🇪🇨 Ecuador | `cli/rules/latam/ecuador.json` | Alta | LOPDP muy alineada a GDPR — régimen estricto |
+| 🇨🇱 Chile | `cli/rules/latam/chile.json` | Alta | Ley 21.719 en vigencia desde 2026 |
+| 🇦🇷 Argentina | `cli/rules/latam/argentina.json` | Media | Reconocimiento adecuación UE en proceso |
+| 🇵🇪 Perú | `cli/rules/latam/peru.json` | Media | Ley 29733 + nueva reglamentación |
 | 🇺🇸 CCPA | `cli/rules/international/ccpa.json` | Media | Para proyectos con usuarios en California |
 
 ### Bloque 3 — Deprecación formal de skills legacy
@@ -194,7 +194,7 @@ El contenido actual es generado y revisado editorialmente, pero no validado por 
 
 - [ ] TEST-CASES.md en formato formal para todas las skills (actualmente inline en SKILL.md para skills v0.3)
 - [ ] `plugin.json` actualizado con nuevas skills del namespace `frontend-privacy/` y `backend-security/`
-- [ ] `cli/rules/countries/_template.json` — guía de autor para nuevos países
+- [ ] `cli/rules/latam/_template.json` — guía de autor para nuevos países
 
 ---
 

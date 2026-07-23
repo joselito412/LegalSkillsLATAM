@@ -20,7 +20,7 @@ Ver el flujo completo en docs/GOVERNANCE.md § "Flujo de validación de pares".
 
 ## Archivo(s) revisado(s)
 
-<!-- Ruta dentro del repo, ej: cli/rules/countries/colombia.json, knowledge/pillar-backend/matrices/medidas-seguridad-minimas.md -->
+<!-- Ruta dentro del repo, ej: cli/rules/latam/colombia.json, knowledge/pillar-backend/matrices/medidas-seguridad-minimas.md -->
 
 
 

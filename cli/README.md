@@ -78,8 +78,9 @@ cli/
 │   │   └── rules.ts        # Loader de reglas + catálogo de países
 │   └── ui/                 # Renderizado en terminal
 ├── rules/                  # Reglas JSON por jurisdicción (bundled)
-│   ├── countries/          # CO, MX, BR, ...
-│   ├── international/      # GDPR
+│   ├── eu/                 # GDPR
+│   ├── us/                 # CCPA/CPRA (baseline) + matriz estatal
+│   ├── latam/              # CO, MX, BR, CL, ...
 │   └── risk-engine/        # Fórmula de score
 └── tests/
 ```

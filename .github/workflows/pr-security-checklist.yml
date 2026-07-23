@@ -103,7 +103,7 @@ jobs:
           import { readFileSync, readdirSync } from 'fs';
           import { join } from 'path';
 
-          const dirs = ['rules/countries', 'rules/international'];
+          const dirs = ['rules/latam', 'rules/eu'];
           const required = ['version', 'last_reviewed', 'review_status', 'editorial_note'];
           let failed = false;
 
