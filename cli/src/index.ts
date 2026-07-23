@@ -6,7 +6,7 @@ import { runAuditWizard } from "./commands/audit.js";
 const program = new Command();
 
 program
-  .name("legalskills-latam")
+  .name("privacy-compliance-skills")
   .description("Legal risk auditor for LATAM developers")
   .version("0.2.0-beta.1");
 

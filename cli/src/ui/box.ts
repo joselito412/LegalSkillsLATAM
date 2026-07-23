@@ -35,7 +35,7 @@ export function renderScoreBox(result: ScoreResult): string {
   const lines: string[] = [];
 
   lines.push("╔" + "═".repeat(W) + "╗");
-  lines.push(row(chalk.bold("🔍 LegalSkillsLATAM — Legal Risk Audit")));
+  lines.push(row(chalk.bold("🔍 Privacy Compliance Skills — Legal Risk Audit")));
   lines.push(divider());
   lines.push(row(`Proyecto : ${result.projectName}`));
   lines.push(row(`País(es) : ${countryList}`));
@@ -95,7 +95,7 @@ export function renderDualScoreBox(result: DualScoreResult): string {
   const lines: string[] = [];
 
   lines.push("╔" + "═".repeat(W) + "╗");
-  lines.push(row(chalk.bold("🔍 LegalSkillsLATAM — Auditoría Dual FE/BE")));
+  lines.push(row(chalk.bold("🔍 Privacy Compliance Skills — Auditoría Dual FE/BE")));
   lines.push(divider());
   lines.push(row(`Proyecto : ${result.projectName}`));
   lines.push(row(`País(es) : ${countryList}`));

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * LegalSkillsLATAM — JSON Schema Validator
+ * Privacy Compliance Skills — JSON Schema Validator
  * Validates all rules/*.json files against country-rules.schema.json
  * Run: npm run validate
  */
@@ -107,7 +107,7 @@ for (const filePath of files) {
 
 // --- Output ---
 console.log("\n╔══════════════════════════════════════════════════════╗");
-console.log("║    LegalSkillsLATAM — JSON Schema Validator           ║");
+console.log("║    Privacy Compliance Skills — JSON Schema Validator  ║");
 console.log("╚══════════════════════════════════════════════════════╝\n");
 
 for (const r of results) {
