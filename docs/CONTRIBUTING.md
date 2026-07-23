@@ -43,6 +43,8 @@ Privacy Compliance Skills se construye con dos manos: **abogados** que aportan n
 
 4. Envía. El equipo editorial te responderá en 7–14 días hábiles. Si la propuesta es válida, **alguien del equipo técnico la implementará** y te acreditará como autor/a en el PR.
 
+> 🔍 **¿Quieres verificar una regla ya publicada contra su fuente primaria?** Ese es un flujo distinto y más formal: el **flujo de validación de pares** (`pending_legal_validation → verified_editorial → under_review → validated`), con su propio [issue template](../.github/ISSUE_TEMPLATE/revision-legal.md). Está documentado completo en [`GOVERNANCE.md` § "Flujo de validación de pares"](GOVERNANCE.md#flujo-de-validación-de-pares) — no lo repetimos aquí.
+
 ### Opción B — Editar texto directamente desde el navegador
 
 Para correcciones de redacción en archivos Markdown (las **skills**, **checklists** y **matrices** del directorio `knowledge/`):
