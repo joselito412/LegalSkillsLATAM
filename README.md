@@ -71,6 +71,8 @@ El conocimiento del proyecto está organizado en **dos pilares explícitos**:
 
 > Regla rápida: **Si el usuario lo ve → Frontend. Si el sistema lo hace por dentro → Backend.**
 
+> ⚙️ El eje operativo **DevOps** (staging, secretos, backups, CI) es un sub-panel dentro de Backend, no un tercer pilar: cap propio de 30 pts que se suma a BE *antes* de su tope de 50 — ver [`architecture/ADR-001-devops-cap.md`](architecture/ADR-001-devops-cap.md).
+
 - Documentación de pilares: [`architecture/PILLAR-SEPARATION.md`](architecture/PILLAR-SEPARATION.md)
 - Índice de skills por caso de uso: [`skills/_SKILLS-INDEX.md`](skills/_SKILLS-INDEX.md)
 - Árbol de decisión de skills: [`skills/_routing.md`](skills/_routing.md)

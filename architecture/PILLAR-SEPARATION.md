@@ -147,6 +147,8 @@ El Pilar Backend responde a la pregunta: **¿Cómo protege el sistema los datos 
 **0–50 puntos** en el Legal Risk Score total (0–100).  
 El pilar Backend no puede generar más de 50 puntos de penalización solo. El riesgo combinado Frontend + Backend puede llegar a 100 (usando la fórmula de combinación ponderada).
 
+> ⚙️ El sub-panel **DevOps** (`cli/rules/risk-engine/devops-penalizers.json`) es parte de este cálculo, no un pilar aparte: su subtotal se capea a 30 pts y se suma a Backend *antes* del tope de 50 — ver [`ADR-001-devops-cap.md`](ADR-001-devops-cap.md).
+
 ### Cadencia de actualización
 
 - **Trimestral:** revisión de estándares de cifrado, vulnerabilidades nuevas
