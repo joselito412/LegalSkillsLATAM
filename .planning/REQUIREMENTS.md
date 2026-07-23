@@ -9,20 +9,20 @@
 
 ### GOB — Gobernanza e higiene
 
-- [ ] **GOB-01**: Fase de higiene: commitear el diff pendiente real vía PR (reemplaza la Sesión 0 obsoleta)
+- [x] **GOB-01**: Fase de higiene: commitear el diff pendiente real vía PR (reemplaza la Sesión 0 obsoleta)
   - El diff editorial pendiente HOY son **8 archivos**: 6 modificados (`PROMPTS-CLAUDE-CODE-2026-07.md`, `cli/rules/countries/{brasil,chile,mexico}.json`, `cli/rules/us/state-matrix.json`, `docs/SOURCES-VALIDATION.md`) + 2 nuevos sin trackear (`docs/NORMAS-CITADAS.md`, `docs/VIGILANCIA-NORMATIVA.md`). En el working tree coexisten además los **artefactos de planeación** de este plan (`.planning/`, `CLAUDE.md`, `AGENTS.md`, `PLAN-GSD-V0.4-2026-07.md`, `architecture/SKILL-AUDIT-V4-DESIGN.md`): van en un commit separado, nunca mezclados con el editorial.
   - Criterios: dos commits en `rebrand-refs-sweep-2026-07` — (1) **editorial** con exactamente los 8 archivos listados y mensaje que referencia las Olas 1-2 (H0), y (2) **planeación** con los artefactos GSD — con `git status` limpio tras ambos · staging explícito por ruta: prohibido `git add -A` / `git add .` · PR abierto hacia main, nunca push directo · cero `rm` de locks de `.git` ni `git gc` del guion viejo.
-- [ ] **GOB-02**: Marcar Sesión 0 y H0 como obsoletas en PROMPTS-CLAUDE-CODE y documentar el flujo de PR
+- [x] **GOB-02**: Marcar Sesión 0 y H0 como obsoletas en PROMPTS-CLAUDE-CODE y documentar el flujo de PR
   - Criterios: banner de obsolescencia fechado en Sesión 0 y H0 · flujo vigente documentado (rama + PR, sin manipulación de `.git`) · "orden recomendado final" actualizado sin la Sesión 0.
-- [ ] **GOB-03**: Truth-pass del README: corregir la tabla de cobertura de Argentina, Perú y Ecuador
+- [x] **GOB-03**: Truth-pass del README: corregir la tabla de cobertura de Argentina, Perú y Ecuador
   - AR/PE/EC no tienen JSON propios (solo matrices); la creación es editorial (Cowork, Ola 3) y queda FUERA de este plan.
   - Criterios: README.md y README.en.md muestran nivel honesto para AR/PE/EC · cada "✅ Reglas propias" restante corresponde a un archivo existente en `cli/rules/` · ningún ticket crea esos JSON.
-- [ ] **GOB-04**: Definir fuente única de versión y sincronizar los 0.x divergentes
+- [x] **GOB-04**: Definir fuente única de versión y sincronizar los 0.x divergentes
   - Hoy: raíz 0.1.1, cli 0.2.0-beta.1, badge 0.4.0-dev. Recomendado: `cli/package.json` como fuente.
   - Criterios: doc breve que declara la fuente única y la propagación · los 3 puntos coherentes · check npm/CI que falla si divergen (verificado rompiéndolo a propósito).
 - [ ] **GOB-05**: Unificar el estado de las skills en una sola tabla canónica (resuelve B3)
   - Criterios: una sola tabla con las 12 skills (incluye `data-lifecycle` y `user-controls`); README e índice la referencian sin duplicar · grep de estados sin contradicciones entre los 3 archivos · `/privacy-check` y `/risk-score` con el mismo estado en los 3 · **README.en.md espejo verificado** (misma tabla referenciada).
-- [ ] **GOB-06**: Documentar el workflow de verificación de pares (infraestructura del llamado a colaboradores legales)
+- [x] **GOB-06**: Documentar el workflow de verificación de pares (infraestructura del llamado a colaboradores legales)
   - El README llama a colaboradores ("no necesitas saber programar") pero no existe el flujo que seguirían.
   - Criterios: GOVERNANCE/CONTRIBUTING describe el pipeline `pending_legal_validation → verified_editorial → under_review → validated` con revisor humano identificado (`reviewed_by` + fecha en el JSON) · issue template "revisión legal" commiteado. (El enlace desde la ruta `/contribuir` es criterio de WEB-03, Fase 7 — no gate de esta fase.)
 
@@ -51,7 +51,7 @@
   - Criterios: audit con EC → penalizadores estrictos activos O entrada explícita en `assumptions[]` · flag/comentario en el JSON referencia la decisión pendiente (T1) · test que falla si EC queda no-estricto Y sin assumption.
 - [ ] **MOTOR-06**: Cablear el pilar DevOps (`devops-penalizers.json`, 7 señales) al scorer, wizard y config
   - Criterios: `has_staging_env=false` y `uses_prod_data_outside_prod=true` suman +15 y +20 conforme al JSON (respetando `inverted: true`) · wizard pregunta el bloque Q9 DevOps y persiste · sub-panel "⚙️ DevOps" con subtotal · test de no-solapamiento con penalizadores BE.
-- [ ] **MOTOR-07**: ADR que RATIFICA y documenta la semántica del cap DevOps ya versionada en `devops-penalizers.json`
+- [x] **MOTOR-07**: ADR que RATIFICA y documenta la semántica del cap DevOps ya versionada en `devops-penalizers.json`
   - Fact-check: el JSON v1.0.0 ya fija el contrato numérico — `max_total: 30`, `cap_behavior: min(sum_active_devops_penalizers, 30) → se agrega a be_raw antes de min(50)` (BE sigue 0–50 con DevOps como sub-panel interno). El ADR no re-decide: ratifica, da el ejemplo numérico y reconcilia README/PILLAR-SEPARATION con esa semántica. Si el equipo editorial quisiera otra cosa, eso es un cambio al JSON en Cowork, no de este plan.
   - Criterios: ADR commiteado con la semántica ratificada, alternativas descartadas y ejemplo numérico · README y `architecture/PILLAR-SEPARATION.md` sin contradicción con los rangos · QA-03 lo referencia como precondición.
 - [ ] **MOTOR-08**: Soportar `standards_ref` en schema y propagarlo del JSON de reglas al output
@@ -145,9 +145,9 @@
 
 ### REL — Naming, distribución y release
 
-- [ ] **REL-01**: Renombre global en código, lockfiles y SVG — ANTES de congelar golden tests
+- [x] **REL-01**: Renombre global en código, lockfiles y SVG — ANTES de congelar golden tests
   - Criterios: grep de `LegalSkillsLATAM|legalskills-latam` solo en notas históricas (incluye `prompts/`) · build/tests verdes y banner nuevo · lockfiles regenerados · QA-03 lo declara precondición.
-- [ ] **REL-02**: Decisión de renombre del repo GitHub y consistencia de URLs
+- [x] **REL-02**: Decisión de renombre del repo GitHub y consistencia de URLs
   - Criterios: decisión documentada (ADR corto) · URLs de README(s), `web/src/config.ts` y `plugin.json` apuntan a la canónica y responden 200 · git remote coincide.
 - [ ] **REL-03**: Release v0.4.0: versión sincronizada, ROADMAP, tag y release notes con declaración de validación pendiente
   - Criterios: tag v0.4.0 con sección "Estado de validación legal" enumerando reglas `pending_legal_validation` · versión coherente en fuente única, badge y npm (check GOB-04 verde) · CI completo verde en el commit taggeado · **README.en.md espejo verificado**.
@@ -184,14 +184,14 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| GOB-01 | Phase 1 | Pending |
-| GOB-02 | Phase 1 | Pending |
-| GOB-03 | Phase 1 | Pending |
-| GOB-04 | Phase 1 | Pending |
-| GOB-06 | Phase 1 | Pending |
-| MOTOR-07 | Phase 1 | Pending |
-| REL-01 | Phase 1 | Pending |
-| REL-02 | Phase 1 | Pending |
+| GOB-01 | Phase 1 | Complete |
+| GOB-02 | Phase 1 | Complete |
+| GOB-03 | Phase 1 | Complete |
+| GOB-04 | Phase 1 | Complete |
+| GOB-06 | Phase 1 | Complete |
+| MOTOR-07 | Phase 1 | Complete |
+| REL-01 | Phase 1 | Complete |
+| REL-02 | Phase 1 | Complete |
 | ESTR-01 | Phase 2 | Pending |
 | ESTR-02 | Phase 2 | Pending |
 | ESTR-03 | Phase 2 | Pending |
