@@ -9,7 +9,7 @@ Ocho fases llevan el repo del diagnóstico one-shot actual al loop accionable es
 ## Phases
 
 - [x] **Phase 1: Higiene, decisiones y renombre** - Repo limpio, decisiones que congelan interfaces tomadas, marca nueva en código
-- [ ] **Phase 2: Layout tri-bloque con candado de schemas** - Reglas en eu/us/latam y validación de schemas en CI
+- [x] **Phase 2: Layout tri-bloque con candado de schemas** - Reglas en eu/us/latam y validación de schemas en CI
 - [ ] **Phase 3: Motor completo** - F_rigor desde region-factors, fix T1 strict_regimes, escalado USA, pilar DevOps
 - [ ] **Phase 4: Contrato JSON v1.1 canónico** - audit --json emite el contrato completo; AGENT-CONTRACT.md fuente única
 - [ ] **Phase 5: Doctor, fixtures y golden tests congelados** - Loop no interactivo con UX react-doctor y red de seguridad en CI

@@ -9,12 +9,12 @@ See: .planning/PROJECT.md (updated 2026-07-23)
 
 ## Current Position
 
-Phase: 1 of 8 — ✅ COMPLETADA (Higiene, decisiones y renombre)
-Plan: 8/8 tickets ejecutados (GOB-01..04, GOB-06, MOTOR-07, REL-01, REL-02)
-Status: Ready to plan Phase 2 (`/gsd-plan-phase 2`)
-Last activity: 2026-07-23 — Fase 1 ejecutada (10 commits en `rebrand-refs-sweep-2026-07`); gates verificados: build+tests verdes (11/11), grep de marca limpio, check:versions probado, ADR-001/ADR-002 commiteados; PR abierto hacia `develop`
+Phase: 2 of 8 — ✅ COMPLETADA (Layout tri-bloque con candado de schemas)
+Plan: Fases 1 y 2 ejecutadas — 12/50 tickets (F1: GOB-01..04, GOB-06, MOTOR-07, REL-01, REL-02 · F2: ESTR-01..03, QA-01)
+Status: Ready to plan Phase 3 (`/gsd-plan-phase 3` — motor: F_rigor, strict_regimes/T1, USA, DevOps)
+Last activity: 2026-07-23 — Fase 2 en rama `fase-2-layout-tri-bloque`: rules en eu/us/latam con renames preservados, loader actualizado, `npm run validate` cubre 14 JSON (candado probado exit 1→0), enum `verified_editorial` añadido al schema; 11/11 tests; Fase 1 mergeada a `develop` vía PR #15 (conflicto con rebrand duplicado #14 resuelto con -X ours, contenido idéntico verificado)
 
-Progress: [█▓░░░░░░░░] 16% (8/50 tickets)
+Progress: [██▓░░░░░░░] 24% (12/50 tickets)
 
 ## Performance Metrics
 
