@@ -6,7 +6,11 @@ on:
       - 'cli/rules/**/*.json'
       - 'cli/rules/schema/**'
       - 'scripts/validate.js'
+      - 'scripts/check-versions.js'
       - 'package.json'
+      - 'cli/package.json'
+      - 'README.md'
+      - 'README.en.md'
   push:
     branches: [main]
     paths:
@@ -32,6 +36,9 @@ jobs:
 
       - name: Run JSON schema validator
         run: npm run validate
+
+      - name: Check version consistency
+        run: npm run check:versions
 
       - name: Verify integrity metadata
         run: |

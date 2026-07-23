@@ -210,7 +210,15 @@
       "a ANPD autorizar a transferência",
       "titular tiver fornecido consentimento específico e em destaque"
     ],
-    "adequate_countries": "A ANPD ainda não publicou lista oficial. Referenciar países com reconhecimento GDPR como base orientativa.",
+    "adequate_countries": "Processo de reconhecimento de adequação regulamentado pela Resolução CD/ANPD nº 19/2024 (DOU 23-08-2024). Referenciar países com reconhecimento GDPR como base orientativa enquanto a lista da ANPD evolui.",
+    "regulatory_practice": {
+      "source": "Resolução CD/ANPD nº 19, de 23 de agosto de 2024 — Regulamento de Transferências Internacionais",
+      "rules": [
+        "Regulamenta os Arts. 33-36 da LGPD: adequação, cláusulas-padrão contratuais (SCCs brasileiras nos anexos), normas corporativas globais e cláusulas específicas",
+        "Contratos com transferência internacional deveriam ter incorporado as SCCs da ANPD no prazo de 12 meses (período de graça encerrado em ago-2025)",
+        "Verificado editorialmente 2026-07-09 — fonte: gov.br/anpd"
+      ]
+    },
     "legal_reference": "Arts. 33 a 36 da LGPD"
   },
   "breach_notification": {

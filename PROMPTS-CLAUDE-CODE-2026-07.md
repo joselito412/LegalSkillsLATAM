@@ -1,5 +1,7 @@
 # Prompts para sesiones de Claude Code — desarrollo & código
 
+> 📜 **Nota general (2026-07-23):** este documento queda como **registro histórico** de los hallazgos y prompts de la sesión de handoff 2026-07-09. La ejecución vigente del proyecto la supersede [`PLAN-GSD-V0.4-2026-07.md`](PLAN-GSD-V0.4-2026-07.md) y su carpeta [`.planning/`](.planning/). Las secciones "Sesión 0" y "H0" están además marcadas obsoletas por separado más abajo.
+
 > Complemento de `PLAN-REBRAND-Y-WEB-2026-07.md`. Esta sesión de Cowork dejó listo el **contenido** (logo, README bilingüe, `usa-federal.json`, `state-matrix.json` + schema, `region-factors.json`, `chile.json`, `plugin.json`). Lo que sigue es **código, wiring, tests, reorganización de archivos y deploy** — eso va en Claude Code (tiene el toolchain y auth de GitHub que Cowork no tiene).
 >
 > Cada bloque de abajo es un prompt listo para pegar. Ejecútalos **en orden** (A→F); A es prerequisito de B y C. Antes de empezar, en cada sesión: `git checkout -b <rama>` y al final `git commit` + `git push`.
@@ -7,6 +9,8 @@
 ---
 
 ## Sesión 0 — Terminar los commits pendientes (correr en TU terminal)
+
+> ⛔ **OBSOLETO (2026-07-23): no ejecutar.** El estado del repo cambió — los commits que esta sección buscaba cerrar ya se hicieron vía flujo rama + PR, sin manipulación de `.git`. La ejecución vigente vive en [`PLAN-GSD-V0.4-2026-07.md`](PLAN-GSD-V0.4-2026-07.md) y `.planning/` (ticket GOB-01). Lo que sigue queda como registro histórico.
 
 El entorno de Cowork logró crear el **commit 1** (`feat(brand): rebrand…` = README ES/EN, plan, logo, plugin.json) pero su `.git` montado no permite borrar archivos, así que git dejó un lock atascado y no pudo cerrar los 3 commits restantes. Los cambios están todos en disco. Corre esto en tu terminal (filesystem real, sin restricción) desde la raíz del repo:
 
@@ -215,3 +219,39 @@ nuevo nombre, y commitear. Conservar "formerly/antes se llamaba LegalSkillsLATAM
 
 Criterio: `grep -rn "LegalSkillsLATAM\|legalskills-latam"` solo aparece en notas historicas; build y tests verdes.
 ```
+
+---
+
+## ⚠️ ADDENDUM 2026-07-09 — Leer ANTES de correr las sesiones A/B
+
+La sesión de evaluación + validación jurídica (Cowork, 2026-07-09) dejó trabajo nuevo en el working tree y **un fix bloqueante** para la Sesión B. Documentos de referencia: `PLAN-INVESTIGACION-JURIDICA-Y-ANTIPATRONES-2026-07.md` (hallazgos T1–T5), `docs/NORMAS-CITADAS.md`, `docs/SOURCES-VALIDATION.md` (Olas 1 y 2 con fuente primaria).
+
+### H0 — Commit del trabajo editorial nuevo (extiende la Sesión 0)
+
+> ⛔ **OBSOLETO (2026-07-23): no ejecutar.** El estado del repo cambió — el commit editorial que H0 pedía ya se hizo vía flujo rama + PR, sin manipulación de `.git`. La ejecución vigente vive en [`PLAN-GSD-V0.4-2026-07.md`](PLAN-GSD-V0.4-2026-07.md) y `.planning/` (ticket GOB-01). Lo que sigue queda como registro histórico.
+
+Añadir al commit inicial (o commit aparte) todo lo de las Olas 1-2 y la evaluación:
+`mexico.json` v1.2.0 (verificado contra texto oficial LFPDPPP 2025, reforma DOF 14-11-2025), `brasil.json` (Res. 19/2024 SCCs), `chile.json` (transición APDP + gracia PYME), `us/state-matrix.json` (nota de verificación), `docs/SOURCES-VALIDATION.md`, `docs/NORMAS-CITADAS.md`, `PLAN-CUMPLIMIENTO-SDLC-Y-CLI-2026-07.md`, `PLAN-INVESTIGACION-JURIDICA-Y-ANTIPATRONES-2026-07.md`, `knowledge/matrices/matriz-sdlc-cumplimiento.md`, `cli/rules/risk-engine/devops-penalizers.json`, `architecture/AGENT-CONTRACT.md`, `skills/audit/SKILL.md` v3, índices de skills.
+
+### H1 — FIX T1 (🔴 BLOQUEANTE para la Sesión B)
+
+`region-factors.json` (BR 1.15, EC 1.00) contradice el modelo viejo (BR/EC 1.25) que aún vive en `skills/audit/SKILL.md` y `skills/audit/QUESTIONS.md`. Peor: tres penalizadores BE (DPO +15, base legal +20, brechas +15) se activan "solo si F_rigor = 1.25" — con la escala nueva **dejarían de activarse para Brasil**.
+
+Al implementar la Sesión B:
+1. Añadir a `region-factors.json` una lista `strict_regimes` (p. ej. `["EU", "BR", "CL>=2026-12-01"]`; Ecuador: **decisión editorial pendiente** — dejar comentario y no incluirlo hasta decidir).
+2. En el scorer, condicionar esos 3 penalizadores a `strict_regimes.includes(jurisdicción)` — NUNCA a igualdad numérica de F_rigor.
+3. Sincronizar `SKILL.md` (sección B del fallback y tabla 2C) y `QUESTIONS.md` con la escala nueva.
+
+### H2 — AGENT-CONTRACT v1.1 (aditivo, al implementar Fase 2.1)
+
+Añadir al finding: `jurisdictions[]` (para USA multiestatal) y `recipe_ref` (enlace al anti-patrón de la futura Fase AP). Crear el penalizador `us_multistate_exposure` (referenciado por `region-factors.json` pero inexistente) en `usa-federal.json` o el risk-engine.
+
+### H3 — Nota de contenido para la Sesión C
+
+Al wirear el bloque USA: el `state-matrix.json` ya tiene verificadas las entradas IN/KY/RI (vigentes 01-01-2026) y MD (vigente 01-10-2025, aplica a tratamientos desde 01-04-2026 — respetar ese matiz en cualquier output de skill). Brasil: la gracia de las SCCs ANPD (Res. 19/2024) venció en ago-2025 — considerar endurecer el `fix_hint` del penalizador de transferencias BR con esa referencia.
+
+### H4 — Backlog que NO es de la sesión de código (queda en Cowork)
+
+Ola 3 de investigación (crear `argentina.json`, `peru.json`, `ecuador.json`, `panama.json` + tablas de fuentes); Fase AP editorial (catálogo `knowledge/anti-patterns/` + skill `/fix`); iteración 2 del eval de `/audit` (distinguir `unknown` de `absent` en el fallback); verificación estado-por-estado completa con Descrybe (`verify_quote`) cuando el conector autentique.
+
+**Orden recomendado final (histórico — ya no vigente):** ~~0 → H0~~ → A → B(+H1) → C(+H3) → D → E → F → G, con H2 dentro de la implementación del contrato (Fase 2.1 del plan de cumplimiento). Sesión 0 y H0 quedan tachadas por obsoletas (ver banners arriba); el orden de ejecución vigente es el roadmap GSD — ver [`PLAN-GSD-V0.4-2026-07.md`](PLAN-GSD-V0.4-2026-07.md) y [`.planning/ROADMAP.md`](.planning/ROADMAP.md) (Fases 1–8).

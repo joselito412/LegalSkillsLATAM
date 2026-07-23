@@ -1,9 +1,9 @@
 <svg viewBox="0 0 720 580" xmlns="http://www.w3.org/2000/svg" font-family="system-ui, -apple-system, sans-serif">
-  <title>LegalSkillsLATAM — Arquitectura del Repositorio</title>
+  <title>Privacy Compliance Skills — Arquitectura del Repositorio</title>
   <desc>Diagrama de tres capas: Consumers arriba, Skills en el medio, y Knowledge Base abajo</desc>
 
   <rect width="720" height="580" fill="#f8f9fa" rx="12"/>
-  <text x="360" y="32" text-anchor="middle" font-size="14" font-weight="700" fill="#1a1a1a">LegalSkillsLATAM — Arquitectura del Repositorio</text>
+  <text x="360" y="32" text-anchor="middle" font-size="14" font-weight="700" fill="#1a1a1a" textLength="660" lengthAdjust="spacingAndGlyphs">Privacy Compliance Skills — Arquitectura del Repositorio</text>
 
   <!-- Layer labels -->
   <text x="14" y="105" font-size="9" font-weight="600" fill="#888" transform="rotate(-90,14,105)" text-anchor="middle">CONSUMERS</text>

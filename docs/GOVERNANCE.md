@@ -61,6 +61,49 @@ Abogado Experto   →   Reglas en JSON/MD   →   IA aplica las reglas   →   D
 
 ---
 
+## Flujo de validación de pares
+
+> Este flujo es la infraestructura del llamado a colaboradores legales del [README](../README.md) ("no necesitas saber programar"). El "Flujo de Control Editorial" de arriba describe cómo se **redacta y mergea** una regla; esta sección describe cómo se **valida por pares** hasta que puede llamarse `validated`.
+
+### Pipeline de estados (`review_status`)
+
+Todo archivo en `cli/rules/**/*.json` declara su estado de validación en el campo `review_status` (definido en `cli/rules/schema/country-rules.schema.json` y los schemas equivalentes):
+
+```
+pending_legal_validation → verified_editorial → under_review → validated
+```
+
+| Estado | Qué significa | Quién lo asigna |
+|---|---|---|
+| `pending_legal_validation` | Contenido recién redactado o editado. Nada en este estado es autoritativo — el output de la CLI y las skills debe mostrarlo etiquetado como pendiente de validación. | Equipo editorial, estado por defecto de cualquier cambio nuevo |
+| `verified_editorial` | El equipo editorial interno contrastó los claims contra el texto oficial de la norma (fuente primaria), pero **ningún revisor externo al equipo** lo confirmó todavía. | Equipo editorial (Cowork) |
+| `under_review` | Un/a abogado/a colaborador/a **identificado/a** abrió una revisión formal (issue con el template de abajo) y está verificando activamente los claims contra la fuente primaria. | Se activa al abrirse el issue de revisión |
+| `validated` | La revisión de pares terminó y el revisor es una persona humana identificable — nunca una IA ni un proceso automático. | **Solo un revisor humano identificado**, nunca automatizado |
+
+**Regla dura:** el paso a `validated` lo hace exclusivamente un revisor humano identificado. Esa promoción se registra en el propio JSON de la regla con:
+
+- `reviewed_by`: nombre o perfil públicamente verificable del revisor (este estado no admite revisor anónimo).
+- `last_reviewed`: fecha ISO de la revisión que produjo el `validated`.
+
+Ninguna sesión de código, script o agente de IA escribe `review_status: "validated"` por su cuenta. Es una promoción manual que un mantenedor técnico aplica en un PR *después* de que un revisor humano identificado confirmó la revisión en el issue correspondiente — este documento define el flujo, no lo ejecuta.
+
+### Cómo inicia una revisión un abogado/a colaborador/a
+
+1. Abre un issue con el template **["Revisión legal de una regla/matriz"](../.github/ISSUE_TEMPLATE/revision-legal.md)** (queda etiquetado `legal-review` automáticamente). No hace falta Git ni saber programar — ver [`CONTRIBUTING.md`](CONTRIBUTING.md).
+2. Identifica en el issue el archivo o los archivos que revisa (p. ej. `cli/rules/countries/colombia.json`, una matriz de `knowledge/`) y la jurisdicción.
+3. El equipo técnico confirma el alcance y marca la revisión como `under_review`.
+
+### Qué revisa el par
+
+- **Claims contra fuente primaria:** cada norma, artículo, plazo o sanción citados en el JSON o la matriz se contrastan contra el texto oficial (diario oficial, boletín del regulador, texto consolidado) — no contra resúmenes de terceros ni blogs.
+- **Vigencia:** fecha de entrada en vigor y reformas o derogaciones posteriores a la última revisión registrada (`last_reviewed`).
+- **Textualidad de `legal_refs`:** que la referencia citada exista literalmente en la fuente, no como paráfrasis.
+- **Alcance, no autoridad final:** la revisión de pares mejora la confiabilidad del contenido pero no reemplaza asesoría jurídica caso por caso — el descargo del proyecto se mantiene siempre (ver [DISCLAIMER.md](../DISCLAIMER.md)).
+
+Si el revisor encuentra un error, lo documenta en el issue con la corrección propuesta y la fuente exacta. Un mantenedor técnico abre entonces el PR que actualiza el JSON (`reviewed_by`, `last_reviewed`, `review_status`) referenciando el issue, siguiendo el "Flujo de Control Editorial" de arriba.
+
+---
+
 ## Versionado
 
 El proyecto usa **Semantic Versioning** adaptado al contexto legal:

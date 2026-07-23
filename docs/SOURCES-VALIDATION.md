@@ -31,6 +31,92 @@ Verificación editorial de vigencia normativa realizada con fuentes secundarias 
 
 ---
 
+## 🔬 Ola 1 de validación textual — 2026-07-09
+
+Verificación editorial **contra texto oficial de fuente primaria** (no fuentes secundarias). Metodología: descarga del texto oficial → localización del artículo → confirmación del claim → registro con fecha de consulta 2026-07-09.
+
+### 🇲🇽 México — LFPDPPP 2025, texto oficial ([Diputados, últ. reforma DOF 14-11-2025](https://www.diputados.gob.mx/LeyesBiblio/pdf/LFPDPPP.pdf))
+
+| Claim | Artículo (ley 2025) | Resultado | Nota |
+|---|---|---|---|
+| Consentimiento tácito válido por regla general | **Art. 7** (antes Art. 8) | ✅ Confirmado | *"Por regla general será válido el consentimiento tácito, salvo que las disposiciones jurídicas aplicables exijan"* expreso. Financieros/patrimoniales requieren expreso. |
+| Sensibles: consentimiento expreso y por escrito | **Art. 8** (antes Art. 9) | ✅ Confirmado | Firma autógrafa, electrónica o mecanismo de autenticación. |
+| Aviso de privacidad: contenido y puesta a disposición | **Arts. 14-17** (antes 15-18) | ✅ Confirmado | Contenido mínimo Art. 15; formatos Art. 16; datos no obtenidos del titular Art. 17. |
+| Medidas de seguridad administrativas/técnicas/físicas | **Art. 18** (antes 19) | ✅ Confirmado | Criterios: riesgo, consecuencias, sensibilidad, desarrollo tecnológico. |
+| Vulneraciones: aviso "a la brevedad" | **Art. 19** (antes 20) | ⚠️ **Corregido** | El texto 2025 dice **"de forma inmediata"** y la obligación es hacia las **personas titulares** — la notificación a la autoridad NO consta en la ley (verificar Reglamento). `mexico.json` actualizado. |
+| ARCO: 20 días respuesta + 15 para hacer efectiva | **Art. 31** (antes 32) | ✅ Confirmado | Ampliables una sola vez por periodo igual. |
+| Multas 100–320,000 UMA | **Arts. 58-59** | ⚠️ **Precisado** | Escalonadas: apercibimiento / **100–160,000 UMA** (fracc. II-VII) / **200–320,000 UMA** (fracc. VIII-XVIII) / multa adicional por reiteración. **Hasta 2x con datos sensibles** (Art. 59 in fine). `mexico.json` actualizado. |
+| Prisión hasta 5 años | **Arts. 62-63** | ✅ Confirmado | Art. 62: 3m-3a (vulneración con lucro); Art. 63: 6m-5a (engaño con lucro indebido). |
+
+### 🇺🇸 USA — CCPA/CPRA, texto oficial ([estatuto publicado por la CPPA](https://cppa.ca.gov/regulations/pdf/cppa_act.pdf))
+
+| Claim en `usa-federal.json` | Sección | Resultado |
+|---|---|---|
+| Derecho a borrar | §1798.105 *"Consumers' Right to Delete Personal Information"* | ✅ Confirmado |
+| Derecho a corregir | §1798.106 *"Right to Correct Inaccurate Personal Information"* | ✅ Confirmado |
+| Opt-out de venta/compartición | §1798.120 *"Right to Opt Out of Sale or Sharing"* | ✅ Confirmado |
+| Limitar uso de información sensible (SPI) | §1798.121 + enlace obligatorio *"Limit the Use of My Sensitive Personal Information"* | ✅ Confirmado |
+| Acción privada por brechas, daños desde $100 por consumidor | §1798.150 *"Personal Information Security Breaches"* — *"not less than one hundred dollars ($100)"* | ✅ Confirmado (rango $100–$750 por consumidor por incidente) |
+| Derecho a conocer (§1798.100/.110/.115), no discriminación (§1798.125), sanciones (§1798.155), umbrales y regs CPPA | — | ⬜ Pendiente — verificar con Descrybe (`verify_quote`) cuando se autentique el conector, o contra el mismo PDF oficial |
+
+### 🇪🇺 UE — GDPR (Reglamento 2016/679, [EUR-Lex](https://eur-lex.europa.eu/legal-content/ES/TXT/?uri=CELEX:32016R0679))
+
+| Claim en `gdpr.json` | Artículo | Estado |
+|---|---|---|
+| Categorías especiales de datos (salud, biometría, etc.) | Arts. 9-10 | ✅ Texto estable desde 2016 — verificado editorialmente |
+| Consentimiento: libre, específico, informado, inequívoco; revocable | Arts. 4(11), 6(1)(a), 7 | ✅ Ídem |
+| Derechos del titular | Arts. 15-22 | ✅ Ídem |
+| Brechas: 72h a la autoridad; comunicación a titulares si alto riesgo | Arts. 33-34 | ✅ Ídem |
+| DPO condicional | Arts. 37-39 | ✅ Ídem |
+| DPIA para alto riesgo | Art. 35 | ✅ Ídem |
+| Transferencias (Cap. V) y sanciones dos niveles (2%/4%) | Arts. 44-49, 83 | ✅ Ídem |
+| **EU-US Data Privacy Framework** | Decisión 2023/1795 | ⚠️ **Vigente pero bajo presión** (jul-2026): apelación TJUE C-703/25 P pendiente + fallo SCOTUS jun-2026 sobre la FTC cuestiona la supervisión independiente. Recomendar SCCs como contingencia documentada. |
+| Capa ePrivacy (cookies) | Directiva 2002/58/CE, Art. 5(3) | ⬜ Añadir a `gdpr.json` como capa adyacente (backlog Sesión C) |
+
+---
+
+## 🔭 Ronda de vigilancia 2026-07 — ejecutada 2026-07-09 (primera ronda, metodología v1.0)
+
+> Metodología: `docs/VIGILANCIA-NORMATIVA.md`. Cobertura: **11/11 jurisdicciones con respuesta explícita.** Las Olas 1-2 de este mismo día constituyen la verificación Nivel 0 de 9 jurisdicciones; esta ronda completó CO y PA.
+
+| Jurisdicción | Hallazgo | Clase | Fuente · fecha consulta | Impacto en repo / acción |
+|---|---|---|---|---|
+| 🇨🇴 Colombia | **Circular Externa 002/2026 de la SIC**: instrucciones de tratamiento de datos con fines políticos/electorales (partidos, campañas, marketing electoral) bajo Ley 1581 y Decreto 1074/2015 | ✅ CONFIRMADO | [Sede electrónica SIC](https://sedeelectronica.sic.gov.co/comunicado/la-sic-expidio-instrucciones-sobre-proteccion-de-datos-personales-en-el-contexto-electoral) · 2026-07-09 | `colombia.json` → añadir a `regulatory_practice`; relevante para apps con datos de opinión política (ya sensibles). Ticket editorial. |
+| 🇨🇴 Colombia | Proyecto de Resolución SIC (27-may-2026) que modificaría el Título V de la Circular Única (habeas data financiero, Leyes 2157/2021 y 2573/2026, RNBD) | ⚪ MONITOREO | [CERLatam](https://www.cerlatam.com/normatividad/sic-proyecto-de-resolucion-27-may-2026/) · 2026-07-09 | Es PROYECTO — prohibido registrarlo como vigente. Re-verificar en ronda 2026-08. La "Ley 2573/2026" citada debe verificarse contra fuente oficial. |
+| 🇵🇦 Panamá | **Resolución ANTAI-DG-003-2026** (26-03-2026): adopta las Cláusulas Contractuales Estándar de la RIPD para transferencias internacionales | 🟡 PROBABLE | [Morgan & Morgan](https://morimor.com/panama-updates-rules-for-international-data-transfers/) · 2026-07-09 — localizar texto en antai.gob.pa ≤7 días | Debe entrar al futuro `panama.json` (Ola 3): mecanismo de transferencia + multas B/.1,000–10,000 confirmadas por fuentes del sector. |
+| 🇲🇽🇧🇷🇨🇱🇵🇪🇪🇨🇦🇷🇺🇸🇪🇺 (9) | Sin novedades adicionales a lo registrado en las Olas 1-2 de validación de este mismo día (ver secciones 🔬 arriba) | ✅ Verificado | Olas 1-2 · 2026-07-09 | Ver tickets ya abiertos en esas secciones |
+
+**Próxima ronda:** 2026-08-01 (automática). Pendientes que hereda: localizar texto oficial ANTAI-DG-003-2026; estado del proyecto de resolución SIC; instrucciones APDP Chile (ventana jun-nov 2026).
+
+---
+
+## 🔬 Ola 2 de validación — 2026-07-09
+
+### 🇺🇸 USA federal — cierre de claims pendientes (texto oficial [CPPA](https://cppa.ca.gov/regulations/pdf/cppa_act.pdf))
+
+§1798.100 *(General Duties)*, §1798.110 *(Right to Know — Collected)*, §1798.115 *(Right to Know — Sold/Shared)*, §1798.125 *(No Retaliation)* y §1798.155 *(Administrative Enforcement)*: ✅ **títulos y existencia confirmados contra el estatuto oficial**. Con esto, las 10 secciones CCPA/CPRA citadas en `usa-federal.json` están verificadas textualmente.
+
+### 🇺🇸 USA estados — muestra de riesgo verificada
+
+| Claim | Resultado | Fuente |
+|---|---|---|
+| IN, KY, RI vigentes desde 01-01-2026 (total: 19 en vigor) | ✅ Confirmado. IN/KY: hasta $7,500/violación, cure 30 días; RI: sin cure, hasta $10,000 | [IAPP](https://iapp.org/news/a/new-year-new-rules-us-state-privacy-requirements-coming-online-as-2026-begins) · [Cozen](https://www.cozen.com/news-resources/publications/2025/three-states-will-ring-in-2026-with-new-privacy-laws) |
+| MD (MODPA) vigente 01-10-2025; minimización reforzada; prohibición de venta de sensibles | ✅ Confirmado + **matiz**: aplica a tratamientos desde el **01-04-2026**; minimización exigible incluso con consentimiento; primera prohibición absoluta de venta de datos sensibles | [EPIC](https://epic.org/maryland-online-data-privacy-act-comes-into-effect/) · [Cooley](https://www.cooley.com/news/insight/2025/2025-09-09-marylands-unique-state-privacy-law-takes-effect-october-1--what-you-should-know) |
+| Resto de los 19 estados (fechas/umbrales/cure) | ⬜ Pendiente — verificación estado por estado con Descrybe (`search_laws_and_rules`) cuando el conector autentique en esta sesión, o contra legislaturas estatales | `state-matrix.json` actualizado con nota |
+
+### 🇨🇱 Chile — transición APDP
+
+APDP **ya operativa de forma adelantada**; primeras instrucciones generales y criterios de fiscalización entre jun y nov 2026; potestad sancionatoria plena desde 01-12-2026. **Ventana de gracia PYME** (Ley 20.416): primeras infracciones → amonestación escrita durante los primeros 12 meses (hasta dic-2027). Reincidencia puede escalar hasta 4% de ingresos anuales. Fuentes secundarias chilenas — confirmar contra instrucciones APDP cuando se publiquen. `chile.json` actualizado.
+
+### 🇧🇷 Brasil — resoluciones ANPD
+
+| Resolución | Verificado | Acción |
+|---|---|---|
+| **CD/ANPD nº 19/2024** (DOU 23-08-2024) — transferencias internacionales | ✅ Regula Arts. 33-36 LGPD; SCCs brasileñas en anexos; plazo de 12 meses para incorporarlas a contratos (**gracia vencida ago-2025** — contratos sin SCCs ANPD están hoy en incumplimiento) | `brasil.json` actualizado ([gov.br/ANPD](https://www.gov.br/anpd/pt-br/assuntos/noticias/resolucao-normatiza-transferencia-internacional-de-dados)) |
+| **CD/ANPD nº 2/2022** — agentes de pequeño porte | ✅ Declaración simplificada del Art. 19-I LGPD en hasta 15 días; plazos en doble para pequeño porte | Confirma el claim de plazos de `brasil.json` ([texto oficial](https://www.gov.br/anpd/pt-br/acesso-a-informacao/institucional/atos-normativos/regulamentacoes_anpd/resolucao-cd-anpd-no-2-de-27-de-janeiro-de-2022)) |
+
+---
+
 ## 🇧🇷 Brasil — LGPD (Lei 13.709/2018)
 
 **Texto oficial:** https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709.htm

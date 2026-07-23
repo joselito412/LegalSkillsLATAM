@@ -1,10 +1,10 @@
 {
-  "name": "legalskills-latam",
-  "version": "0.2.0-beta.1",
+  "name": "privacy-compliance-skills",
+  "version": "0.4.0-dev",
   "description": "Legal risk auditor for LATAM developers — classify data, score risk, compare privacy laws",
   "type": "module",
   "bin": {
-    "legalskills-latam": "./dist/index.js",
+    "privacy-compliance-skills": "./dist/index.js",
     "lls": "./dist/index.js"
   },
   "scripts": {
@@ -42,6 +42,6 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/joselito412/LegalSkillsLATAM.git"
+    "url": "https://github.com/joselito412/Privacy_Compliance_Skills-UE-USA-LATAM.git"
   }
 }

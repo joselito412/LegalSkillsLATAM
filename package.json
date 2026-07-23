@@ -1,11 +1,12 @@
 {
-  "name": "legalskills-latam",
-  "version": "0.1.1",
+  "name": "privacy-compliance-skills",
+  "version": "0.4.0-dev",
   "description": "Estándar abierto de cumplimiento legal para desarrolladores en Latinoamérica",
   "private": true,
   "scripts": {
     "validate": "node scripts/validate.js",
-    "validate:watch": "nodemon --watch cli/rules/ --ext json --exec 'npm run validate'"
+    "validate:watch": "nodemon --watch cli/rules/ --ext json --exec 'npm run validate'",
+    "check:versions": "node scripts/check-versions.js"
   },
   "devDependencies": {
     "ajv": "8.20.0",

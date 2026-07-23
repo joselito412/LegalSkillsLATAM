@@ -52,7 +52,7 @@ export async function runAuditWizard(options: { config?: boolean; json?: boolean
   }
 
   if (!options.config) {
-    console.log(chalk.bold("\n🔍 LegalSkillsLATAM — Auditoría Legal Rápida\n"));
+    console.log(chalk.bold("\n🔍 Privacy Compliance Skills — Auditoría Legal Rápida\n"));
     console.log(chalk.dim("Responde 5 preguntas para calcular tu Legal Risk Score.\n"));
   }
 
@@ -162,9 +162,9 @@ export async function runAuditWizard(options: { config?: boolean; json?: boolean
     if (result.finalScore >= 71) {
       console.log(chalk.red.bold("🔴 Auditoría legal obligatoria.") + " Este nivel de riesgo supera lo que una guía automatizada puede gestionar de forma segura. Contacta un abogado especialista en protección de datos.\n");
     } else if (result.finalScore >= 31) {
-      console.log(chalk.yellow("🟡 Implementa las acciones prioritarias antes de lanzar.") + " Ver guía completa en https://github.com/joselito412/LegalSkillsLATAM\n");
+      console.log(chalk.yellow("🟡 Implementa las acciones prioritarias antes de lanzar.") + " Ver guía completa en https://github.com/joselito412/Privacy_Compliance_Skills-UE-USA-LATAM\n");
     } else {
-      console.log(chalk.green("🟢 Proyecto de bajo riesgo.") + " Sigue los checklists de LegalSkillsLATAM para mantener este nivel.\n");
+      console.log(chalk.green("🟢 Proyecto de bajo riesgo.") + " Sigue los checklists de Privacy Compliance Skills para mantener este nivel.\n");
     }
 
     const feActive = result.fePenalizers.filter((p) => p.active);
