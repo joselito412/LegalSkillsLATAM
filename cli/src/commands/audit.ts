@@ -4,7 +4,7 @@ import { resolve } from "path";
 import chalk from "chalk";
 import { calculateDualScore, type AuditInput, type DataCategory } from "../engine/scorer.js";
 import { classifyText } from "../engine/classifier.js";
-import { COUNTRIES, isStrictRegime, loadStateMatrix } from "../engine/rules.js";
+import { COUNTRIES, isStrictRegime, loadStateMatrix, countIntegralStates } from "../engine/rules.js";
 import { renderDualScoreBox } from "../ui/box.js";
 
 interface ConfigFile {
@@ -22,6 +22,7 @@ interface ConfigFile {
   has_breach_response_plan?: boolean;
   transfer_destinations?: string[];
   us_states?: string[];
+  us_state_laws_mapped?: boolean;
 }
 
 const COUNTRY_CHOICES = COUNTRIES.map((c) => ({ name: c.label, value: c.code }));
@@ -97,6 +98,17 @@ export async function runAuditWizard(options: { config?: boolean; json?: boolean
       }))
     : undefined;
 
+  // Q2c — Mapeo de leyes estatales (MOTOR-03) — solo si ≥2 estados integrales
+  const usStateLawsMapped: boolean | undefined =
+    countries.includes("US") && countIntegralStates(usStates) >= 2
+      ? configData.us_state_laws_mapped ??
+        (await confirm({
+          message:
+            "¿Han mapeado qué leyes estatales integrales aplican a su producto? (us/state-matrix.json)",
+          default: false,
+        }))
+      : undefined;
+
   // Q4 — Minors
   const hasMinors: boolean =
     configData.has_minors ??
@@ -167,6 +179,7 @@ export async function runAuditWizard(options: { config?: boolean; json?: boolean
     hasBreachResponsePlan,
     transferDestinations: configData.transfer_destinations,
     usStates,
+    usStateLawsMapped,
   };
 
   const result = calculateDualScore(auditInput);

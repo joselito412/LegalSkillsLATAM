@@ -1,12 +1,12 @@
 import type { AuditInput, PenalizerResult } from "./scorer.js";
-import { transferDestinationsCovered } from "./rules.js";
+import { transferDestinationsCovered, getUsaFederalPenalizer, countIntegralStates } from "./rules.js";
 
 /**
  * Returns the Backend penalizers (pillar: "backend" | "both") for an audit input.
  * Score range: 0–50 pts (pilar BE). C_base is added separately in the combined score.
  */
 export function getBackendPenalizers(input: AuditInput, isStrict: boolean): PenalizerResult[] {
-  return [
+  const result: PenalizerResult[] = [
     {
       id: "non_adequate_servers",
       label: "Servidores fuera de jurisdicción sin garantías",
@@ -57,6 +57,26 @@ export function getBackendPenalizers(input: AuditInput, isStrict: boolean): Pena
       pillar: "both",
     },
   ];
+
+  // MOTOR-03 — mismo cableado que calculateScore(): la definición vive SOLO en
+  // usa-federal.json. Pilar "both" se muestra completo en el panel BE
+  // (consistente con no_arco_backend): el split FE/BE no se inventa aquí — el
+  // mapeo normativo multi-estatal es trabajo de backend/legal-ops.
+  if (input.countries.includes("US")) {
+    const def = getUsaFederalPenalizer("us_multistate_exposure");
+    if (def) {
+      result.push({
+        id: def.id,
+        label: def.description ?? def.id,
+        score: def.score,
+        active: countIntegralStates(input.usStates) >= 2 && input.usStateLawsMapped !== true,
+        pillar: (def.pillar as PenalizerResult["pillar"]) ?? "both",
+        description: def.description,
+      });
+    }
+  }
+
+  return result;
 }
 
 export function calculateBackendScore(

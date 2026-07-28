@@ -1,4 +1,11 @@
-import { loadFormula, resolveStrictRegime, resolveRigorFactor, transferDestinationsCovered } from "./rules.js";
+import {
+  loadFormula,
+  resolveStrictRegime,
+  resolveRigorFactor,
+  transferDestinationsCovered,
+  getUsaFederalPenalizer,
+  countIntegralStates,
+} from "./rules.js";
 import { getFrontendPenalizers } from "./frontend-scorer.js";
 import { getBackendPenalizers } from "./backend-scorer.js";
 
@@ -19,6 +26,7 @@ export interface AuditInput {
   hasBreachResponsePlan?: boolean;
   transferDestinations?: string[];
   usStates?: string[];
+  usStateLawsMapped?: boolean;
 }
 
 export interface PenalizerResult {
@@ -27,6 +35,13 @@ export interface PenalizerResult {
   score: number;
   active: boolean;
   pillar?: "frontend" | "backend" | "both";
+  /** Los siguientes campos solo se pueblan desde JSON cuando el penalizador es
+   *  JSON-sourced (MOTOR-03/MOTOR-08) — passthrough fiel, nunca inventado. */
+  description?: string;
+  legalRefs?: string[];
+  fixHint?: string;
+  configKey?: string;
+  standardsRefs?: string[];
 }
 
 export interface DualScoreResult extends ScoreResult {
@@ -136,6 +151,24 @@ export function calculateScore(input: AuditInput): ScoreResult {
       pillar: "backend",
     },
   ];
+
+  // MOTOR-03 — cableado de us_multistate_exposure: la definición (score, description,
+  // pillar) vive SOLO en usa-federal.json, el motor no la duplica. La llave
+  // `us_state_laws_mapped` es wiring del motor (el JSON no declara config_key para
+  // este penalizador), pendiente de bendición editorial.
+  if (input.countries.includes("US")) {
+    const def = getUsaFederalPenalizer("us_multistate_exposure");
+    if (def) {
+      penalizerResults.push({
+        id: def.id,
+        label: def.description ?? def.id, // el label sale del JSON, no se inventa
+        score: def.score,
+        active: countIntegralStates(input.usStates) >= 2 && input.usStateLawsMapped !== true,
+        pillar: (def.pillar as PenalizerResult["pillar"]) ?? "both",
+        description: def.description,
+      });
+    }
+  }
 
   const activePenalizers = penalizerResults.filter((p) => p.active);
   const penalizersSum = activePenalizers.reduce((sum, p) => sum + p.score, 0);

@@ -60,6 +60,26 @@ export interface AdequacyDecision {
   [key: string]: unknown;
 }
 
+/**
+ * Un penalizador declarado en el bloque `penalizers` de un JSON de reglas
+ * (country-rules o devops-penalizers). Los campos opcionales solo existen si
+ * el JSON los declara — el motor hace passthrough fiel, nunca inventa valores
+ * (MOTOR-03/MOTOR-08).
+ */
+export interface RulePenalizer {
+  id: string;
+  description?: string;
+  score: number;
+  applies_when?: string;
+  pillar?: string;
+  legal_refs?: string[];
+  fix_hint?: string;
+  config_key?: string;
+  standards_ref?: string;
+  standards_refs?: string[];
+  [key: string]: unknown;
+}
+
 export interface CountryRules {
   country: string | { code: string; name: string; flag?: string; rigor_level?: string; rigor_factor?: number };
   iso_code?: string;
@@ -67,7 +87,7 @@ export interface CountryRules {
   primary_law?: { name: string; regulator?: { name: string; acronym?: string } };
   sanctions?: { max_fine?: string; approximate_usd?: number; authority?: string };
   data_subject_rights?: Record<string, { available?: boolean; deadline_days?: number; deadline_type?: string }>;
-  penalizers?: Array<{ id: string; description: string; score: number }>;
+  penalizers?: RulePenalizer[];
   international_transfer?: {
     adequacy_decisions?: AdequacyDecision[];
     [key: string]: unknown;
@@ -199,6 +219,17 @@ export function loadCountry(isoCode: string): CountryRules | null {
     }
   }
   return null;
+}
+
+/**
+ * Busca un penalizador por id en el bloque `penalizers` de usa-federal.json
+ * (MOTOR-03). La definición vive SOLO ahí — el motor no la duplica, solo la
+ * cablea. Devuelve null si loadCountry("US") no encuentra el archivo (código
+ * "US" ausente) o si el id no está en su lista de penalizadores.
+ */
+export function getUsaFederalPenalizer(id: string): RulePenalizer | null {
+  const us = loadCountry("US");
+  return us?.penalizers?.find((p) => p.id === id) ?? null;
 }
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
