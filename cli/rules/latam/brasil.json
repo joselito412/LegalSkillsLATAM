@@ -1,10 +1,10 @@
 {
   "$schema": "../schema/country-rules.schema.json",
-  "version": "1.1.0",
-  "last_reviewed": "2026-07-08",
-  "review_status": "pending_legal_validation",
+  "version": "1.2.0",
+  "last_reviewed": "2026-07-28",
+  "review_status": "verified_editorial",
   "reviewed_by": null,
-  "editorial_note": "Actualizado 2026-07-08: integrada la práctica regulatoria de la ANPD (Resolução CD/ANPD nº 15/2024 — comunicación de incidentes en 3 días hábiles). Pendiente de validación por abogado experto en derecho brasileño. No constituye asesoría jurídica.",
+  "editorial_note": "Actualizado 2026-07-08: práctica regulatoria de la ANPD (Res. CD/ANPD nº 15/2024 — incidentes en 3 días hábiles) y Res. 19/2024 (SCCs). VIG-01 (2026-07-28): incorporada la Resolução CD/ANPD nº 32, de 26-01-2026 — reconocimiento de adecuación de la Unión Europea (+ EEE/EFTA e instituciones de la UE) bajo el Art. 33, I de la LGPD, con sus exclusiones (seguridad pública, defensa nacional, seguridad del Estado, investigación penal) y reevaluación a 4 años; el penalizador de transferencias se matizó para no penalizar destinos con adecuación vigente. Pendiente de validación por abogado experto en derecho brasileño. No constituye asesoría jurídica.",
   "country": {
     "code": "BR",
     "name": "Brasil",
@@ -210,16 +210,30 @@
       "a ANPD autorizar a transferência",
       "titular tiver fornecido consentimento específico e em destaque"
     ],
-    "adequate_countries": "Processo de reconhecimento de adequação regulamentado pela Resolução CD/ANPD nº 19/2024 (DOU 23-08-2024). Referenciar países com reconhecimento GDPR como base orientativa enquanto a lista da ANPD evolui.",
+    "adequate_countries": "**União Europeia reconhecida como adequada** pela Resolução CD/ANPD nº 32, de 26-01-2026 (Art. 33, I da LGPD). Demais destinos: sem lista oficial da ANPD — usar cláusulas-padrão contratuais (Res. 19/2024) ou outro mecanismo do Art. 33.",
+    "adequacy_decisions": [
+      {
+        "destination": "União Europeia + EEE/EFTA + instituições, órgãos e agências da UE",
+        "scope_detail": "Todos os Estados-Membros da UE, os três países da EFTA que integram o Espaço Econômico Europeu (Islândia, Liechtenstein e Noruega) e as instituições, órgãos e agências da União Europeia",
+        "instrument": "Resolução CD/ANPD nº 32, de 26 de janeiro de 2026",
+        "legal_basis": "Art. 33, I da LGPD",
+        "exclusions": "NÃO se aplica a transferências realizadas exclusivamente para fins de segurança pública, defesa nacional, segurança do Estado ou atividades de investigação e repressão de infrações penais",
+        "review": "Reavaliação prevista em até 4 anos contados da entrada em vigor da Resolução",
+        "practical_effect": "Transferências BR→UE/EEE por este fundamento dispensam SCCs; reduz custo contratual e dá previsibilidade regulatória. Adequação mútua: a UE também reconheceu o Brasil.",
+        "source": "https://www.gov.br/anpd/pt-br/acesso-a-informacao/institucional/atos-normativos/regulamentacoes_anpd",
+        "verified": "2026-07-28 (ronda de vigilancia 2026-07, 2ª pasada; VIG-01)"
+      }
+    ],
     "regulatory_practice": {
       "source": "Resolução CD/ANPD nº 19, de 23 de agosto de 2024 — Regulamento de Transferências Internacionais",
       "rules": [
         "Regulamenta os Arts. 33-36 da LGPD: adequação, cláusulas-padrão contratuais (SCCs brasileiras nos anexos), normas corporativas globais e cláusulas específicas",
         "Contratos com transferência internacional deveriam ter incorporado as SCCs da ANPD no prazo de 12 meses (período de graça encerrado em ago-2025)",
-        "Verificado editorialmente 2026-07-09 — fonte: gov.br/anpd"
+        "As SCCs seguem obrigatórias para destinos SEM decisão de adequação; para UE/EEE, a Res. 32/2026 oferece fundamento alternativo (Art. 33, I)",
+        "Verificado editorialmente 2026-07-09; adequação UE incorporada em 2026-07-28"
       ]
     },
-    "legal_reference": "Arts. 33 a 36 da LGPD"
+    "legal_reference": "Arts. 33 a 36 da LGPD; Resoluções CD/ANPD nº 19/2024 e nº 32/2026"
   },
   "breach_notification": {
     "required": true,
@@ -333,7 +347,7 @@
       "id": "lgpd_uncontrolled_transfer",
       "description": "Transferência internacional sem garantias adequadas",
       "score": 20,
-      "applies_when": "dados transferidos a países sem nível de proteção adequado e sem cláusulas contratuais",
+      "applies_when": "dados transferidos a países sem nível de proteção adequado e sem cláusulas contratuais. NÃO se aplica quando o destino tem decisão de adequação vigente — ver international_transfer.adequacy_decisions (UE/EEE + instituições da UE, Res. CD/ANPD nº 32/2026), salvo se a finalidade estiver nas exclusões (segurança pública, defesa nacional, segurança do Estado, investigação penal)",
       "pillar": "backend"
     }
   ],

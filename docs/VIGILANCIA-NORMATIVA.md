@@ -20,11 +20,11 @@ Cada jurisdicción tiene fuentes oficiales fijas que se visitan directamente cad
 | 🇲🇽 México | DOF (dof.gob.mx — búsqueda "datos personales" del mes) · Leyes vigentes Diputados (LFPDPPP.pdf — campo "Última Reforma") · gob.mx/buengobierno (SABG) |
 | 🇧🇷 Brasil | gov.br/anpd → Atos Normativos y Notícias · Planalto (texto LGPD consolidado) |
 | 🇨🇴 Colombia | sic.gov.co → normativa/circulares · Función Pública (normograma) |
-| 🇨🇱 Chile | BCN LeyChile (Ley 21.719 — modificaciones) · sitio de la APDP (instrucciones generales; crítico jun-nov 2026) |
+| 🇨🇱 Chile | BCN LeyChile (Ley 21.719 — modificaciones) · **APDP: sin sitio oficial publicado a jul-2026** (la Agencia inicia operaciones en el 2º semestre de 2026) → vigilar vía gob.cl y Ministerio de Economía hasta que exista dominio propio; Guía de la Secretaría de Gobierno Digital como fuente puente. **Crítico jun-nov 2026** |
 | 🇦🇷 Argentina | argentina.gob.ar/aaip → normativa · HCDN/Senado (estado de proyectos de reforma) |
 | 🇵🇪 Perú | El Peruano (busquedas.elperuano.pe) · gob.pe/minjus (ANPD) |
-| 🇪🇨 Ecuador | Registro Oficial · Superintendencia de Protección de Datos |
-| 🇵🇦 Panamá | Gaceta Oficial digital · antai.gob.pa |
+| 🇪🇨 Ecuador | Registro Oficial · **SPDP → listado de resoluciones: spdp.gob.ec/resoluciones2/** (fuente que destapó la ola normativa 2026) |
+| 🇵🇦 Panamá | **Gaceta Oficial digital** (imprescindible: ANTAI no publica todas sus resoluciones en su web) · **antai.gob.pa/legislacion/** (circulares y guías) |
 | 🇺🇸 USA | cppa.ca.gov/regulations (regs + estatuto) · IAPP US State Privacy Legislation Tracker (agregador de referencia para las 19+ leyes) |
 | 🇪🇺 UE | EUR-Lex (búsqueda del mes) · edpb.europa.eu (guidelines/decisiones) · curia.europa.eu (caso C-703/25 P — DPF) |
 
