@@ -244,15 +244,53 @@ export async function runAuditWizard(options: { config?: boolean; json?: boolean
   let hasBreachResponsePlan: boolean | undefined;
 
   if (isStrict) {
-    hasDpo =
-      configData.has_dpo ??
-      (await confirm({ message: "¿Tienen DPO/Encarregado de Dados designado y publicado?", default: false }));
-    hasLegalBasisPerPurpose =
-      configData.has_legal_basis_per_purpose ??
-      (await confirm({ message: "¿Tienen base legal documentada por cada finalidad de tratamiento?", default: false }));
-    hasBreachResponsePlan =
-      configData.has_breach_response_plan ??
-      (await confirm({ message: "¿Tienen plan de respuesta a brechas de seguridad documentado?", default: false }));
+    if (options.config) {
+      // Fix (cierre de Fase 3): estas 3 llaves quedaron fuera del patrón
+      // no-interactivo que 3B aplicó al resto de llaves nuevas — les faltaba
+      // el guard `options.config ? ... : ...`. Un config de BR/EU/EC sin
+      // has_dpo disparaba un prompt interactivo que, bajo CI (stdin cerrado),
+      // reventaba con ExitPromptError y salía con código 0 SIN emitir JSON —
+      // un `--fail-on` quedaba verde sobre una auditoría que nunca corrió.
+      //
+      // Copiar el guard de las llaves DevOps y dejar `undefined` aquí sería
+      // cambiar ese crash ruidoso por un fail-open SILENCIOSO: el motor trata
+      // "no respondido" como "no penaliza", perdiendo hasta 50 pts sin aviso —
+      // inaceptable para un régimen estricto (GDPR/LGPD/LOPDP). En vez de eso,
+      // el motor se niega a puntuar: si falta alguna de las 3 llaves, sale con
+      // código 2 (configuración inválida — mismo criterio que normalizeCountries()
+      // más arriba) nombrando exactamente qué falta. La semántica fina
+      // "unknown" vs "absent" (permitir un --config parcial en régimen
+      // estricto sin perder rigor) es CONTRATO-04 (Fase 4).
+      const missing: string[] = [];
+      if (configData.has_dpo === undefined) missing.push("has_dpo");
+      if (configData.has_legal_basis_per_purpose === undefined) missing.push("has_legal_basis_per_purpose");
+      if (configData.has_breach_response_plan === undefined) missing.push("has_breach_response_plan");
+
+      if (missing.length > 0) {
+        const strictCountries = countries.filter((c) => isStrictRegime([c]));
+        console.error(
+          chalk.red(
+            `❌ Configuración incompleta: el proyecto incluye jurisdicciones de régimen estricto (${strictCountries.join(", ")}) y legalskills.config.json no declara: ${missing.join(", ")}. Añádelas (true/false) y vuelve a ejecutar.`
+          )
+        );
+        process.exit(2);
+      }
+
+      hasDpo = configData.has_dpo;
+      hasLegalBasisPerPurpose = configData.has_legal_basis_per_purpose;
+      hasBreachResponsePlan = configData.has_breach_response_plan;
+    } else {
+      // Modo wizard (sin --config): comportamiento preexistente, sin cambios.
+      hasDpo =
+        configData.has_dpo ??
+        (await confirm({ message: "¿Tienen DPO/Encarregado de Dados designado y publicado?", default: false }));
+      hasLegalBasisPerPurpose =
+        configData.has_legal_basis_per_purpose ??
+        (await confirm({ message: "¿Tienen base legal documentada por cada finalidad de tratamiento?", default: false }));
+      hasBreachResponsePlan =
+        configData.has_breach_response_plan ??
+        (await confirm({ message: "¿Tienen plan de respuesta a brechas de seguridad documentado?", default: false }));
+    }
   }
 
   const auditInput: AuditInput = {

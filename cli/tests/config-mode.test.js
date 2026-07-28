@@ -36,6 +36,24 @@ function runAuditConfigJson(configFile) {
   return JSON.parse(stdout.slice(stdout.indexOf("{")));
 }
 
+// Variante que NO asume éxito: captura status/stdout/stderr incluso cuando el
+// proceso sale con código distinto de 0 (execFileSync lanza en ese caso).
+function runAuditConfigRaw(configFile) {
+  const tmpDir = mkdtempSync(join(tmpdir(), "lls-"));
+  writeFileSync(join(tmpDir, "legalskills.config.json"), JSON.stringify(configFile, null, 2));
+
+  try {
+    const stdout = execFileSync(process.execPath, [CLI_ENTRY, "audit", "--config", "--json"], {
+      cwd: tmpDir,
+      stdio: ["ignore", "pipe", "pipe"],
+      encoding: "utf8",
+    });
+    return { status: 0, stdout, stderr: "" };
+  } catch (e) {
+    return { status: e.status, stdout: e.stdout ?? "", stderr: e.stderr ?? "" };
+  }
+}
+
 test("O-1: config LEGACY (solo llaves clásicas, sin las 9 nuevas de 3B) → audit --config --json no crashea y emite JSON válido", () => {
   const legacyConfig = {
     project_name: "Legacy Co",
@@ -108,4 +126,114 @@ test("--config --json emite SOLO JSON en stdout (contrato máquina)", () => {
     encoding: "utf8",
   });
   assert.ok(humanStdout.includes("Leyendo configuración"), "en modo humano el aviso debe seguir imprimiéndose");
+});
+
+// ─── Fix (cierre de Fase 3): --config nunca pregunta; llaves estrictas ──────
+// faltantes salen con exit 2 (en vez de disparar un prompt interactivo que
+// revienta bajo CI y sale con exit 0 sin emitir JSON).
+
+test("defecto vivo: config de BR SIN has_dpo + --config --json → exit 2, stderr menciona has_dpo, stdout sin JSON parseable", () => {
+  const brConfigSinHasDpo = {
+    project_name: "BR sin has_dpo",
+    countries: ["BR"],
+    data_types: ["email"],
+    has_minors: false,
+    server_region: "sa-east-1",
+    third_parties: [],
+    has_granular_consent: true,
+    has_privacy_policy: true,
+    has_arco_procedure: true,
+    has_legal_basis_per_purpose: true,
+    has_breach_response_plan: true,
+    // has_dpo AUSENTE a propósito.
+  };
+
+  const { status, stdout, stderr } = runAuditConfigRaw(brConfigSinHasDpo);
+
+  assert.notEqual(status, 0, "debe salir con código distinto de 0");
+  assert.equal(status, 2, "debe salir específicamente con código 2 (configuración inválida)");
+  assert.ok(stderr.includes("has_dpo"), `stderr debe mencionar has_dpo, recibido: ${stderr}`);
+  assert.throws(() => JSON.parse(stdout), "stdout no debe contener JSON parseable");
+});
+
+test("camino feliz: config de BR con las 3 llaves estrictas presentes → exit 0 y JSON válido", () => {
+  const brConfigCompleto = {
+    project_name: "BR completo",
+    countries: ["BR"],
+    data_types: ["email"],
+    has_minors: false,
+    server_region: "sa-east-1",
+    third_parties: [],
+    has_granular_consent: true,
+    has_privacy_policy: true,
+    has_arco_procedure: true,
+    has_dpo: true,
+    has_legal_basis_per_purpose: true,
+    has_breach_response_plan: true,
+  };
+
+  const json = runAuditConfigJson(brConfigCompleto);
+  assert.equal(typeof json.finalScore, "number");
+  assert.equal(json.isStrictRegime, true);
+});
+
+test("CO (no estricto) SIN las 3 llaves estrictas → exit 0 y JSON válido (el gate solo aplica a régimen estricto)", () => {
+  const coConfigSinLlavesEstrictas = {
+    project_name: "CO sin llaves estrictas",
+    countries: ["CO"],
+    data_types: ["email"],
+    has_minors: false,
+    server_region: "GCP sa-east-1",
+    third_parties: [],
+    has_granular_consent: true,
+    has_privacy_policy: true,
+    has_arco_procedure: true,
+    // Sin has_dpo / has_legal_basis_per_purpose / has_breach_response_plan.
+  };
+
+  const { status, stdout } = runAuditConfigRaw(coConfigSinLlavesEstrictas);
+  assert.equal(status, 0);
+  const json = JSON.parse(stdout.slice(stdout.indexOf("{")));
+  assert.equal(typeof json.finalScore, "number");
+  assert.equal(json.isStrictRegime, false);
+});
+
+test("cobertura e2e del wiring DevOps con aserción de score exacto (segundo hueco: mutar la rama --config de hasStagingEnv a undefined dejaba los tests verdes con el score real cayendo de 60 a 45)", () => {
+  const configDevopsWiring = {
+    project_name: "DevOps Wiring Co",
+    countries: ["CO"],
+    data_types: ["email"],
+    has_minors: false,
+    server_region: "GCP sa-east-1",
+    third_parties: [],
+    has_granular_consent: true,
+    has_privacy_policy: true,
+    has_arco_procedure: true,
+    // 7 llaves DevOps: exactamente 2 penalizadores activos —
+    // do_no_staging_env (+15, has_staging_env=false) y
+    // do_no_ci_risk_gate (+5, has_ci_risk_gate=false). El resto compliant.
+    has_staging_env: false,
+    uses_prod_data_outside_prod: false,
+    has_secrets_manager: true,
+    logs_contain_pii: false,
+    has_dependency_scanning: true,
+    has_tested_backups: true,
+    has_ci_risk_gate: false,
+  };
+
+  const json = runAuditConfigJson(configDevopsWiring);
+
+  // Cálculo esperado a mano (devops-penalizers.json, score-formula.json):
+  //   C_base = 40 (personal_general, "email")
+  //   penalizersSum = 0 (CO no estricto; resto de controles compliant)
+  //   devopsRaw = 15 (do_no_staging_env) + 5 (do_no_ci_risk_gate) = 20
+  //   devopsSubtotal = min(20, 30) = 20 (no llega al cap del JSON)
+  //   F_rigor(CO) = 1.00
+  //   finalScore = round((40 + 0 + 20) * 1.00) = 60
+  assert.equal(json.devopsRaw, 20);
+  assert.equal(json.devopsSubtotal, 20);
+  assert.equal(json.finalScore, 60);
+
+  const active = json.devopsPenalizers.filter((p) => p.active).map((p) => p.id).sort();
+  assert.deepEqual(active, ["do_no_ci_risk_gate", "do_no_staging_env"]);
 });
