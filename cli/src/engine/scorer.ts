@@ -1,4 +1,4 @@
-import { loadFormula, resolveStrictRegime, resolveRigorFactor } from "./rules.js";
+import { loadFormula, resolveStrictRegime, resolveRigorFactor, transferDestinationsCovered } from "./rules.js";
 import { getFrontendPenalizers } from "./frontend-scorer.js";
 import { getBackendPenalizers } from "./backend-scorer.js";
 
@@ -17,6 +17,7 @@ export interface AuditInput {
   hasDpo?: boolean;
   hasLegalBasisPerPurpose?: boolean;
   hasBreachResponsePlan?: boolean;
+  transferDestinations?: string[];
 }
 
 export interface PenalizerResult {
@@ -95,7 +96,7 @@ export function calculateScore(input: AuditInput): ScoreResult {
       id: "unstructured_international_transfer",
       label: "Transferencia a terceros sin cláusulas contractuales",
       score: 15,
-      active: input.thirdPartyTransfers,
+      active: input.thirdPartyTransfers && !transferDestinationsCovered(input.countries, input.transferDestinations),
       pillar: "backend",
     },
     {

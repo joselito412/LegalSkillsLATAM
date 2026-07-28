@@ -40,6 +40,15 @@ export interface RegionFactors {
   [key: string]: unknown;
 }
 
+/** Una decisión de adecuación declarada en international_transfer.adequacy_decisions. */
+export interface AdequacyDecision {
+  destination: string;
+  scope_detail?: string;
+  instrument?: string;
+  exclusions?: string;
+  [key: string]: unknown;
+}
+
 export interface CountryRules {
   country: string | { code: string; name: string; flag?: string; rigor_level?: string; rigor_factor?: number };
   iso_code?: string;
@@ -48,6 +57,10 @@ export interface CountryRules {
   sanctions?: { max_fine?: string; approximate_usd?: number; authority?: string };
   data_subject_rights?: Record<string, { available?: boolean; deadline_days?: number; deadline_type?: string }>;
   penalizers?: Array<{ id: string; description: string; score: number }>;
+  international_transfer?: {
+    adequacy_decisions?: AdequacyDecision[];
+    [key: string]: unknown;
+  };
 }
 
 /** Single source of truth for all supported jurisdictions. */
@@ -231,4 +244,61 @@ export function resolveRigorFactor(countries: string[]): number {
 
   // Peor caso: el F_rigor más alto entre los bloques/países aplicables.
   return Math.max(1.0, ...applicable);
+}
+
+/** Devuelve las decisiones de adecuación declaradas para un país (o [] si no hay). */
+export function getAdequacyDecisions(isoCode: string): AdequacyDecision[] {
+  return loadCountry(isoCode)?.international_transfer?.adequacy_decisions ?? [];
+}
+
+// Un destino declarado cuenta como bloque UE/EEE si (normalizado, sin espacios,
+// case-insensitive) es exactamente uno de estos códigos cortos, o si contiene
+// "europ" (cubre "Unión Europea", "União Europeia", "European Union", "Europa").
+const EU_DESTINATION_SHORT_CODES = /^(eu|ue|eea|eee)$/i;
+
+function isEuDestination(destination: string): boolean {
+  const normalized = destination.trim();
+  if (EU_DESTINATION_SHORT_CODES.test(normalized)) return true;
+  return /europ/i.test(normalized);
+}
+
+// Matcher conservador: reconoce menciones del bloque UE/EEE en destination/scope_detail
+// de una decisión de adecuación. Se amplía cuando el equipo editorial declare más destinos.
+const EU_ADEQUACY_MENTION = /uni[aã]o europeia|uni[oó]n europea|european union|europ|EEE|EEA|\bUE\b|\bEU\b/i;
+
+function adequacyDecisionCoversEu(decision: AdequacyDecision): boolean {
+  const text = `${decision.destination} ${decision.scope_detail ?? ""}`;
+  return EU_ADEQUACY_MENTION.test(text);
+}
+
+/**
+ * Determina si TODOS los destinos declarados de transferencia internacional están
+ * cubiertos por decisiones de adecuación de TODOS los países del proyecto
+ * (resolución peor-caso: un país sin adequacy_decisions — p. ej. CO — hace que
+ * devuelva false). Sin destinos declarados → false (peor caso: no hay base para
+ * suprimir el penalizador).
+ *
+ * La fuente son international_transfer.adequacy_decisions de los JSON de reglas
+ * (hoy solo brasil.json, Res. CD/ANPD 32/2026): el motor no afirma adecuaciones
+ * que los JSON no declaren. Por ahora el matcher solo reconoce destinos del
+ * bloque UE/EEE — destinos fuera de ese bloque no se consideran cubiertos hasta
+ * que el equipo editorial añada más decisiones. Las `exclusions` del bloque
+ * (seguridad pública, defensa, etc.) no se modelan aún: el `applies_when` del
+ * JSON de reglas las documenta.
+ */
+export function transferDestinationsCovered(
+  countries: string[],
+  destinations: string[] | undefined
+): boolean {
+  if (!destinations || destinations.length === 0) return false;
+
+  return countries.every((code) => {
+    const decisions = getAdequacyDecisions(code);
+    if (decisions.length === 0) return false;
+
+    return destinations.every((dest) => {
+      if (!isEuDestination(dest)) return false;
+      return decisions.some((d) => adequacyDecisionCoversEu(d));
+    });
+  });
 }

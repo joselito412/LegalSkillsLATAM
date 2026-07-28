@@ -20,6 +20,7 @@ interface ConfigFile {
   has_dpo?: boolean;
   has_legal_basis_per_purpose?: boolean;
   has_breach_response_plan?: boolean;
+  transfer_destinations?: string[];
 }
 
 const COUNTRY_CHOICES = COUNTRIES.map((c) => ({ name: c.label, value: c.code }));
@@ -150,6 +151,7 @@ export async function runAuditWizard(options: { config?: boolean; json?: boolean
     hasDpo,
     hasLegalBasisPerPurpose,
     hasBreachResponsePlan,
+    transferDestinations: configData.transfer_destinations,
   };
 
   const result = calculateDualScore(auditInput);
