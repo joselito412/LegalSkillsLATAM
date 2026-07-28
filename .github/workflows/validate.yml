@@ -11,10 +11,19 @@ on:
       - 'cli/package.json'
       - 'README.md'
       - 'README.en.md'
+      - 'cli/src/**'
+      - 'cli/tests/**'
+      - 'cli/tsconfig.json'
+      - 'cli/package-lock.json'
+      - '.github/workflows/validate.yml'
   push:
     branches: [main]
     paths:
       - 'cli/rules/**/*.json'
+      - 'cli/src/**'
+      - 'cli/tests/**'
+      - 'cli/package-lock.json'
+      - 'cli/tsconfig.json'
 
 jobs:
   validate-schema:
@@ -89,3 +98,23 @@ jobs:
 
       - name: Audit dependencies
         run: npm audit --audit-level=moderate
+
+  cli-tests:
+    name: CLI build + tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: cli/package-lock.json
+      - name: Install CLI dependencies
+        run: npm ci
+        working-directory: cli
+      - name: Build
+        run: npm run build
+        working-directory: cli
+      - name: Tests
+        run: npm test
+        working-directory: cli

@@ -25,6 +25,17 @@ export interface StrictRegimeMember {
   basis?: string;
 }
 
+/**
+ * Matriz de leyes estatales integrales de EE.UU. (us/state-matrix.json).
+ * `count` es un metadato editorial (hoy 19, ver `pending_verification` en el JSON)
+ * — el motor NUNCA lee `count`, solo el array `states`. El tipo es tolerante a
+ * `pending_verification` y a cualquier otra key adicional del documento.
+ */
+export interface StateMatrix {
+  states: Array<{ code: string; name?: string; [key: string]: unknown }>;
+  [key: string]: unknown;
+}
+
 /** Factores de rigor (F_rigor) por bloque regulatorio, desde risk-engine/region-factors.json. */
 export interface RegionFactors {
   strict_regimes?: { members: StrictRegimeMember[] };
@@ -49,6 +60,36 @@ export interface AdequacyDecision {
   [key: string]: unknown;
 }
 
+/**
+ * Un penalizador declarado en el bloque `penalizers` de un JSON de reglas
+ * (country-rules o devops-penalizers). Los campos opcionales solo existen si
+ * el JSON los declara — el motor hace passthrough fiel, nunca inventa valores
+ * (MOTOR-03/MOTOR-08).
+ */
+export interface RulePenalizer {
+  id: string;
+  description?: string;
+  score: number;
+  applies_when?: string;
+  pillar?: string;
+  legal_refs?: string[];
+  fix_hint?: string;
+  config_key?: string;
+  standards_ref?: string;
+  standards_refs?: string[];
+  [key: string]: unknown;
+}
+
+/**
+ * Catálogo de penalizadores del sub-pilar DevOps (risk-engine/devops-penalizers.json),
+ * MOTOR-06. `scoring_rules.max_total` es el cap del sub-panel (ver ADR-001).
+ */
+export interface DevopsPenalizers {
+  penalizers: RulePenalizer[];
+  scoring_rules: { max_total: number; [key: string]: unknown };
+  [key: string]: unknown;
+}
+
 export interface CountryRules {
   country: string | { code: string; name: string; flag?: string; rigor_level?: string; rigor_factor?: number };
   iso_code?: string;
@@ -56,7 +97,7 @@ export interface CountryRules {
   primary_law?: { name: string; regulator?: { name: string; acronym?: string } };
   sanctions?: { max_fine?: string; approximate_usd?: number; authority?: string };
   data_subject_rights?: Record<string, { available?: boolean; deadline_days?: number; deadline_type?: string }>;
-  penalizers?: Array<{ id: string; description: string; score: number }>;
+  penalizers?: RulePenalizer[];
   international_transfer?: {
     adequacy_decisions?: AdequacyDecision[];
     [key: string]: unknown;
@@ -108,6 +149,65 @@ export function loadRegionFactors(): RegionFactors {
   return _regionFactors;
 }
 
+let _stateMatrix: StateMatrix | null = null;
+
+/**
+ * Loads (and caches) la matriz de leyes estatales integrales de EE.UU. desde
+ * cli/rules/us/state-matrix.json (MOTOR-02). El `count` del JSON es metadato
+ * editorial (se queda en 19 a propósito, ver bloque `pending_verification`);
+ * el motor solo consume el array `states`.
+ */
+export function loadStateMatrix(): StateMatrix {
+  if (_stateMatrix) return _stateMatrix;
+  const path = join(RULES_ROOT, "us/state-matrix.json");
+  _stateMatrix = JSON.parse(readFileSync(path, "utf8")) as StateMatrix;
+  return _stateMatrix;
+}
+
+let _devopsPenalizers: DevopsPenalizers | null = null;
+
+/**
+ * Loads (and caches) el catálogo de penalizadores DevOps desde
+ * cli/rules/risk-engine/devops-penalizers.json (MOTOR-06, ADR-001).
+ */
+export function loadDevopsPenalizers(): DevopsPenalizers {
+  if (_devopsPenalizers) return _devopsPenalizers;
+  const path = join(RULES_ROOT, "risk-engine/devops-penalizers.json");
+  const parsed = JSON.parse(readFileSync(path, "utf8")) as DevopsPenalizers;
+
+  // Fail-loud (mismo principio que buildUsMultistatePenalizer() en us-scorer.ts
+  // con usa-federal.json): si scoring_rules.max_total falta o no es un número
+  // finito, Math.min(devopsRaw, maxTotal) en scorer.ts devuelve NaN SIN lanzar.
+  // Ese NaN viaja hasta finalScore ("finalScore": null en el JSON, level "low")
+  // y el gate `--fail-on` compara NaN >= umbral → false → exit 0: un pipeline
+  // de CI vería verde sobre un motor de riesgo legal roto. El loader valida el
+  // cap aquí (no en cada call-site) para cubrir a todos los consumidores —
+  // scorer.ts y ui/devops-report.ts por igual.
+  const maxTotal = parsed?.scoring_rules?.max_total;
+  if (typeof maxTotal !== "number" || !Number.isFinite(maxTotal)) {
+    throw new Error(
+      "Integridad de reglas comprometida: cli/rules/risk-engine/devops-penalizers.json no declara un scoring_rules.max_total numérico (cap del sub-panel DevOps, ver architecture/ADR-001-devops-cap.md). Reinstala el paquete o restaura el archivo."
+    );
+  }
+
+  _devopsPenalizers = parsed;
+  return _devopsPenalizers;
+}
+
+/**
+ * Normaliza (mayúsculas/trim), deduplica, e intersecta una lista de códigos de
+ * estado de EE.UU. contra los `code` presentes en us/state-matrix.json.
+ * Estados fuera de la matriz (sin ley integral modelada) NO cuentan (MOTOR-02).
+ */
+export function countIntegralStates(usStates: string[] | undefined): number {
+  if (!usStates || usStates.length === 0) return 0;
+  const matrixCodes = new Set(loadStateMatrix().states.map((s) => s.code));
+  const normalized = new Set(
+    usStates.map((s) => s.trim().toUpperCase()).filter((s) => matrixCodes.has(s))
+  );
+  return normalized.size;
+}
+
 /**
  * Reloj inyectable del motor: usa LLS_FAKE_NOW si está definida y es una fecha
  * válida, si no devuelve la fecha real. Base para QA-03 (golden tests, Fase 5).
@@ -133,9 +233,8 @@ export function currentDate(): Date {
  * — this function is pure data access (readdirSync + JSON.parse), not called
  * by the CLI wizard/scorer today (reserved for the Phase 3 REST API layer),
  * so returning it does not wire any USA-specific scoring logic.
- * TODO(MOTOR-01..03/Fase 3): el motor de score para USA (escalado
- * multi-estatal, us_multistate_exposure, strict_regimes) se cablea en la Fase
- * 3 del roadmap — esta función solo expone los datos, no calcula nada.
+ * El escalado multi-estatal y us_multistate_exposure quedaron cableados en la
+ * Fase 3 (MOTOR-02/03) — ver resolveRigorFactor() y getUsaFederalPenalizer().
  */
 export function loadCountry(isoCode: string): CountryRules | null {
   const dirs = ["eu", "us", "latam"];
@@ -162,11 +261,42 @@ export function loadCountry(isoCode: string): CountryRules | null {
   return null;
 }
 
+/**
+ * Busca un penalizador por id en el bloque `penalizers` de usa-federal.json
+ * (MOTOR-03). La definición vive SOLO ahí — el motor no la duplica, solo la
+ * cablea. Devuelve null si loadCountry("US") no encuentra el archivo (código
+ * "US" ausente) o si el id no está en su lista de penalizadores.
+ */
+export function getUsaFederalPenalizer(id: string): RulePenalizer | null {
+  const us = loadCountry("US");
+  return us?.penalizers?.find((p) => p.id === id) ?? null;
+}
+
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
 /** Returns the full display label for a country code (e.g. "🇧🇷 Brasil"). */
 export function getCountryName(isoCode: string): string {
   return COUNTRIES.find((c) => c.code === isoCode)?.label ?? isoCode;
+}
+
+/**
+ * Normaliza (.trim().toUpperCase()) una lista de códigos de país y valida que
+ * todos existan en COUNTRIES. Lanza si encuentra algún código inválido — el
+ * caller (audit.ts, ruta --config) atrapa el error y sale con código 2
+ * (configuración inválida) en vez de degradar en silencio a F_rigor 1.00.
+ */
+export function normalizeCountries(raw: string[]): string[] {
+  const normalized = raw.map((c) => c.trim().toUpperCase());
+  const validCodes = new Set(COUNTRIES.map((c) => c.code));
+  const invalid = normalized.filter((c) => !validCodes.has(c));
+
+  if (invalid.length > 0) {
+    throw new Error(
+      `Código(s) de país inválido(s): ${invalid.join(", ")}. Válidos: ${COUNTRIES.map((c) => c.code).join(", ")}.`
+    );
+  }
+
+  return normalized;
 }
 
 /**
@@ -197,11 +327,14 @@ export function resolveStrictRegime(
     if (member.status === "pending_editorial_decision") {
       if (member.engine_default === "strict") {
         strict = true;
-        if (code === "EC") {
-          assumptions.push(
-            "Ecuador se trata como régimen estricto por defecto seguro del motor (decisión editorial T1 pendiente — ver knowledge/insumos/ecuador-spdp-2026.md §4): los penalizadores reforzados LOPDP se activan y el F_rigor aplicado es el de region-factors.json."
-          );
-        }
+        // Assumption genérica (fix post-validación Opus del PR 3A): CUALQUIER
+        // miembro pendiente con engine_default "strict" emite una entrada, no
+        // solo EC. El texto deriva del `basis` del JSON — el motor no redacta
+        // sustancia legal nueva, solo la hace visible en el output.
+        const countryName = COUNTRIES.find((c) => c.code === code)?.name ?? code;
+        assumptions.push(
+          `${countryName} se trata como régimen estricto por defecto seguro del motor (decisión editorial pendiente — ${member.basis ?? "ver region-factors.json"}). Los penalizadores reforzados se activan y el F_rigor aplicado es el de region-factors.json.`
+        );
       }
       continue;
     }
@@ -227,18 +360,27 @@ export function isStrictRegime(countries: string[], now: Date = currentDate()): 
  * Resuelve F_rigor (peor caso / máximo) entre los bloques regulatorios aplicables
  * a los países seleccionados, leyendo cli/rules/risk-engine/region-factors.json.
  * - "EU" → blocks.eu.f_rigor
- * - "US" → blocks.us.f_rigor
- *   // MOTOR-02 (PR 3B): escalado multi-estatal se aplica aquí
+ * - "US" → blocks.us.f_rigor escalado por MOTOR-02 (ver más abajo)
  * - cualquier otro código → blocks.latam.per_country_overrides[code]?.f_rigor ?? blocks.latam.f_rigor
  * - lista vacía → 1.0
  */
-export function resolveRigorFactor(countries: string[]): number {
+export function resolveRigorFactor(countries: string[], opts?: { usStates?: string[] }): number {
   if (countries.length === 0) return 1.0;
 
   const { blocks } = loadRegionFactors();
   const applicable = countries.map((code) => {
     if (code === "EU") return blocks.eu.f_rigor;
-    if (code === "US") return blocks.us.f_rigor;
+    if (code === "US") {
+      const base = blocks.us.f_rigor;
+      const n = countIntegralStates(opts?.usStates);
+      // MOTOR-02: +0.02 por estado adicional con ley integral, cap 1.20
+      // (region-factors.json blocks.us.scaling_note pide implementarlo en el scorer)
+      const US_STATE_STEP = 0.02;
+      const US_SCALING_CAP = 1.2;
+      const factor = n >= 1 ? Math.min(US_SCALING_CAP, base + US_STATE_STEP * (n - 1)) : base;
+      // Redondeo a 2 decimales para evitar flotantes tipo 1.1400000000000001
+      return Math.round(factor * 100) / 100;
+    }
     return blocks.latam.per_country_overrides?.[code]?.f_rigor ?? blocks.latam.f_rigor;
   });
 
@@ -251,15 +393,18 @@ export function getAdequacyDecisions(isoCode: string): AdequacyDecision[] {
   return loadCountry(isoCode)?.international_transfer?.adequacy_decisions ?? [];
 }
 
-// Un destino declarado cuenta como bloque UE/EEE si (normalizado, sin espacios,
-// case-insensitive) es exactamente uno de estos códigos cortos, o si contiene
-// "europ" (cubre "Unión Europea", "União Europeia", "European Union", "Europa").
+// Un destino declarado cuenta como bloque UE/EEE solo si, tras trim, hace match
+// EXACTO con un código corto o un nombre completo del bloque (fix post-validación
+// Opus del PR 3A). Se eliminó el "contains europ": destinos compuestos como
+// "US via European DC" o "Europe, US" mencionan Europa sin ser un destino UE/EEE
+// puro y antes suprimían indebidamente el penalizador de transferencia — un falso
+// negativo que falla hacia el lado inseguro. Ante la duda, el motor NO suprime.
 const EU_DESTINATION_SHORT_CODES = /^(eu|ue|eea|eee)$/i;
+const EU_DESTINATION_FULL_NAMES = /^(uni[oó]n europea|uni[aã]o europeia|european union|europa|europe)$/i;
 
 function isEuDestination(destination: string): boolean {
   const normalized = destination.trim();
-  if (EU_DESTINATION_SHORT_CODES.test(normalized)) return true;
-  return /europ/i.test(normalized);
+  return EU_DESTINATION_SHORT_CODES.test(normalized) || EU_DESTINATION_FULL_NAMES.test(normalized);
 }
 
 // Matcher conservador: reconoce menciones del bloque UE/EEE en destination/scope_detail

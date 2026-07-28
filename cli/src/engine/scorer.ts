@@ -1,6 +1,14 @@
-import { loadFormula, resolveStrictRegime, resolveRigorFactor, transferDestinationsCovered } from "./rules.js";
+import {
+  loadFormula,
+  resolveStrictRegime,
+  resolveRigorFactor,
+  transferDestinationsCovered,
+  loadDevopsPenalizers,
+} from "./rules.js";
 import { getFrontendPenalizers } from "./frontend-scorer.js";
 import { getBackendPenalizers } from "./backend-scorer.js";
+import { getDevopsPenalizers } from "./devops-scorer.js";
+import { buildUsMultistatePenalizer } from "./us-scorer.js";
 
 export type DataCategory = "public" | "personal_general" | "sensitive";
 
@@ -18,6 +26,18 @@ export interface AuditInput {
   hasLegalBasisPerPurpose?: boolean;
   hasBreachResponsePlan?: boolean;
   transferDestinations?: string[];
+  usStates?: string[];
+  usStateLawsMapped?: boolean;
+  // MOTOR-06 — sub-pilar DevOps (7 señales, ver risk-engine/devops-penalizers.json).
+  // undefined = "no respondido" y NUNCA activa un penalizador (distinguir
+  // unknown/absent es CONTRATO-04, Fase 4).
+  hasStagingEnv?: boolean;
+  usesProdDataOutsideProd?: boolean;
+  hasSecretsManager?: boolean;
+  logsContainPii?: boolean;
+  hasDependencyScanning?: boolean;
+  hasTestedBackups?: boolean;
+  hasCiRiskGate?: boolean;
 }
 
 export interface PenalizerResult {
@@ -25,7 +45,14 @@ export interface PenalizerResult {
   label: string;
   score: number;
   active: boolean;
-  pillar?: "frontend" | "backend" | "both";
+  pillar?: "frontend" | "backend" | "both" | "devops";
+  /** Los siguientes campos solo se pueblan desde JSON cuando el penalizador es
+   *  JSON-sourced (MOTOR-03/MOTOR-08) — passthrough fiel, nunca inventado. */
+  description?: string;
+  legalRefs?: string[];
+  fixHint?: string;
+  configKey?: string;
+  standardsRefs?: string[];
 }
 
 export interface DualScoreResult extends ScoreResult {
@@ -49,14 +76,19 @@ export interface ScoreResult {
   action: string;
   isStrictRegime: boolean;
   assumptions: string[];
+  devopsPenalizers: PenalizerResult[];
+  devopsRaw: number;
+  devopsSubtotal: number;
 }
 
 /**
  * Calculates the Legal Risk Score for a project.
  *
- * Formula: min(100, (C_base + ΣPenalizers) × F_rigor)
+ * Formula: min(100, (C_base + ΣPenalizers + DevOps_subtotal) × F_rigor)
  * - C_base: base score from data category (public=10, personal=40, sensitive=80)
  * - Penalizers: additive points for each missing compliance control
+ * - DevOps_subtotal: min(Σ penalizadores DevOps activos, max_total del JSON) —
+ *   cap propio del sub-panel, sumado ANTES del min(100) final (MOTOR-06/ADR-001)
  * - F_rigor: viene de cli/rules/risk-engine/region-factors.json (peor caso / máximo
  *   entre los bloques regulatorios aplicables a los países seleccionados)
  * - Los penalizadores reforzados (no_dpo, no_legal_basis, no_breach_plan) se activan
@@ -136,10 +168,23 @@ export function calculateScore(input: AuditInput): ScoreResult {
     },
   ];
 
+  // MOTOR-03/O-4 — cableado de us_multistate_exposure: ruta única compartida con
+  // backend-scorer.ts (ver us-scorer.ts). Fail-loud si usa-federal.json no está
+  // disponible (obs. O-2).
+  const usMultistatePenalizer = buildUsMultistatePenalizer(input);
+  if (usMultistatePenalizer) penalizerResults.push(usMultistatePenalizer);
+
   const activePenalizers = penalizerResults.filter((p) => p.active);
   const penalizersSum = activePenalizers.reduce((sum, p) => sum + p.score, 0);
-  const fRigor = resolveRigorFactor(input.countries);
-  const rawScore = (cBase + penalizersSum) * fRigor;
+  const fRigor = resolveRigorFactor(input.countries, { usStates: input.usStates });
+
+  // MOTOR-06/ADR-001 — sub-panel DevOps: cap propio leído del JSON
+  // (scoring_rules.max_total), sumado a be_raw/rawScore ANTES del min(100).
+  const devopsPenalizers = getDevopsPenalizers(input);
+  const devopsRaw = devopsPenalizers.filter((p) => p.active).reduce((sum, p) => sum + p.score, 0);
+  const devopsSubtotal = Math.min(devopsRaw, loadDevopsPenalizers().scoring_rules.max_total);
+
+  const rawScore = (cBase + penalizersSum + devopsSubtotal) * fRigor;
   const finalScore = Math.min(100, Math.round(rawScore));
 
   // Level
@@ -179,6 +224,9 @@ export function calculateScore(input: AuditInput): ScoreResult {
     action,
     isStrictRegime: strict,
     assumptions,
+    devopsPenalizers,
+    devopsRaw,
+    devopsSubtotal,
   };
 }
 

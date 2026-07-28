@@ -110,6 +110,28 @@
     "notes_for_developers": {
       "type": "array",
       "items": { "type": "string" }
+    },
+
+    "penalizers": {
+      "type": "array",
+      "description": "Penalizadores JSON-sourced del país (MOTOR-08). El motor hace passthrough fiel de legal_refs/fix_hint/config_key/standards_ref(s) al output solo cuando el JSON los declara.",
+      "items": {
+        "type": "object",
+        "required": ["id", "score"],
+        "additionalProperties": true,
+        "properties": {
+          "id": { "type": "string" },
+          "description": { "type": "string" },
+          "score": { "type": "number" },
+          "applies_when": { "type": "string" },
+          "pillar": { "type": "string" },
+          "legal_refs": { "type": "array", "items": { "type": "string" } },
+          "fix_hint": { "type": "string" },
+          "config_key": { "type": "string" },
+          "standards_ref": { "type": "string" },
+          "standards_refs": { "type": "array", "items": { "type": "string" } }
+        }
+      }
     }
   },
 
