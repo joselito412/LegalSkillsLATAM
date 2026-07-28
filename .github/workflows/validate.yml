@@ -20,6 +20,10 @@ on:
     branches: [main]
     paths:
       - 'cli/rules/**/*.json'
+      - 'cli/src/**'
+      - 'cli/tests/**'
+      - 'cli/package-lock.json'
+      - 'cli/tsconfig.json'
 
 jobs:
   validate-schema:
