@@ -1,4 +1,5 @@
 import type { AuditInput, PenalizerResult } from "./scorer.js";
+import { transferDestinationsCovered } from "./rules.js";
 
 /**
  * Returns the Backend penalizers (pillar: "backend" | "both") for an audit input.
@@ -17,7 +18,7 @@ export function getBackendPenalizers(input: AuditInput, isStrict: boolean): Pena
       id: "unstructured_international_transfer",
       label: "Transferencia a terceros sin DPA / cláusulas contractuales",
       score: 15,
-      active: input.thirdPartyTransfers,
+      active: input.thirdPartyTransfers && !transferDestinationsCovered(input.countries, input.transferDestinations),
       pillar: "backend",
     },
     {

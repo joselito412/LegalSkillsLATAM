@@ -47,7 +47,7 @@ test("datos personales + CO + cumplimiento total → score 40", () => {
   assert.equal(result.penalizersSum, 0);
 });
 
-test("Brasil activa F_rigor=1.25", () => {
+test("Brasil usa F_rigor 1.15 desde region-factors.json y sigue siendo régimen estricto", () => {
   const result = calculateScore({
     projectName: "SaaS BR",
     countries: ["BR"],
@@ -63,10 +63,97 @@ test("Brasil activa F_rigor=1.25", () => {
     hasBreachResponsePlan: true,
   });
 
-  assert.equal(result.fRigor, 1.25);
+  assert.equal(result.fRigor, 1.15);
   assert.equal(result.isStrictRegime, true);
+  // C_base=40, sin penalizadores → 40 × 1.15 = 46
+  assert.equal(result.finalScore, 46);
+});
+
+test("CO+BR+EU compliant total → F_rigor 1.25 (peor caso) y score 50", () => {
+  const result = calculateScore({
+    projectName: "Multi-bloque",
+    countries: ["CO", "BR", "EU"],
+    dataCategory: "personal_general",
+    hasMinors: false,
+    hasGranularConsent: true,
+    serverRegion: "adequate",
+    thirdPartyTransfers: false,
+    hasPrivacyPolicy: true,
+    hasArcoProcedure: true,
+    hasDpo: true,
+    hasLegalBasisPerPurpose: true,
+    hasBreachResponsePlan: true,
+  });
+
+  assert.equal(result.fRigor, 1.25);
   // C_base=40, sin penalizadores → 40 × 1.25 = 50
   assert.equal(result.finalScore, 50);
+});
+
+test("regresión T1 completa: BR sin DPO/base legal/plan de brechas → penalizadores activos y score 100", () => {
+  const result = calculateScore({
+    projectName: "BR sin controles",
+    countries: ["BR"],
+    dataCategory: "personal_general",
+    hasMinors: false,
+    hasGranularConsent: true,
+    serverRegion: "adequate",
+    thirdPartyTransfers: false,
+    hasPrivacyPolicy: true,
+    hasArcoProcedure: true,
+    hasDpo: false,
+    hasLegalBasisPerPurpose: false,
+    hasBreachResponsePlan: false,
+  });
+
+  const noDpo = result.penalizers.find((p) => p.id === "no_dpo");
+  const noLegalBasis = result.penalizers.find((p) => p.id === "no_legal_basis");
+  const noBreachPlan = result.penalizers.find((p) => p.id === "no_breach_plan");
+
+  assert.equal(noDpo?.active, true);
+  assert.equal(noLegalBasis?.active, true);
+  assert.equal(noBreachPlan?.active, true);
+  // penalizadores: no_dpo(15)+no_legal_basis(20)+no_breach_plan(15) = 50
+  assert.equal(result.penalizersSum, 50);
+  assert.equal(result.fRigor, 1.15);
+  // (40+50) × 1.15 = 103.5 → round 104 → min(100, 104) = 100
+  assert.equal(result.finalScore, 100);
+});
+
+test("US solo → F_rigor 1.10", () => {
+  const result = calculateScore({
+    projectName: "US only",
+    countries: ["US"],
+    dataCategory: "personal_general",
+    hasMinors: false,
+    hasGranularConsent: true,
+    serverRegion: "adequate",
+    thirdPartyTransfers: false,
+    hasPrivacyPolicy: true,
+    hasArcoProcedure: true,
+  });
+
+  assert.equal(result.fRigor, 1.10);
+});
+
+test("EC solo → F_rigor 1.00 pero isStrictRegime true (estrictitud y multiplicador desacoplados)", () => {
+  const result = calculateScore({
+    projectName: "EC only",
+    countries: ["EC"],
+    dataCategory: "personal_general",
+    hasMinors: false,
+    hasGranularConsent: true,
+    serverRegion: "adequate",
+    thirdPartyTransfers: false,
+    hasPrivacyPolicy: true,
+    hasArcoProcedure: true,
+    hasDpo: true,
+    hasLegalBasisPerPurpose: true,
+    hasBreachResponsePlan: true,
+  });
+
+  assert.equal(result.fRigor, 1.0);
+  assert.equal(result.isStrictRegime, true);
 });
 
 test("menores activa penalizador de 30 pts", () => {
@@ -90,7 +177,12 @@ test("menores activa penalizador de 30 pts", () => {
   assert.equal(result.level, "medium");
 });
 
-test("solo datos públicos → score 10", () => {
+test("solo datos públicos (Chile) → cBase 10, F_rigor 1.10 desde region-factors.json → score 11", () => {
+  // NOTA (MOTOR-01): antes de este PR, F_rigor para CL era 1.0 (no estaba en la
+  // tabla strictRegime hardcodeada). Con el fix, F_rigor viene de
+  // blocks.latam.per_country_overrides.CL en region-factors.json (1.10,
+  // adelanto editorial de Ley 21.719), independiente de isStrictRegime (que sí
+  // es sensible a fecha). Por eso el score pasa de 10 a 11 pts.
   const result = calculateScore({
     projectName: "Directorio",
     countries: ["CL"],
@@ -104,7 +196,8 @@ test("solo datos públicos → score 10", () => {
   });
 
   assert.equal(result.cBase, 10);
-  assert.equal(result.finalScore, 10);
+  assert.equal(result.fRigor, 1.10);
+  assert.equal(result.finalScore, 11);
   assert.equal(result.level, "low");
 });
 

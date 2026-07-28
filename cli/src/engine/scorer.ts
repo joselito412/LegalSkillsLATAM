@@ -1,4 +1,4 @@
-import { loadFormula, isStrictRegime } from "./rules.js";
+import { loadFormula, resolveStrictRegime, resolveRigorFactor, transferDestinationsCovered } from "./rules.js";
 import { getFrontendPenalizers } from "./frontend-scorer.js";
 import { getBackendPenalizers } from "./backend-scorer.js";
 
@@ -17,6 +17,7 @@ export interface AuditInput {
   hasDpo?: boolean;
   hasLegalBasisPerPurpose?: boolean;
   hasBreachResponsePlan?: boolean;
+  transferDestinations?: string[];
 }
 
 export interface PenalizerResult {
@@ -47,6 +48,7 @@ export interface ScoreResult {
   emoji: string;
   action: string;
   isStrictRegime: boolean;
+  assumptions: string[];
 }
 
 /**
@@ -55,11 +57,14 @@ export interface ScoreResult {
  * Formula: min(100, (C_base + ΣPenalizers) × F_rigor)
  * - C_base: base score from data category (public=10, personal=40, sensitive=80)
  * - Penalizers: additive points for each missing compliance control
- * - F_rigor: 1.25× multiplier for strict-regime jurisdictions (BR, EU, EC)
+ * - F_rigor: viene de cli/rules/risk-engine/region-factors.json (peor caso / máximo
+ *   entre los bloques regulatorios aplicables a los países seleccionados)
+ * - Los penalizadores reforzados (no_dpo, no_legal_basis, no_breach_plan) se activan
+ *   por pertenencia a strict_regimes (fix T1, MOTOR-04), no por el valor de F_rigor
  */
 export function calculateScore(input: AuditInput): ScoreResult {
   const formula = loadFormula();
-  const strict = isStrictRegime(input.countries);
+  const { strict, assumptions } = resolveStrictRegime(input.countries);
 
   // C_base
   const cBase = formula.data_categories[input.dataCategory]?.base_score ?? 40;
@@ -91,7 +96,7 @@ export function calculateScore(input: AuditInput): ScoreResult {
       id: "unstructured_international_transfer",
       label: "Transferencia a terceros sin cláusulas contractuales",
       score: 15,
-      active: input.thirdPartyTransfers,
+      active: input.thirdPartyTransfers && !transferDestinationsCovered(input.countries, input.transferDestinations),
       pillar: "backend",
     },
     {
@@ -133,8 +138,7 @@ export function calculateScore(input: AuditInput): ScoreResult {
 
   const activePenalizers = penalizerResults.filter((p) => p.active);
   const penalizersSum = activePenalizers.reduce((sum, p) => sum + p.score, 0);
-  const rigorKey = strict ? "strict_regime" : "latam_standard";
-  const fRigor = formula.rigor_factors[rigorKey]?.multiplier ?? (strict ? 1.25 : 1.0);
+  const fRigor = resolveRigorFactor(input.countries);
   const rawScore = (cBase + penalizersSum) * fRigor;
   const finalScore = Math.min(100, Math.round(rawScore));
 
@@ -174,6 +178,7 @@ export function calculateScore(input: AuditInput): ScoreResult {
     emoji,
     action,
     isStrictRegime: strict,
+    assumptions,
   };
 }
 
@@ -183,10 +188,9 @@ export function calculateScore(input: AuditInput): ScoreResult {
  */
 export function calculateDualScore(input: AuditInput): DualScoreResult {
   const base = calculateScore(input);
-  const strict = isStrictRegime(input.countries);
 
   const fePenalizers = getFrontendPenalizers(input);
-  const bePenalizers = getBackendPenalizers(input, strict);
+  const bePenalizers = getBackendPenalizers(input, base.isStrictRegime);
 
   return {
     ...base,

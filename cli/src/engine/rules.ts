@@ -16,6 +16,39 @@ export interface ScoreFormula {
   emoji_face_scale: Array<{ range: [number, number]; face: string; label: string }>;
 }
 
+/** Un miembro de la lista strict_regimes en region-factors.json (fix T1, MOTOR-04). */
+export interface StrictRegimeMember {
+  code: string;
+  strict_from?: string;
+  status?: string;
+  engine_default?: string;
+  basis?: string;
+}
+
+/** Factores de rigor (F_rigor) por bloque regulatorio, desde risk-engine/region-factors.json. */
+export interface RegionFactors {
+  strict_regimes?: { members: StrictRegimeMember[] };
+  blocks: {
+    eu: { f_rigor: number; [key: string]: unknown };
+    us: { f_rigor: number; [key: string]: unknown };
+    latam: {
+      f_rigor: number;
+      per_country_overrides?: Record<string, { f_rigor?: number; [key: string]: unknown }>;
+      [key: string]: unknown;
+    };
+  };
+  [key: string]: unknown;
+}
+
+/** Una decisión de adecuación declarada en international_transfer.adequacy_decisions. */
+export interface AdequacyDecision {
+  destination: string;
+  scope_detail?: string;
+  instrument?: string;
+  exclusions?: string;
+  [key: string]: unknown;
+}
+
 export interface CountryRules {
   country: string | { code: string; name: string; flag?: string; rigor_level?: string; rigor_factor?: number };
   iso_code?: string;
@@ -24,6 +57,10 @@ export interface CountryRules {
   sanctions?: { max_fine?: string; approximate_usd?: number; authority?: string };
   data_subject_rights?: Record<string, { available?: boolean; deadline_days?: number; deadline_type?: string }>;
   penalizers?: Array<{ id: string; description: string; score: number }>;
+  international_transfer?: {
+    adequacy_decisions?: AdequacyDecision[];
+    [key: string]: unknown;
+  };
 }
 
 /** Single source of truth for all supported jurisdictions. */
@@ -31,8 +68,6 @@ export interface CountryMeta {
   code: string;
   name: string;
   flag: string;
-  /** True for LGPD/GDPR/LOPDP regimes that apply the 1.25× rigor multiplier. */
-  strictRegime?: boolean;
   /** Full display label used in CLI prompts. */
   label: string;
 }
@@ -42,12 +77,12 @@ export interface CountryMeta {
 export const COUNTRIES: CountryMeta[] = [
   { code: "CO", name: "Colombia",    flag: "🇨🇴", label: "🇨🇴 Colombia" },
   { code: "MX", name: "México",      flag: "🇲🇽", label: "🇲🇽 México" },
-  { code: "BR", name: "Brasil",      flag: "🇧🇷", strictRegime: true, label: "🇧🇷 Brasil (LGPD — régimen estricto)" },
+  { code: "BR", name: "Brasil",      flag: "🇧🇷", label: "🇧🇷 Brasil (LGPD — régimen estricto)" },
   { code: "CL", name: "Chile",       flag: "🇨🇱", label: "🇨🇱 Chile" },
   { code: "AR", name: "Argentina",   flag: "🇦🇷", label: "🇦🇷 Argentina" },
   { code: "PE", name: "Perú",        flag: "🇵🇪", label: "🇵🇪 Perú" },
-  { code: "EC", name: "Ecuador",     flag: "🇪🇨", strictRegime: true, label: "🇪🇨 Ecuador (LOPDP — régimen estricto)" },
-  { code: "EU", name: "Europa",      flag: "🇪🇺", strictRegime: true, label: "🇪🇺 Europa / GDPR (régimen estricto)" },
+  { code: "EC", name: "Ecuador",     flag: "🇪🇨", label: "🇪🇨 Ecuador (LOPDP — régimen estricto)" },
+  { code: "EU", name: "Europa",      flag: "🇪🇺", label: "🇪🇺 Europa / GDPR (régimen estricto)" },
   { code: "US", name: "EE.UU.",      flag: "🇺🇸", label: "🇺🇸 EE.UU. / CCPA" },
 ];
 
@@ -61,6 +96,29 @@ export function loadFormula(): ScoreFormula {
   const path = join(RULES_ROOT, "risk-engine/score-formula.json");
   _formula = JSON.parse(readFileSync(path, "utf8")) as ScoreFormula;
   return _formula;
+}
+
+let _regionFactors: RegionFactors | null = null;
+
+/** Loads (and caches) el catálogo de F_rigor por bloque desde cli/rules/risk-engine/region-factors.json. */
+export function loadRegionFactors(): RegionFactors {
+  if (_regionFactors) return _regionFactors;
+  const path = join(RULES_ROOT, "risk-engine/region-factors.json");
+  _regionFactors = JSON.parse(readFileSync(path, "utf8")) as RegionFactors;
+  return _regionFactors;
+}
+
+/**
+ * Reloj inyectable del motor: usa LLS_FAKE_NOW si está definida y es una fecha
+ * válida, si no devuelve la fecha real. Base para QA-03 (golden tests, Fase 5).
+ */
+export function currentDate(): Date {
+  const fake = process.env.LLS_FAKE_NOW;
+  if (fake) {
+    const parsed = new Date(fake);
+    if (!Number.isNaN(parsed.getTime())) return parsed;
+  }
+  return new Date();
 }
 
 /**
@@ -111,7 +169,136 @@ export function getCountryName(isoCode: string): string {
   return COUNTRIES.find((c) => c.code === isoCode)?.label ?? isoCode;
 }
 
+/**
+ * Resuelve la pertenencia a régimen estricto consultando strict_regimes.members
+ * de region-factors.json (fix T1, MOTOR-04) — nunca por comparación numérica de F_rigor.
+ *
+ * Reglas por miembro:
+ * - sin `strict_from` ni `status` → estricto siempre (ej. EU, BR).
+ * - con `strict_from` → estricto solo si `now >= strict_from` (ej. CL desde 2026-12-01).
+ * - con `status === "pending_editorial_decision"` → estricto solo si
+ *   `engine_default === "strict"` (default seguro del motor; hoy EC).
+ *
+ * También devuelve `assumptions`: entradas legibles para el usuario cuando el
+ * motor aplicó un default seguro por una decisión editorial pendiente (MOTOR-05).
+ */
+export function resolveStrictRegime(
+  countries: string[],
+  now: Date = currentDate()
+): { strict: boolean; assumptions: string[] } {
+  const members = loadRegionFactors().strict_regimes?.members ?? [];
+  let strict = false;
+  const assumptions: string[] = [];
+
+  for (const code of countries) {
+    const member = members.find((m) => m.code === code);
+    if (!member) continue;
+
+    if (member.status === "pending_editorial_decision") {
+      if (member.engine_default === "strict") {
+        strict = true;
+        if (code === "EC") {
+          assumptions.push(
+            "Ecuador se trata como régimen estricto por defecto seguro del motor (decisión editorial T1 pendiente — ver knowledge/insumos/ecuador-spdp-2026.md §4): los penalizadores reforzados LOPDP se activan y el F_rigor aplicado es el de region-factors.json."
+          );
+        }
+      }
+      continue;
+    }
+
+    if (member.strict_from) {
+      if (now >= new Date(member.strict_from)) strict = true;
+      continue;
+    }
+
+    // Sin strict_from ni status → estricto siempre.
+    strict = true;
+  }
+
+  return { strict, assumptions };
+}
+
 /** Returns true if any of the selected countries applies the strict-regime multiplier. */
-export function isStrictRegime(countries: string[]): boolean {
-  return countries.some((c) => COUNTRIES.find((m) => m.code === c)?.strictRegime === true);
+export function isStrictRegime(countries: string[], now: Date = currentDate()): boolean {
+  return resolveStrictRegime(countries, now).strict;
+}
+
+/**
+ * Resuelve F_rigor (peor caso / máximo) entre los bloques regulatorios aplicables
+ * a los países seleccionados, leyendo cli/rules/risk-engine/region-factors.json.
+ * - "EU" → blocks.eu.f_rigor
+ * - "US" → blocks.us.f_rigor
+ *   // MOTOR-02 (PR 3B): escalado multi-estatal se aplica aquí
+ * - cualquier otro código → blocks.latam.per_country_overrides[code]?.f_rigor ?? blocks.latam.f_rigor
+ * - lista vacía → 1.0
+ */
+export function resolveRigorFactor(countries: string[]): number {
+  if (countries.length === 0) return 1.0;
+
+  const { blocks } = loadRegionFactors();
+  const applicable = countries.map((code) => {
+    if (code === "EU") return blocks.eu.f_rigor;
+    if (code === "US") return blocks.us.f_rigor;
+    return blocks.latam.per_country_overrides?.[code]?.f_rigor ?? blocks.latam.f_rigor;
+  });
+
+  // Peor caso: el F_rigor más alto entre los bloques/países aplicables.
+  return Math.max(1.0, ...applicable);
+}
+
+/** Devuelve las decisiones de adecuación declaradas para un país (o [] si no hay). */
+export function getAdequacyDecisions(isoCode: string): AdequacyDecision[] {
+  return loadCountry(isoCode)?.international_transfer?.adequacy_decisions ?? [];
+}
+
+// Un destino declarado cuenta como bloque UE/EEE si (normalizado, sin espacios,
+// case-insensitive) es exactamente uno de estos códigos cortos, o si contiene
+// "europ" (cubre "Unión Europea", "União Europeia", "European Union", "Europa").
+const EU_DESTINATION_SHORT_CODES = /^(eu|ue|eea|eee)$/i;
+
+function isEuDestination(destination: string): boolean {
+  const normalized = destination.trim();
+  if (EU_DESTINATION_SHORT_CODES.test(normalized)) return true;
+  return /europ/i.test(normalized);
+}
+
+// Matcher conservador: reconoce menciones del bloque UE/EEE en destination/scope_detail
+// de una decisión de adecuación. Se amplía cuando el equipo editorial declare más destinos.
+const EU_ADEQUACY_MENTION = /uni[aã]o europeia|uni[oó]n europea|european union|europ|EEE|EEA|\bUE\b|\bEU\b/i;
+
+function adequacyDecisionCoversEu(decision: AdequacyDecision): boolean {
+  const text = `${decision.destination} ${decision.scope_detail ?? ""}`;
+  return EU_ADEQUACY_MENTION.test(text);
+}
+
+/**
+ * Determina si TODOS los destinos declarados de transferencia internacional están
+ * cubiertos por decisiones de adecuación de TODOS los países del proyecto
+ * (resolución peor-caso: un país sin adequacy_decisions — p. ej. CO — hace que
+ * devuelva false). Sin destinos declarados → false (peor caso: no hay base para
+ * suprimir el penalizador).
+ *
+ * La fuente son international_transfer.adequacy_decisions de los JSON de reglas
+ * (hoy solo brasil.json, Res. CD/ANPD 32/2026): el motor no afirma adecuaciones
+ * que los JSON no declaren. Por ahora el matcher solo reconoce destinos del
+ * bloque UE/EEE — destinos fuera de ese bloque no se consideran cubiertos hasta
+ * que el equipo editorial añada más decisiones. Las `exclusions` del bloque
+ * (seguridad pública, defensa, etc.) no se modelan aún: el `applies_when` del
+ * JSON de reglas las documenta.
+ */
+export function transferDestinationsCovered(
+  countries: string[],
+  destinations: string[] | undefined
+): boolean {
+  if (!destinations || destinations.length === 0) return false;
+
+  return countries.every((code) => {
+    const decisions = getAdequacyDecisions(code);
+    if (decisions.length === 0) return false;
+
+    return destinations.every((dest) => {
+      if (!isEuDestination(dest)) return false;
+      return decisions.some((d) => adequacyDecisionCoversEu(d));
+    });
+  });
 }

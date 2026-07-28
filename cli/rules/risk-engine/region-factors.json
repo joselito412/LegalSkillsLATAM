@@ -1,12 +1,21 @@
 {
-  "version": "1.0.0",
-  "last_updated": "2026-07-09",
+  "version": "1.1.0",
+  "last_updated": "2026-07-28",
   "last_reviewed": "2026-07-09",
   "reviewed_by": null,
   "review_status": "pending_legal_validation",
   "description": "Factor de rigor (F_rigor) por bloque regulatorio para la fórmula del Legal Risk Score: Risk Score = min(100, (C_base + Σ Penalizadores) × F_rigor). Parametriza el rigor por bloque en vez de por país suelto. Introducido en el rebrand a Privacy Compliance Skills (UE · USA · LATAM).",
   "formula_reference": "risk-engine/score-formula-v2.json",
   "resolution_rule": "Cuando un sistema aplica a varios bloques/jurisdicciones, usar el F_rigor MÁS ALTO de los aplicables (peor caso). Para USA multi-estatal, aplicar además el penalizador us_multistate_exposure.",
+  "strict_regimes": {
+    "description": "Fix T1 (MOTOR-04): los penalizadores BE reforzados (no_dpo +15, no_legal_basis +20, no_breach_plan +15) se activan por PERTENENCIA a esta lista, nunca por comparación numérica de f_rigor. Fuente de la decisión: PLAN-INVESTIGACION-JURIDICA-Y-ANTIPATRONES-2026-07.md (hallazgo T1) y .planning/REQUIREMENTS.md (MOTOR-04/MOTOR-05).",
+    "members": [
+      { "code": "EU", "basis": "GDPR — ver blocks.eu" },
+      { "code": "BR", "basis": "LGPD + ANPD — ver blocks.latam.per_country_overrides.BR" },
+      { "code": "CL", "strict_from": "2026-12-01", "basis": "Ley 21.719 — régimen estricto desde su entrada en vigor (2026-12-01); antes de esa fecha se trata como régimen estándar. Ver blocks.latam.per_country_overrides.CL" },
+      { "code": "EC", "status": "pending_editorial_decision", "engine_default": "strict", "basis": "LOPDP + SPDP — decisión editorial T1 PENDIENTE (ver knowledge/insumos/ecuador-spdp-2026.md §4). Default seguro del motor: tratar como régimen estricto Y emitir una entrada visible en assumptions[] del output (MOTOR-05). Este default del motor no constituye una determinación editorial." }
+    ]
+  },
   "blocks": {
     "eu": {
       "label": "Unión Europea (GDPR)",

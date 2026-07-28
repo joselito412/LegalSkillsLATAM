@@ -20,6 +20,7 @@ interface ConfigFile {
   has_dpo?: boolean;
   has_legal_basis_per_purpose?: boolean;
   has_breach_response_plan?: boolean;
+  transfer_destinations?: string[];
 }
 
 const COUNTRY_CHOICES = COUNTRIES.map((c) => ({ name: c.label, value: c.code }));
@@ -119,7 +120,7 @@ export async function runAuditWizard(options: { config?: boolean; json?: boolean
     configData.has_arco_procedure ??
     (await confirm({ message: "¿Tienen canal documentado para solicitudes ARCO/derechos de datos?", default: false }));
 
-  // Strict regime extras (BR, EU, EC) — derived from COUNTRIES catalogue, not a hardcoded list
+  // Preguntas extra de régimen estricto — pertenencia a strict_regimes de region-factors.json (fix T1, MOTOR-04)
   const isStrict = isStrictRegime(countries);
   let hasDpo: boolean | undefined;
   let hasLegalBasisPerPurpose: boolean | undefined;
@@ -150,6 +151,7 @@ export async function runAuditWizard(options: { config?: boolean; json?: boolean
     hasDpo,
     hasLegalBasisPerPurpose,
     hasBreachResponsePlan,
+    transferDestinations: configData.transfer_destinations,
   };
 
   const result = calculateDualScore(auditInput);
@@ -165,6 +167,12 @@ export async function runAuditWizard(options: { config?: boolean; json?: boolean
       console.log(chalk.yellow("🟡 Implementa las acciones prioritarias antes de lanzar.") + " Ver guía completa en https://github.com/joselito412/Privacy_Compliance_Skills-UE-USA-LATAM\n");
     } else {
       console.log(chalk.green("🟢 Proyecto de bajo riesgo.") + " Sigue los checklists de Privacy Compliance Skills para mantener este nivel.\n");
+    }
+
+    if (result.assumptions.length > 0) {
+      console.log(chalk.yellow.bold("📌 Supuestos del análisis:"));
+      for (const a of result.assumptions) console.log(chalk.yellow(`   • ${a}`));
+      console.log();
     }
 
     const feActive = result.fePenalizers.filter((p) => p.active);
