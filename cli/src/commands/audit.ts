@@ -104,31 +104,47 @@ export async function runAuditWizard(options: { config?: boolean; json?: boolean
     configData.data_types ?? rawDataTypes.split(",").map((s) => s.trim())
   );
 
-  // Q2b — Estados de EE.UU. (MOTOR-02) — solo si el proyecto opera en US
+  // Q2b — Estados de EE.UU. (MOTOR-02) — solo si el proyecto opera en US.
+  // Fix O-1 (validación Opus PR 3B): en modo --config NUNCA se pregunta — se usa
+  // configData.us_states tal cual (undefined si el config es pre-3B/legacy). El
+  // scorer ya trata undefined como "no respondido" (0 estados integrales). Sin
+  // este guard, un config legacy sin esta llave disparaba un prompt interactivo
+  // que, bajo CI (stdin cerrado), crasheaba con ExitPromptError y salía con
+  // código 0 SIN emitir JSON — un `--fail-on` quedaba verde sobre una auditoría
+  // que nunca corrió.
   const usStates: string[] | undefined = countries.includes("US")
-    ? configData.us_states ??
-      (await checkbox({
-        message:
-          "¿En qué estados de EE.UU. tiene usuarios? (solo se listan estados con ley integral de privacidad — deja vacío si no sabes)",
-        choices: loadStateMatrix().states.map((s) => ({
-          name: `${s.code} — ${s.name ?? s.code}`,
-          value: s.code,
-        })),
-      }))
+    ? options.config
+      ? configData.us_states
+      : configData.us_states ??
+        (await checkbox({
+          message:
+            "¿En qué estados de EE.UU. tiene usuarios? (solo se listan estados con ley integral de privacidad — deja vacío si no sabes)",
+          choices: loadStateMatrix().states.map((s) => ({
+            name: `${s.code} — ${s.name ?? s.code}`,
+            value: s.code,
+          })),
+        }))
     : undefined;
 
-  // Q2c — Mapeo de leyes estatales (MOTOR-03) — solo si ≥2 estados integrales
+  // Q2c — Mapeo de leyes estatales (MOTOR-03) — solo si ≥2 estados integrales.
+  // Mismo fix O-1: en --config nunca se pregunta.
   const usStateLawsMapped: boolean | undefined =
     countries.includes("US") && countIntegralStates(usStates) >= 2
-      ? configData.us_state_laws_mapped ??
-        (await confirm({
-          message:
-            "¿Han mapeado qué leyes estatales integrales aplican a su producto? (us/state-matrix.json)",
-          default: false,
-        }))
+      ? options.config
+        ? configData.us_state_laws_mapped
+        : configData.us_state_laws_mapped ??
+          (await confirm({
+            message:
+              "¿Han mapeado qué leyes estatales integrales aplican a su producto? (us/state-matrix.json)",
+            default: false,
+          }))
       : undefined;
 
   // Q4 — Minors
+  // NOTA: las llaves "clásicas" (pre-3B) mantienen su semántica preexistente de
+  // config PARCIAL — si faltan en el config file, --config SÍ pregunta. Ese
+  // comportamiento no lo toca este fix (O-1 es específico a las 9 llaves nuevas
+  // de 3B); formalizarlo/documentarlo queda para DOCTOR-01 (Fase 5).
   const hasMinors: boolean =
     configData.has_minors ??
     (await confirm({ message: "¿El sistema puede recibir datos de menores de edad?", default: false }));
@@ -166,45 +182,54 @@ export async function runAuditWizard(options: { config?: boolean; json?: boolean
     (await confirm({ message: "¿Tienen canal documentado para solicitudes ARCO/derechos de datos?", default: false }));
 
   // Q9 — DevOps (MOTOR-06, ADR-001): 7 señales del sub-panel "⚙️ DevOps",
-  // desde risk-engine/devops-penalizers.json. Todas default false.
+  // desde risk-engine/devops-penalizers.json. Todas default false en modo wizard.
+  // Fix O-1: en --config nunca se pregunta (mismo razonamiento que usStates
+  // arriba) — undefined es "no respondido" y el scorer nunca lo activa.
   if (!options.config) {
     console.log(chalk.bold("\n⚙️  DevOps — Entornos, pipeline y operación"));
   }
 
-  const hasStagingEnv: boolean =
-    configData.has_staging_env ??
-    (await confirm({ message: "¿Tienen un entorno de staging previo a producción?", default: false }));
+  const hasStagingEnv: boolean | undefined = options.config
+    ? configData.has_staging_env
+    : configData.has_staging_env ??
+      (await confirm({ message: "¿Tienen un entorno de staging previo a producción?", default: false }));
 
-  const usesProdDataOutsideProd: boolean =
-    configData.uses_prod_data_outside_prod ??
-    (await confirm({ message: "¿Usan datos reales de producción en dev/staging?", default: false }));
+  const usesProdDataOutsideProd: boolean | undefined = options.config
+    ? configData.uses_prod_data_outside_prod
+    : configData.uses_prod_data_outside_prod ??
+      (await confirm({ message: "¿Usan datos reales de producción en dev/staging?", default: false }));
 
-  const hasSecretsManager: boolean =
-    configData.has_secrets_manager ??
-    (await confirm({
-      message: "¿Gestionan secretos con un gestor dedicado (Vault, AWS/GCP Secrets)?",
-      default: false,
-    }));
+  const hasSecretsManager: boolean | undefined = options.config
+    ? configData.has_secrets_manager
+    : configData.has_secrets_manager ??
+      (await confirm({
+        message: "¿Gestionan secretos con un gestor dedicado (Vault, AWS/GCP Secrets)?",
+        default: false,
+      }));
 
-  const logsContainPii: boolean =
-    configData.logs_contain_pii ??
-    (await confirm({ message: "¿Los logs de aplicación contienen PII sin enmascarar?", default: false }));
+  const logsContainPii: boolean | undefined = options.config
+    ? configData.logs_contain_pii
+    : configData.logs_contain_pii ??
+      (await confirm({ message: "¿Los logs de aplicación contienen PII sin enmascarar?", default: false }));
 
-  const hasDependencyScanning: boolean =
-    configData.has_dependency_scanning ??
-    (await confirm({ message: "¿El CI escanea dependencias y código (SCA/SAST)?", default: false }));
+  const hasDependencyScanning: boolean | undefined = options.config
+    ? configData.has_dependency_scanning
+    : configData.has_dependency_scanning ??
+      (await confirm({ message: "¿El CI escanea dependencias y código (SCA/SAST)?", default: false }));
 
-  const hasTestedBackups: boolean =
-    configData.has_tested_backups ??
-    (await confirm({ message: "¿Tienen backups cifrados con restauración probada?", default: false }));
+  const hasTestedBackups: boolean | undefined = options.config
+    ? configData.has_tested_backups
+    : configData.has_tested_backups ??
+      (await confirm({ message: "¿Tienen backups cifrados con restauración probada?", default: false }));
 
-  const hasCiRiskGate: boolean =
-    configData.has_ci_risk_gate ??
-    (await confirm({
-      message:
-        "¿El pipeline ejecuta la auditoría legal como gate (privacy-compliance-skills audit --fail-on)?",
-      default: false,
-    }));
+  const hasCiRiskGate: boolean | undefined = options.config
+    ? configData.has_ci_risk_gate
+    : configData.has_ci_risk_gate ??
+      (await confirm({
+        message:
+          "¿El pipeline ejecuta la auditoría legal como gate (privacy-compliance-skills audit --fail-on)?",
+        default: false,
+      }));
 
   // Preguntas extra de régimen estricto — pertenencia a strict_regimes de region-factors.json (fix T1, MOTOR-04)
   const isStrict = isStrictRegime(countries);
