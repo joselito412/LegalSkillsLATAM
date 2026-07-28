@@ -30,9 +30,9 @@ function runAuditConfigJson(configFile) {
     encoding: "utf8",
   });
 
-  // audit.ts imprime una línea informativa ("Leyendo configuración desde...")
-  // por stdout antes del JSON (preexistente, no forma parte de este fix) — nos
-  // quedamos solo con el bloque JSON, desde el primer "{".
+  // Desde el fix de contrato-máquina, stdout en modo --config --json es SOLO
+  // el JSON (ver test dedicado más abajo). Igual arrancamos desde el primer
+  // "{" por robustez ante quien reintroduzca ruido por delante.
   return JSON.parse(stdout.slice(stdout.indexOf("{")));
 }
 
@@ -72,4 +72,40 @@ test("O-1: config LEGACY con countries=['US'] (sin us_states/us_state_laws_mappe
   const penalizer = json.penalizers.find((p) => p.id === "us_multistate_exposure");
   assert.ok(penalizer, "us_multistate_exposure debe aparecer en la lista (countries incluye US)");
   assert.equal(penalizer.active, false);
+});
+
+test("--config --json emite SOLO JSON en stdout (contrato máquina)", () => {
+  const config = {
+    project_name: "Contrato Co",
+    countries: ["CO"],
+    data_types: ["email"],
+    has_minors: false,
+    server_region: "GCP sa-east-1",
+    third_parties: [],
+    has_granular_consent: true,
+    has_privacy_policy: true,
+    has_arco_procedure: true,
+  };
+
+  const tmpDir = mkdtempSync(join(tmpdir(), "lls-"));
+  writeFileSync(join(tmpDir, "legalskills.config.json"), JSON.stringify(config, null, 2));
+
+  const stdout = execFileSync(process.execPath, [CLI_ENTRY, "audit", "--config", "--json"], {
+    cwd: tmpDir,
+    stdio: ["ignore", "pipe", "pipe"],
+    encoding: "utf8",
+  });
+
+  assert.ok(stdout.trimStart().startsWith("{"), "stdout debe empezar por '{' sin texto humano por delante");
+  assert.doesNotThrow(() => JSON.parse(stdout), "stdout completo debe ser JSON parseable");
+  assert.ok(!stdout.includes("Leyendo configuración"), "el aviso humano no debe filtrarse a stdout en modo --json");
+
+  // Modo humano (sin --json): el mismo aviso SÍ debe seguir apareciendo — no
+  // perdimos la ayuda al humano al arreglar el contrato máquina.
+  const humanStdout = execFileSync(process.execPath, [CLI_ENTRY, "audit", "--config"], {
+    cwd: tmpDir,
+    stdio: ["ignore", "pipe", "pipe"],
+    encoding: "utf8",
+  });
+  assert.ok(humanStdout.includes("Leyendo configuración"), "en modo humano el aviso debe seguir imprimiéndose");
 });

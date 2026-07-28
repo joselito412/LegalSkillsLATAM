@@ -58,7 +58,13 @@ export async function runAuditWizard(options: { config?: boolean; json?: boolean
       process.exit(1);
     }
     configData = JSON.parse(readFileSync(configPath, "utf8")) as ConfigFile;
-    console.log(chalk.dim(`\nLeyendo configuración desde legalskills.config.json...\n`));
+    // Fix contrato máquina: este aviso es ayuda humana, no forma parte del
+    // contrato JSON de AGENT-CONTRACT.md. Se condiciona a !options.json (no a
+    // stderr) porque un agente que capture stdout+stderr igual vería ruido
+    // mezclado con el JSON; en modo --json simplemente no debe emitirse.
+    if (!options.json) {
+      console.log(chalk.dim(`\nLeyendo configuración desde legalskills.config.json...\n`));
+    }
 
     // Endurecimiento post-validación (fix): --config con códigos de país
     // inválidos debe fallar ruidosamente (exit 2), no degradar en silencio a
