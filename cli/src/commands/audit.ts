@@ -4,7 +4,7 @@ import { resolve } from "path";
 import chalk from "chalk";
 import { calculateDualScore, type AuditInput, type DataCategory } from "../engine/scorer.js";
 import { classifyText } from "../engine/classifier.js";
-import { COUNTRIES, isStrictRegime } from "../engine/rules.js";
+import { COUNTRIES, isStrictRegime, loadStateMatrix } from "../engine/rules.js";
 import { renderDualScoreBox } from "../ui/box.js";
 
 interface ConfigFile {
@@ -21,6 +21,7 @@ interface ConfigFile {
   has_legal_basis_per_purpose?: boolean;
   has_breach_response_plan?: boolean;
   transfer_destinations?: string[];
+  us_states?: string[];
 }
 
 const COUNTRY_CHOICES = COUNTRIES.map((c) => ({ name: c.label, value: c.code }));
@@ -82,6 +83,19 @@ export async function runAuditWizard(options: { config?: boolean; json?: boolean
   const dataCategory = inferCategoryFromDataTypes(
     configData.data_types ?? rawDataTypes.split(",").map((s) => s.trim())
   );
+
+  // Q2b — Estados de EE.UU. (MOTOR-02) — solo si el proyecto opera en US
+  const usStates: string[] | undefined = countries.includes("US")
+    ? configData.us_states ??
+      (await checkbox({
+        message:
+          "¿En qué estados de EE.UU. tiene usuarios? (solo se listan estados con ley integral de privacidad — deja vacío si no sabes)",
+        choices: loadStateMatrix().states.map((s) => ({
+          name: `${s.code} — ${s.name ?? s.code}`,
+          value: s.code,
+        })),
+      }))
+    : undefined;
 
   // Q4 — Minors
   const hasMinors: boolean =
@@ -152,6 +166,7 @@ export async function runAuditWizard(options: { config?: boolean; json?: boolean
     hasLegalBasisPerPurpose,
     hasBreachResponsePlan,
     transferDestinations: configData.transfer_destinations,
+    usStates,
   };
 
   const result = calculateDualScore(auditInput);

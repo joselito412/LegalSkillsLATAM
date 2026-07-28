@@ -25,6 +25,17 @@ export interface StrictRegimeMember {
   basis?: string;
 }
 
+/**
+ * Matriz de leyes estatales integrales de EE.UU. (us/state-matrix.json).
+ * `count` es un metadato editorial (hoy 19, ver `pending_verification` en el JSON)
+ * — el motor NUNCA lee `count`, solo el array `states`. El tipo es tolerante a
+ * `pending_verification` y a cualquier otra key adicional del documento.
+ */
+export interface StateMatrix {
+  states: Array<{ code: string; name?: string; [key: string]: unknown }>;
+  [key: string]: unknown;
+}
+
 /** Factores de rigor (F_rigor) por bloque regulatorio, desde risk-engine/region-factors.json. */
 export interface RegionFactors {
   strict_regimes?: { members: StrictRegimeMember[] };
@@ -108,6 +119,35 @@ export function loadRegionFactors(): RegionFactors {
   return _regionFactors;
 }
 
+let _stateMatrix: StateMatrix | null = null;
+
+/**
+ * Loads (and caches) la matriz de leyes estatales integrales de EE.UU. desde
+ * cli/rules/us/state-matrix.json (MOTOR-02). El `count` del JSON es metadato
+ * editorial (se queda en 19 a propósito, ver bloque `pending_verification`);
+ * el motor solo consume el array `states`.
+ */
+export function loadStateMatrix(): StateMatrix {
+  if (_stateMatrix) return _stateMatrix;
+  const path = join(RULES_ROOT, "us/state-matrix.json");
+  _stateMatrix = JSON.parse(readFileSync(path, "utf8")) as StateMatrix;
+  return _stateMatrix;
+}
+
+/**
+ * Normaliza (mayúsculas/trim), deduplica, e intersecta una lista de códigos de
+ * estado de EE.UU. contra los `code` presentes en us/state-matrix.json.
+ * Estados fuera de la matriz (sin ley integral modelada) NO cuentan (MOTOR-02).
+ */
+export function countIntegralStates(usStates: string[] | undefined): number {
+  if (!usStates || usStates.length === 0) return 0;
+  const matrixCodes = new Set(loadStateMatrix().states.map((s) => s.code));
+  const normalized = new Set(
+    usStates.map((s) => s.trim().toUpperCase()).filter((s) => matrixCodes.has(s))
+  );
+  return normalized.size;
+}
+
 /**
  * Reloj inyectable del motor: usa LLS_FAKE_NOW si está definida y es una fecha
  * válida, si no devuelve la fecha real. Base para QA-03 (golden tests, Fase 5).
@@ -133,9 +173,8 @@ export function currentDate(): Date {
  * — this function is pure data access (readdirSync + JSON.parse), not called
  * by the CLI wizard/scorer today (reserved for the Phase 3 REST API layer),
  * so returning it does not wire any USA-specific scoring logic.
- * TODO(MOTOR-01..03/Fase 3): el motor de score para USA (escalado
- * multi-estatal, us_multistate_exposure, strict_regimes) se cablea en la Fase
- * 3 del roadmap — esta función solo expone los datos, no calcula nada.
+ * El escalado multi-estatal y us_multistate_exposure quedaron cableados en la
+ * Fase 3 (MOTOR-02/03) — ver resolveRigorFactor() y getUsaFederalPenalizer().
  */
 export function loadCountry(isoCode: string): CountryRules | null {
   const dirs = ["eu", "us", "latam"];
@@ -227,18 +266,27 @@ export function isStrictRegime(countries: string[], now: Date = currentDate()): 
  * Resuelve F_rigor (peor caso / máximo) entre los bloques regulatorios aplicables
  * a los países seleccionados, leyendo cli/rules/risk-engine/region-factors.json.
  * - "EU" → blocks.eu.f_rigor
- * - "US" → blocks.us.f_rigor
- *   // MOTOR-02 (PR 3B): escalado multi-estatal se aplica aquí
+ * - "US" → blocks.us.f_rigor escalado por MOTOR-02 (ver más abajo)
  * - cualquier otro código → blocks.latam.per_country_overrides[code]?.f_rigor ?? blocks.latam.f_rigor
  * - lista vacía → 1.0
  */
-export function resolveRigorFactor(countries: string[]): number {
+export function resolveRigorFactor(countries: string[], opts?: { usStates?: string[] }): number {
   if (countries.length === 0) return 1.0;
 
   const { blocks } = loadRegionFactors();
   const applicable = countries.map((code) => {
     if (code === "EU") return blocks.eu.f_rigor;
-    if (code === "US") return blocks.us.f_rigor;
+    if (code === "US") {
+      const base = blocks.us.f_rigor;
+      const n = countIntegralStates(opts?.usStates);
+      // MOTOR-02: +0.02 por estado adicional con ley integral, cap 1.20
+      // (region-factors.json blocks.us.scaling_note pide implementarlo en el scorer)
+      const US_STATE_STEP = 0.02;
+      const US_SCALING_CAP = 1.2;
+      const factor = n >= 1 ? Math.min(US_SCALING_CAP, base + US_STATE_STEP * (n - 1)) : base;
+      // Redondeo a 2 decimales para evitar flotantes tipo 1.1400000000000001
+      return Math.round(factor * 100) / 100;
+    }
     return blocks.latam.per_country_overrides?.[code]?.f_rigor ?? blocks.latam.f_rigor;
   });
 

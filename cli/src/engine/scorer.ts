@@ -18,6 +18,7 @@ export interface AuditInput {
   hasLegalBasisPerPurpose?: boolean;
   hasBreachResponsePlan?: boolean;
   transferDestinations?: string[];
+  usStates?: string[];
 }
 
 export interface PenalizerResult {
@@ -138,7 +139,7 @@ export function calculateScore(input: AuditInput): ScoreResult {
 
   const activePenalizers = penalizerResults.filter((p) => p.active);
   const penalizersSum = activePenalizers.reduce((sum, p) => sum + p.score, 0);
-  const fRigor = resolveRigorFactor(input.countries);
+  const fRigor = resolveRigorFactor(input.countries, { usStates: input.usStates });
   const rawScore = (cBase + penalizersSum) * fRigor;
   const finalScore = Math.min(100, Math.round(rawScore));
 
