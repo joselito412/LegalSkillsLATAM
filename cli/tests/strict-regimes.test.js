@@ -8,6 +8,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { isStrictRegime } from "../dist/engine/rules.js";
 import { calculateScore } from "../dist/engine/scorer.js";
+import { getBackendPenalizers } from "../dist/engine/backend-scorer.js";
 
 test("isStrictRegime: BR y EU son estrictos, CO no", () => {
   assert.equal(isStrictRegime(["BR"]), true);
@@ -121,4 +122,109 @@ test("CO solo → sin assumptions", () => {
   });
 
   assert.equal(result.assumptions.length, 0);
+});
+
+// ─── QA-04: candado de la dirección negativa del fix T1 ────────────────────
+// Los tests anteriores en este archivo solo prueban que países de régimen
+// ESTRICTO (BR/EC/CL post-vigencia) activan los 3 penalizadores reforzados.
+// Ninguno prueba la dirección contraria: un país NO estricto con los 3
+// controles en false NO debe activarlos. Eliminar el guard `strict &&` en
+// scorer.ts (o `isStrict &&` en backend-scorer.ts) deja los 68 tests previos
+// en verde, con un radio de reintroducción de +50 pts sobre CUALQUIER país no
+// estricto (CO/MX/PE/AR pasarían de 40 a 90, invisible para CI).
+
+function nonStrictCompliantInput(code) {
+  return {
+    projectName: `Dirección negativa ${code}`,
+    countries: [code],
+    dataCategory: "personal_general",
+    hasMinors: false,
+    hasGranularConsent: true,
+    serverRegion: "adequate",
+    thirdPartyTransfers: false,
+    hasPrivacyPolicy: true,
+    hasArcoProcedure: true,
+    hasDpo: false,
+    hasLegalBasisPerPurpose: false,
+    hasBreachResponsePlan: false,
+  };
+}
+
+test("MOTOR-04 dirección negativa: país no estricto con los 3 controles en false no activa los penalizadores reforzados", () => {
+  for (const code of ["CO", "MX", "PE", "AR"]) {
+    const result = calculateScore(nonStrictCompliantInput(code));
+
+    const noDpo = result.penalizers.find((p) => p.id === "no_dpo");
+    const noLegalBasis = result.penalizers.find((p) => p.id === "no_legal_basis");
+    const noBreachPlan = result.penalizers.find((p) => p.id === "no_breach_plan");
+
+    assert.equal(noDpo?.active, false, `${code}: no_dpo no debe activarse fuera de régimen estricto`);
+    assert.equal(noLegalBasis?.active, false, `${code}: no_legal_basis no debe activarse fuera de régimen estricto`);
+    assert.equal(noBreachPlan?.active, false, `${code}: no_breach_plan no debe activarse fuera de régimen estricto`);
+    assert.equal(result.penalizersSum, 0, `${code}: penalizersSum debe ser 0 (proyecto compliant salvo las 3 llaves estrictas)`);
+    assert.equal(result.finalScore, 40, `${code}: finalScore debe ser 40 (C_base=40, F_rigor=1.0, sin penalizadores activos)`);
+  }
+});
+
+test("MOTOR-04 dirección negativa (segundo sitio — backend-scorer.ts): mismo caso contra getBackendPenalizers(input, false)", () => {
+  for (const code of ["CO", "MX", "PE", "AR"]) {
+    const penalizers = getBackendPenalizers(nonStrictCompliantInput(code), false);
+
+    const noDpo = penalizers.find((p) => p.id === "no_dpo");
+    const noLegalBasis = penalizers.find((p) => p.id === "no_legal_basis");
+    const noBreachPlan = penalizers.find((p) => p.id === "no_breach_plan");
+
+    assert.equal(noDpo?.active, false, `${code}: no_dpo (BE) no debe activarse fuera de régimen estricto`);
+    assert.equal(noLegalBasis?.active, false, `${code}: no_legal_basis (BE) no debe activarse fuera de régimen estricto`);
+    assert.equal(noBreachPlan?.active, false, `${code}: no_breach_plan (BE) no debe activarse fuera de régimen estricto`);
+  }
+});
+
+test("MOTOR-04: Chile antes del 2026-12-01 tampoco activa los reforzados", () => {
+  process.env.LLS_FAKE_NOW = "2026-11-30T12:00:00Z";
+  try {
+    const result = calculateScore(nonStrictCompliantInput("CL"));
+
+    const noDpo = result.penalizers.find((p) => p.id === "no_dpo");
+    const noLegalBasis = result.penalizers.find((p) => p.id === "no_legal_basis");
+    const noBreachPlan = result.penalizers.find((p) => p.id === "no_breach_plan");
+
+    assert.equal(noDpo?.active, false);
+    assert.equal(noLegalBasis?.active, false);
+    assert.equal(noBreachPlan?.active, false);
+  } finally {
+    delete process.env.LLS_FAKE_NOW;
+  }
+});
+
+test("MOTOR-04 candado de duplicación: para BR (estricto) el trío reforzado de calculateScore() y de getBackendPenalizers(input, true) coincide en id/score/active", () => {
+  const input = nonStrictCompliantInput("BR");
+
+  const scorerResult = calculateScore(input);
+  const backendResult = getBackendPenalizers(input, true);
+
+  const reinforcedIds = ["no_dpo", "no_legal_basis", "no_breach_plan"];
+
+  const fromScorer = reinforcedIds
+    .map((id) => scorerResult.penalizers.find((p) => p.id === id))
+    .map(({ id, score, active }) => ({ id, score, active }))
+    .sort((a, b) => a.id.localeCompare(b.id));
+
+  const fromBackend = reinforcedIds
+    .map((id) => backendResult.find((p) => p.id === id))
+    .map(({ id, score, active }) => ({ id, score, active }))
+    .sort((a, b) => a.id.localeCompare(b.id));
+
+  // NOTA (deuda conocida, NO se corrige en este commit): los `label` divergen
+  // hoy entre scorer.ts ("Sin plan de respuesta a brechas de seguridad") y
+  // backend-scorer.ts ("Sin plan de respuesta a brechas (LGPD/GDPR)"). Unificar
+  // labels es cambio de producción con impacto en render — fuera de alcance de
+  // QA-04. El candado compara solo id/score/active, con label excluido a propósito.
+  assert.deepEqual(fromScorer, fromBackend);
+
+  // Sanity check: en este caso estricto los 3 SÍ deben estar activos (evita
+  // que el candado compare dos listas vacías y pase por accidente).
+  for (const p of fromScorer) {
+    assert.equal(p.active, true, `${p.id} debe estar activo en BR (régimen estricto)`);
+  }
 });
