@@ -167,6 +167,12 @@ export async function runAuditWizard(options: { config?: boolean; json?: boolean
       console.log(chalk.green("🟢 Proyecto de bajo riesgo.") + " Sigue los checklists de Privacy Compliance Skills para mantener este nivel.\n");
     }
 
+    if (result.assumptions.length > 0) {
+      console.log(chalk.yellow.bold("📌 Supuestos del análisis:"));
+      for (const a of result.assumptions) console.log(chalk.yellow(`   • ${a}`));
+      console.log();
+    }
+
     const feActive = result.fePenalizers.filter((p) => p.active);
     const beActive = result.bePenalizers.filter((p) => p.active);
 

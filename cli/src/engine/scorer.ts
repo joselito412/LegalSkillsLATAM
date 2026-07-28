@@ -1,4 +1,4 @@
-import { loadFormula, isStrictRegime, resolveRigorFactor } from "./rules.js";
+import { loadFormula, resolveStrictRegime, resolveRigorFactor } from "./rules.js";
 import { getFrontendPenalizers } from "./frontend-scorer.js";
 import { getBackendPenalizers } from "./backend-scorer.js";
 
@@ -47,6 +47,7 @@ export interface ScoreResult {
   emoji: string;
   action: string;
   isStrictRegime: boolean;
+  assumptions: string[];
 }
 
 /**
@@ -62,7 +63,7 @@ export interface ScoreResult {
  */
 export function calculateScore(input: AuditInput): ScoreResult {
   const formula = loadFormula();
-  const strict = isStrictRegime(input.countries);
+  const { strict, assumptions } = resolveStrictRegime(input.countries);
 
   // C_base
   const cBase = formula.data_categories[input.dataCategory]?.base_score ?? 40;
@@ -176,6 +177,7 @@ export function calculateScore(input: AuditInput): ScoreResult {
     emoji,
     action,
     isStrictRegime: strict,
+    assumptions,
   };
 }
 
@@ -185,10 +187,9 @@ export function calculateScore(input: AuditInput): ScoreResult {
  */
 export function calculateDualScore(input: AuditInput): DualScoreResult {
   const base = calculateScore(input);
-  const strict = isStrictRegime(input.countries);
 
   const fePenalizers = getFrontendPenalizers(input);
-  const bePenalizers = getBackendPenalizers(input, strict);
+  const bePenalizers = getBackendPenalizers(input, base.isStrictRegime);
 
   return {
     ...base,

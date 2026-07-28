@@ -58,3 +58,66 @@ test("guard T1: BR sin DPO/base legal/plan de brechas activa los 3 penalizadores
   assert.equal(noLegalBasis?.active, true);
   assert.equal(noBreachPlan?.active, true);
 });
+
+test("MOTOR-05: Ecuador sin DPO activa no_dpo y emite exactamente un assumption con Ecuador y T1", () => {
+  const result = calculateScore({
+    projectName: "EC sin DPO",
+    countries: ["EC"],
+    dataCategory: "personal_general",
+    hasMinors: false,
+    hasGranularConsent: true,
+    serverRegion: "adequate",
+    thirdPartyTransfers: false,
+    hasPrivacyPolicy: true,
+    hasArcoProcedure: true,
+    hasDpo: false,
+    hasLegalBasisPerPurpose: true,
+    hasBreachResponsePlan: true,
+  });
+
+  const noDpo = result.penalizers.find((p) => p.id === "no_dpo");
+  assert.equal(noDpo?.active, true);
+  assert.equal(result.assumptions.length, 1);
+  assert.ok(result.assumptions[0].includes("Ecuador"));
+  assert.ok(result.assumptions[0].includes("T1"));
+});
+
+test("MOTOR-05 guard: EC nunca puede quedar no-estricto y sin assumption", () => {
+  const r = calculateScore({
+    projectName: "EC guard",
+    countries: ["EC"],
+    dataCategory: "personal_general",
+    hasMinors: false,
+    hasGranularConsent: true,
+    serverRegion: "adequate",
+    thirdPartyTransfers: false,
+    hasPrivacyPolicy: true,
+    hasArcoProcedure: true,
+    hasDpo: true,
+    hasLegalBasisPerPurpose: true,
+    hasBreachResponsePlan: true,
+  });
+
+  assert.ok(
+    r.isStrictRegime || r.assumptions.length > 0,
+    "EC no puede quedar no-estricto y sin assumption (MOTOR-05)"
+  );
+  assert.equal(r.isStrictRegime, true);
+  assert.ok(r.assumptions.length > 0);
+});
+
+test("CO solo → sin assumptions", () => {
+  const result = calculateScore({
+    projectName: "CO solo",
+    countries: ["CO"],
+    dataCategory: "personal_general",
+    hasMinors: false,
+    hasGranularConsent: true,
+    serverRegion: "adequate",
+    thirdPartyTransfers: false,
+    hasPrivacyPolicy: true,
+    hasArcoProcedure: true,
+  });
+
+  assert.equal(result.assumptions.length, 0);
+});
