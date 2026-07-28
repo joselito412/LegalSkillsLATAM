@@ -119,7 +119,7 @@ export async function runAuditWizard(options: { config?: boolean; json?: boolean
     configData.has_arco_procedure ??
     (await confirm({ message: "¿Tienen canal documentado para solicitudes ARCO/derechos de datos?", default: false }));
 
-  // Strict regime extras (BR, EU, EC) — derived from COUNTRIES catalogue, not a hardcoded list
+  // Preguntas extra de régimen estricto — pertenencia a strict_regimes de region-factors.json (fix T1, MOTOR-04)
   const isStrict = isStrictRegime(countries);
   let hasDpo: boolean | undefined;
   let hasLegalBasisPerPurpose: boolean | undefined;

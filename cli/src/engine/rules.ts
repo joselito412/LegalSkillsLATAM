@@ -16,6 +16,30 @@ export interface ScoreFormula {
   emoji_face_scale: Array<{ range: [number, number]; face: string; label: string }>;
 }
 
+/** Un miembro de la lista strict_regimes en region-factors.json (fix T1, MOTOR-04). */
+export interface StrictRegimeMember {
+  code: string;
+  strict_from?: string;
+  status?: string;
+  engine_default?: string;
+  basis?: string;
+}
+
+/** Factores de rigor (F_rigor) por bloque regulatorio, desde risk-engine/region-factors.json. */
+export interface RegionFactors {
+  strict_regimes?: { members: StrictRegimeMember[] };
+  blocks: {
+    eu: { f_rigor: number; [key: string]: unknown };
+    us: { f_rigor: number; [key: string]: unknown };
+    latam: {
+      f_rigor: number;
+      per_country_overrides?: Record<string, { f_rigor?: number; [key: string]: unknown }>;
+      [key: string]: unknown;
+    };
+  };
+  [key: string]: unknown;
+}
+
 export interface CountryRules {
   country: string | { code: string; name: string; flag?: string; rigor_level?: string; rigor_factor?: number };
   iso_code?: string;
@@ -31,8 +55,6 @@ export interface CountryMeta {
   code: string;
   name: string;
   flag: string;
-  /** True for LGPD/GDPR/LOPDP regimes that apply the 1.25× rigor multiplier. */
-  strictRegime?: boolean;
   /** Full display label used in CLI prompts. */
   label: string;
 }
@@ -42,12 +64,12 @@ export interface CountryMeta {
 export const COUNTRIES: CountryMeta[] = [
   { code: "CO", name: "Colombia",    flag: "🇨🇴", label: "🇨🇴 Colombia" },
   { code: "MX", name: "México",      flag: "🇲🇽", label: "🇲🇽 México" },
-  { code: "BR", name: "Brasil",      flag: "🇧🇷", strictRegime: true, label: "🇧🇷 Brasil (LGPD — régimen estricto)" },
+  { code: "BR", name: "Brasil",      flag: "🇧🇷", label: "🇧🇷 Brasil (LGPD — régimen estricto)" },
   { code: "CL", name: "Chile",       flag: "🇨🇱", label: "🇨🇱 Chile" },
   { code: "AR", name: "Argentina",   flag: "🇦🇷", label: "🇦🇷 Argentina" },
   { code: "PE", name: "Perú",        flag: "🇵🇪", label: "🇵🇪 Perú" },
-  { code: "EC", name: "Ecuador",     flag: "🇪🇨", strictRegime: true, label: "🇪🇨 Ecuador (LOPDP — régimen estricto)" },
-  { code: "EU", name: "Europa",      flag: "🇪🇺", strictRegime: true, label: "🇪🇺 Europa / GDPR (régimen estricto)" },
+  { code: "EC", name: "Ecuador",     flag: "🇪🇨", label: "🇪🇨 Ecuador (LOPDP — régimen estricto)" },
+  { code: "EU", name: "Europa",      flag: "🇪🇺", label: "🇪🇺 Europa / GDPR (régimen estricto)" },
   { code: "US", name: "EE.UU.",      flag: "🇺🇸", label: "🇺🇸 EE.UU. / CCPA" },
 ];
 
@@ -61,6 +83,29 @@ export function loadFormula(): ScoreFormula {
   const path = join(RULES_ROOT, "risk-engine/score-formula.json");
   _formula = JSON.parse(readFileSync(path, "utf8")) as ScoreFormula;
   return _formula;
+}
+
+let _regionFactors: RegionFactors | null = null;
+
+/** Loads (and caches) el catálogo de F_rigor por bloque desde cli/rules/risk-engine/region-factors.json. */
+export function loadRegionFactors(): RegionFactors {
+  if (_regionFactors) return _regionFactors;
+  const path = join(RULES_ROOT, "risk-engine/region-factors.json");
+  _regionFactors = JSON.parse(readFileSync(path, "utf8")) as RegionFactors;
+  return _regionFactors;
+}
+
+/**
+ * Reloj inyectable del motor: usa LLS_FAKE_NOW si está definida y es una fecha
+ * válida, si no devuelve la fecha real. Base para QA-03 (golden tests, Fase 5).
+ */
+export function currentDate(): Date {
+  const fake = process.env.LLS_FAKE_NOW;
+  if (fake) {
+    const parsed = new Date(fake);
+    if (!Number.isNaN(parsed.getTime())) return parsed;
+  }
+  return new Date();
 }
 
 /**
@@ -111,7 +156,56 @@ export function getCountryName(isoCode: string): string {
   return COUNTRIES.find((c) => c.code === isoCode)?.label ?? isoCode;
 }
 
+/**
+ * Resuelve la pertenencia a régimen estricto consultando strict_regimes.members
+ * de region-factors.json (fix T1, MOTOR-04) — nunca por comparación numérica de F_rigor.
+ *
+ * Reglas por miembro:
+ * - sin `strict_from` ni `status` → estricto siempre (ej. EU, BR).
+ * - con `strict_from` → estricto solo si `now >= strict_from` (ej. CL desde 2026-12-01).
+ * - con `status === "pending_editorial_decision"` → estricto solo si
+ *   `engine_default === "strict"` (default seguro del motor; hoy EC).
+ *
+ * También devuelve `assumptions`: entradas legibles para el usuario cuando el
+ * motor aplicó un default seguro por una decisión editorial pendiente (MOTOR-05).
+ */
+export function resolveStrictRegime(
+  countries: string[],
+  now: Date = currentDate()
+): { strict: boolean; assumptions: string[] } {
+  const members = loadRegionFactors().strict_regimes?.members ?? [];
+  let strict = false;
+  const assumptions: string[] = [];
+
+  for (const code of countries) {
+    const member = members.find((m) => m.code === code);
+    if (!member) continue;
+
+    if (member.status === "pending_editorial_decision") {
+      if (member.engine_default === "strict") {
+        strict = true;
+        if (code === "EC") {
+          assumptions.push(
+            "Ecuador se trata como régimen estricto por defecto seguro del motor (decisión editorial T1 pendiente — ver knowledge/insumos/ecuador-spdp-2026.md §4): los penalizadores reforzados LOPDP se activan y el F_rigor aplicado es el de region-factors.json."
+          );
+        }
+      }
+      continue;
+    }
+
+    if (member.strict_from) {
+      if (now >= new Date(member.strict_from)) strict = true;
+      continue;
+    }
+
+    // Sin strict_from ni status → estricto siempre.
+    strict = true;
+  }
+
+  return { strict, assumptions };
+}
+
 /** Returns true if any of the selected countries applies the strict-regime multiplier. */
-export function isStrictRegime(countries: string[]): boolean {
-  return countries.some((c) => COUNTRIES.find((m) => m.code === c)?.strictRegime === true);
+export function isStrictRegime(countries: string[], now: Date = currentDate()): boolean {
+  return resolveStrictRegime(countries, now).strict;
 }
