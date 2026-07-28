@@ -23,6 +23,13 @@ interface ConfigFile {
   transfer_destinations?: string[];
   us_states?: string[];
   us_state_laws_mapped?: boolean;
+  has_staging_env?: boolean;
+  uses_prod_data_outside_prod?: boolean;
+  has_secrets_manager?: boolean;
+  logs_contain_pii?: boolean;
+  has_dependency_scanning?: boolean;
+  has_tested_backups?: boolean;
+  has_ci_risk_gate?: boolean;
 }
 
 const COUNTRY_CHOICES = COUNTRIES.map((c) => ({ name: c.label, value: c.code }));
@@ -146,6 +153,47 @@ export async function runAuditWizard(options: { config?: boolean; json?: boolean
     configData.has_arco_procedure ??
     (await confirm({ message: "¿Tienen canal documentado para solicitudes ARCO/derechos de datos?", default: false }));
 
+  // Q9 — DevOps (MOTOR-06, ADR-001): 7 señales del sub-panel "⚙️ DevOps",
+  // desde risk-engine/devops-penalizers.json. Todas default false.
+  if (!options.config) {
+    console.log(chalk.bold("\n⚙️  DevOps — Entornos, pipeline y operación"));
+  }
+
+  const hasStagingEnv: boolean =
+    configData.has_staging_env ??
+    (await confirm({ message: "¿Tienen un entorno de staging previo a producción?", default: false }));
+
+  const usesProdDataOutsideProd: boolean =
+    configData.uses_prod_data_outside_prod ??
+    (await confirm({ message: "¿Usan datos reales de producción en dev/staging?", default: false }));
+
+  const hasSecretsManager: boolean =
+    configData.has_secrets_manager ??
+    (await confirm({
+      message: "¿Gestionan secretos con un gestor dedicado (Vault, AWS/GCP Secrets)?",
+      default: false,
+    }));
+
+  const logsContainPii: boolean =
+    configData.logs_contain_pii ??
+    (await confirm({ message: "¿Los logs de aplicación contienen PII sin enmascarar?", default: false }));
+
+  const hasDependencyScanning: boolean =
+    configData.has_dependency_scanning ??
+    (await confirm({ message: "¿El CI escanea dependencias y código (SCA/SAST)?", default: false }));
+
+  const hasTestedBackups: boolean =
+    configData.has_tested_backups ??
+    (await confirm({ message: "¿Tienen backups cifrados con restauración probada?", default: false }));
+
+  const hasCiRiskGate: boolean =
+    configData.has_ci_risk_gate ??
+    (await confirm({
+      message:
+        "¿El pipeline ejecuta la auditoría legal como gate (privacy-compliance-skills audit --fail-on)?",
+      default: false,
+    }));
+
   // Preguntas extra de régimen estricto — pertenencia a strict_regimes de region-factors.json (fix T1, MOTOR-04)
   const isStrict = isStrictRegime(countries);
   let hasDpo: boolean | undefined;
@@ -180,6 +228,13 @@ export async function runAuditWizard(options: { config?: boolean; json?: boolean
     transferDestinations: configData.transfer_destinations,
     usStates,
     usStateLawsMapped,
+    hasStagingEnv,
+    usesProdDataOutsideProd,
+    hasSecretsManager,
+    logsContainPii,
+    hasDependencyScanning,
+    hasTestedBackups,
+    hasCiRiskGate,
   };
 
   const result = calculateDualScore(auditInput);

@@ -6,6 +6,7 @@ import { categoryLabel } from "../engine/classifier.js";
 import { getCountryName } from "../engine/rules.js";
 import { renderFrontendPanel } from "./frontend-report.js";
 import { renderBackendPanel } from "./backend-report.js";
+import { renderDevopsPanel } from "./devops-report.js";
 
 const W = 56; // box inner width
 
@@ -112,6 +113,13 @@ export function renderDualScoreBox(result: DualScoreResult): string {
 
   // BE panel
   for (const line of renderBackendPanel(result.bePenalizers, result.cBase, result.dataCategory)) {
+    lines.push(row(line));
+  }
+
+  lines.push(row(""));
+
+  // DevOps panel (MOTOR-06, ADR-001 — sub-panel interno del Pilar Backend)
+  for (const line of renderDevopsPanel(result.devopsPenalizers, result.devopsSubtotal)) {
     lines.push(row(line));
   }
 

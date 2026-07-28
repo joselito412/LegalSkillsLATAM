@@ -79,13 +79,18 @@ export function getBackendPenalizers(input: AuditInput, isStrict: boolean): Pena
   return result;
 }
 
+/**
+ * ADR-001/MOTOR-07: `devopsSubtotal` (ya capeado a max_total en el llamador,
+ * ver scorer.ts) entra en be_raw ANTES del min(50) propio de este pilar.
+ */
 export function calculateBackendScore(
   input: AuditInput,
   cBase: number,
   isStrict: boolean,
-  fRigor: number
+  fRigor: number,
+  devopsSubtotal = 0
 ): number {
   const penalizers = getBackendPenalizers(input, isStrict);
   const sum = penalizers.filter((p) => p.active).reduce((acc, p) => acc + p.score, 0);
-  return Math.min(50, Math.round((cBase + sum) * fRigor));
+  return Math.min(50, Math.round((cBase + sum + devopsSubtotal) * fRigor));
 }

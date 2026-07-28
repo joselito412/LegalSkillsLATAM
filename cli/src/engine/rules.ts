@@ -80,6 +80,16 @@ export interface RulePenalizer {
   [key: string]: unknown;
 }
 
+/**
+ * Catálogo de penalizadores del sub-pilar DevOps (risk-engine/devops-penalizers.json),
+ * MOTOR-06. `scoring_rules.max_total` es el cap del sub-panel (ver ADR-001).
+ */
+export interface DevopsPenalizers {
+  penalizers: RulePenalizer[];
+  scoring_rules: { max_total: number; [key: string]: unknown };
+  [key: string]: unknown;
+}
+
 export interface CountryRules {
   country: string | { code: string; name: string; flag?: string; rigor_level?: string; rigor_factor?: number };
   iso_code?: string;
@@ -152,6 +162,19 @@ export function loadStateMatrix(): StateMatrix {
   const path = join(RULES_ROOT, "us/state-matrix.json");
   _stateMatrix = JSON.parse(readFileSync(path, "utf8")) as StateMatrix;
   return _stateMatrix;
+}
+
+let _devopsPenalizers: DevopsPenalizers | null = null;
+
+/**
+ * Loads (and caches) el catálogo de penalizadores DevOps desde
+ * cli/rules/risk-engine/devops-penalizers.json (MOTOR-06, ADR-001).
+ */
+export function loadDevopsPenalizers(): DevopsPenalizers {
+  if (_devopsPenalizers) return _devopsPenalizers;
+  const path = join(RULES_ROOT, "risk-engine/devops-penalizers.json");
+  _devopsPenalizers = JSON.parse(readFileSync(path, "utf8")) as DevopsPenalizers;
+  return _devopsPenalizers;
 }
 
 /**
