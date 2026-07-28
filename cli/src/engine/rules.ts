@@ -173,7 +173,24 @@ let _devopsPenalizers: DevopsPenalizers | null = null;
 export function loadDevopsPenalizers(): DevopsPenalizers {
   if (_devopsPenalizers) return _devopsPenalizers;
   const path = join(RULES_ROOT, "risk-engine/devops-penalizers.json");
-  _devopsPenalizers = JSON.parse(readFileSync(path, "utf8")) as DevopsPenalizers;
+  const parsed = JSON.parse(readFileSync(path, "utf8")) as DevopsPenalizers;
+
+  // Fail-loud (mismo principio que buildUsMultistatePenalizer() en us-scorer.ts
+  // con usa-federal.json): si scoring_rules.max_total falta o no es un número
+  // finito, Math.min(devopsRaw, maxTotal) en scorer.ts devuelve NaN SIN lanzar.
+  // Ese NaN viaja hasta finalScore ("finalScore": null en el JSON, level "low")
+  // y el gate `--fail-on` compara NaN >= umbral → false → exit 0: un pipeline
+  // de CI vería verde sobre un motor de riesgo legal roto. El loader valida el
+  // cap aquí (no en cada call-site) para cubrir a todos los consumidores —
+  // scorer.ts y ui/devops-report.ts por igual.
+  const maxTotal = parsed?.scoring_rules?.max_total;
+  if (typeof maxTotal !== "number" || !Number.isFinite(maxTotal)) {
+    throw new Error(
+      "Integridad de reglas comprometida: cli/rules/risk-engine/devops-penalizers.json no declara un scoring_rules.max_total numérico (cap del sub-panel DevOps, ver architecture/ADR-001-devops-cap.md). Reinstala el paquete o restaura el archivo."
+    );
+  }
+
+  _devopsPenalizers = parsed;
   return _devopsPenalizers;
 }
 
