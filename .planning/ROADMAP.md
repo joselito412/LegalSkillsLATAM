@@ -10,7 +10,7 @@ Ocho fases llevan el repo del diagnóstico one-shot actual al loop accionable es
 
 - [x] **Phase 1: Higiene, decisiones y renombre** - Repo limpio, decisiones que congelan interfaces tomadas, marca nueva en código
 - [x] **Phase 2: Layout tri-bloque con candado de schemas** - Reglas en eu/us/latam y validación de schemas en CI
-- [ ] **Phase 3: Motor completo** - F_rigor desde region-factors, fix T1 strict_regimes, escalado USA, pilar DevOps
+- [x] **Phase 3: Motor completo** - F_rigor desde region-factors, fix T1 strict_regimes, escalado USA, pilar DevOps
 - [ ] **Phase 4: Contrato JSON v1.1 canónico** - audit --json emite el contrato completo; AGENT-CONTRACT.md fuente única
 - [ ] **Phase 5: Doctor, fixtures y golden tests congelados** - Loop no interactivo con UX react-doctor y red de seguridad en CI
 - [ ] **Phase 6: Skills — /audit S0–S7 y cobertura tri-bloque** - El producto central, evaluado con evals de adherencia e inyección
@@ -54,6 +54,22 @@ Ocho fases llevan el repo del diagnóstico one-shot actual al loop accionable es
 **Model policy**: orden de PRs intra-fase (MOTOR-01+04 juntos) planeado con Opus; scorer/tests con Sonnet; bloqueos de semántica legal → Fable 5.
 **Plans**: TBD
 
+**Resultado (2026-07-28 — PRs #18 `fase-3a-motor-f-rigor` y #19 `fase-3b-usa-devops`, mergeados a `develop`):**
+
+La fase entrega **8 tickets**: MOTOR-01 a MOTOR-06 (los previstos), MOTOR-08 (adelantado desde la Fase 4) y QA-04. Estado verificado sobre `develop`: `cd cli && npm run build && npm test` → **77/77 verdes**; `node scripts/validate.js` → 14 archivos recorridos, **0 errores de schema** (7 advertencias, todas de tipo "sin schema"); CI con el job nuevo `cli-tests` (build + tests del CLI) en `.github/workflows/validate.yml`.
+
+*Criterio 1 — F_rigor desde `region-factors.json` con peor caso: **cumplido**.* CO+BR+UE puntúa 1.25 (`cli/tests/scorer.test.js`, "CO+BR+EU compliant total → F_rigor 1.25 (peor caso) y score 50"); `resolveRigorFactor()` en `cli/src/engine/rules.ts` resuelve por `Math.max()` leyendo siempre el JSON, sin fallback numérico en código (si el archivo falta, falla ruidosamente); el grep de 1.25/1.15/1.10 en `cli/src` solo devuelve comentarios — cero tablas duplicadas.
+
+*Criterio 2 — fix T1 por pertenencia: **cumplido**, con un matiz de granularidad de test.* Brasil activa DPO +15, base legal +20 y brechas +15 con F_rigor 1.15 ("regresión T1 completa: BR sin DPO/base legal/plan de brechas → penalizadores activos y score 100"); el grep de comparaciones numéricas de F_rigor en `cli/src` devuelve cero; MOTOR-01 y MOTOR-04 viajaron en el mismo PR #18, como exigía el ticket. Chile cambia de régimen por `strict_from` con operador `>=` inclusivo, y los tests cubren 12 h antes y 12 h después del corte — pero **no la frontera exacta `2026-12-01T00:00:00Z`**: mutar `>=` a `>` hoy pasaría en verde. El comportamiento es correcto por lectura de código; el candado fino queda anotado en QA-03 (Fase 5).
+
+*Criterio 3 — USA y Ecuador: **cumplido en el escalado y en Ecuador; parcial en el contenido del finding multi-estatal**.* El escalado da 1.10 / 1.14 / 1.20 para 1 / 3 / 6+ estados con cap verificado a 8 estados (`cli/tests/us-scaling.test.js`); `us_multistate_exposure` se activa con 2+ estados sin mapear y no con 1, con una sola definición y candado de ruta única (`cli/tests/us-multistate.test.js`, "O-4: candado de ruta única"). Ecuador cumple el default seguro con test de invariante ("MOTOR-05 guard: EC nunca puede quedar no-estricto y sin assumption"). **Lo que no se cumple plenamente:** el criterio pedía que el finding trajera "puntos/legal_refs/fix_hint del JSON existente", y `cli/rules/us/usa-federal.json` **no declara `legal_refs` ni `fix_hint`** para ese penalizador. El motor hace passthrough fiel (solo puebla lo que el JSON declara) y tiene prohibido inventarlos, así que hoy el finding sale con puntos y descripción pero sin refs ni llave de corrección. Es un **vacío editorial, no un defecto de código**: queda abierto en el backlog editorial.
+
+*Criterio 4 — pilar DevOps: **cumplido en el sub-panel**, con una divergencia preexistente documentada.* Las 7 señales de `devops-penalizers.json` suman con el cap `min(sum, 30)` del ADR (`cli/tests/devops.test.js`, "peor caso 7/7 activos → devopsRaw 90, devopsSubtotal 30"), el wizard las pregunta en el bloque Q9, y dos tests de no-solapamiento verifican que ni los ids ni los `config_key` colisionan con los penalizadores BE previos. `npm test` incluye la regresión de adecuación BR→UE (`cli/tests/adequacy.test.js`). **Divergencia:** `architecture/ADR-001-devops-cap.md` documenta además `combined = min(100, fe_score + be_score)` con cap 50 por pilar, mientras el motor calcula un pool plano según `score-formula.json`; `calculateBackendScore`/`calculateFrontendScore` implementan la fórmula del ADR pero **no tienen call-site**. La divergencia es **anterior a esta fase** y su dirección es conservadora (el pool plano nunca subreporta), por lo que no se corrigió aquí: cablear hoy la fórmula del ADR **bajaría scores** y es decisión editorial/de producto, trackeada en CONTRATO-03.
+
+*Adelanto de alcance:* **MOTOR-08** (`standards_ref` en schema y passthrough al output) estaba previsto para la Fase 4 y quedó implementado y testeado en esta fase (`cli/tests/devops.test.js` y `cli/tests/us-multistate.test.js`, casos "MOTOR-08: …"). La Fase 4 ya no lo incluye.
+
+*Auditoría de cierre:* el delta completo pasó por una auditoría adversarial multi-agente que produjo 3 correcciones antes del merge y 13 hallazgos refutados. Ver `.planning/AUDITORIA-FASE-3-2026-07-28.md`.
+
 ### Phase 4: Contrato JSON v1.1 canónico
 **Goal**: `audit --json` emite el contrato v1.1 completo (findings con fix_hint, config_key, evidence_needed, legal_refs, jurisdictions[], standards_refs, recipe_ref), distingue unknown de absent (score como cota superior), propaga review_status para que nada no-validado se presente como autoritativo, y AGENT-CONTRACT.md queda como fuente única con las otras dos fuentes marcadas superseded. La interfaz que consumen doctor, la skill y los golden tests se congela aquí, ya sobre motor y marca definitivos. Orden interno: CONTRATO-01 primero; MOTOR-08 y CONTRATO-02/04/05 sobre él; CONTRATO-03 cierra.
 **Depends on**: Phase 3
@@ -65,6 +81,10 @@ Ocho fases llevan el repo del diagnóstico one-shot actual al loop accionable es
   4. El ejemplo de AGENT-CONTRACT.md v1.1 coincide campo a campo con el output real (snapshot test verde); las otras fuentes remiten a él como superseded
 **Model policy**: semántica del contrato revisada en sesión Fable 5 antes de implementar; implementación Sonnet; verificación Opus.
 **Plans**: TBD
+
+**Nota de alcance (2026-07-28):** **MOTOR-08 ya está hecho** — se adelantó a la Fase 3 y quedó implementado, testeado y mergeado en el PR #19. El alcance restante de esta fase son los cinco tickets CONTRATO-*.
+
+La auditoría de cierre de la Fase 3 (`.planning/AUDITORIA-FASE-3-2026-07-28.md`) dejó insumos concretos para dos de ellos: **CONTRATO-04** hereda el caso de la llave ausente bajo `--config`, que hoy desactiva su penalizador en silencio (subreporte de riesgo, mitigado provisionalmente solo para las 3 llaves de régimen estricto), y **CONTRATO-03** hereda la divergencia entre la fórmula documentada en `architecture/ADR-001-devops-cap.md` y la que implementa el motor. Se suma **MOTOR-09** (normalización de `countries` dentro del motor), abierto por la misma auditoría. Los criterios están en `.planning/REQUIREMENTS.md`.
 
 ### Phase 5: Doctor, fixtures y golden tests congelados
 **Goal**: `doctor` existe como wrapper delgado del MISMO engine que audit (cero lógica de scoring propia — no se recrea B5), con `--topic`, `--baseline`, persistencia en `.legalskills/last-audit.json` y render estilo react-doctor (narración de detección, resumen por pilar, truncado honesto, happy path celebrado, score al final); los 4 fixtures canónicos quedan creados y los golden tests se congelan con inyección de reloj — el primer momento seguro, porque marca y ADR (Fase 1) y contrato (Fase 4) ya son definitivos. Los gates anti-alucinación (legal_refs) y anti-autoritativo (review_status) y los tests de convergencia del loop entran a CI.

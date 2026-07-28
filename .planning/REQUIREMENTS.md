@@ -37,26 +37,31 @@
 
 ### MOTOR — Motor de score (F_rigor, strict_regimes, USA, DevOps)
 
-- [ ] **MOTOR-01**: El scorer lee `region-factors.json` como fuente de F_rigor con resolución peor-caso
+- [x] **MOTOR-01**: El scorer lee `region-factors.json` como fuente de F_rigor con resolución peor-caso
   - Criterios: CO+BR+UE → F_rigor 1.25 · cambiar el JSON cambia el score sin tocar código · cero tablas de F_rigor duplicadas en `cli/src` (grep).
-- [ ] **MOTOR-02**: Escalado USA multi-estatal: +0.02 por estado adicional con ley integral, cap 1.20
+- [x] **MOTOR-02**: Escalado USA multi-estatal: +0.02 por estado adicional con ley integral, cap 1.20
   - Criterios: 1 estado → 1.10, 3 → 1.14, ≥6 → 1.20 · estados sin ley integral en `state-matrix.json` no incrementan · tests unitarios (QA-04).
-- [ ] **MOTOR-03**: WIRING de `us_multistate_exposure` (ya existe en `usa-federal.json` — es cableado, no creación)
+- [x] **MOTOR-03**: WIRING de `us_multistate_exposure` (ya existe en `usa-federal.json` — es cableado, no creación)
   - Criterios: 2+ estados sin mapear → finding con puntos/legal_refs/fix_hint del JSON existente · 1 estado → no se activa · una sola definición del penalizador.
-- [ ] **MOTOR-04**: `strict_regimes` en `region-factors.json` y los 3 penalizadores BE condicionados por PERTENENCIA (FIX T1 — bloqueante)
+  - **Entregado 2026-07-28 con un vacío heredado del JSON:** el wiring, la activación y el candado de ruta única están verdes, pero `usa-federal.json` **no declara `legal_refs` ni `fix_hint`** para este penalizador, así que el finding sale sin ellos. El motor tiene prohibido inventarlos (passthrough fiel) y hay un test que blinda la ausencia actual. Poblarlos es editorial: ver `.planning/EDITORIAL-BACKLOG.md` (AUD-01).
+- [x] **MOTOR-04**: `strict_regimes` en `region-factors.json` y los 3 penalizadores BE condicionados por PERTENENCIA (FIX T1 — bloqueante)
   - DPO +15, base legal +20, brechas +15 nunca se condicionan a igualdad numérica de F_rigor.
   - Criterios: Brasil activa los 3 aunque F_rigor sea 1.15 · Chile no-estricto antes de 2026-12-01 y estricto después · grep: ninguna condición compara F_rigor numéricamente · MOTOR-01 no se mergea sin este ticket (mismo PR o encadenado).
-- [ ] **MOTOR-05**: Default seguro para Ecuador en `strict_regimes`: mantener estricto o emitir assumption visible
+- [x] **MOTOR-05**: Default seguro para Ecuador en `strict_regimes`: mantener estricto o emitir assumption visible
   - El default pendiente no puede debilitar el rigor en silencio; la decisión jurídica final es de Cowork.
   - Criterios: audit con EC → penalizadores estrictos activos O entrada explícita en `assumptions[]` · flag/comentario en el JSON referencia la decisión pendiente (T1) · test que falla si EC queda no-estricto Y sin assumption.
-- [ ] **MOTOR-06**: Cablear el pilar DevOps (`devops-penalizers.json`, 7 señales) al scorer, wizard y config
+- [x] **MOTOR-06**: Cablear el pilar DevOps (`devops-penalizers.json`, 7 señales) al scorer, wizard y config
   - Criterios: `has_staging_env=false` y `uses_prod_data_outside_prod=true` suman +15 y +20 conforme al JSON (respetando `inverted: true`) · wizard pregunta el bloque Q9 DevOps y persiste · sub-panel "⚙️ DevOps" con subtotal · test de no-solapamiento con penalizadores BE.
 - [x] **MOTOR-07**: ADR que RATIFICA y documenta la semántica del cap DevOps ya versionada en `devops-penalizers.json`
   - Fact-check: el JSON v1.0.0 ya fija el contrato numérico — `max_total: 30`, `cap_behavior: min(sum_active_devops_penalizers, 30) → se agrega a be_raw antes de min(50)` (BE sigue 0–50 con DevOps como sub-panel interno). El ADR no re-decide: ratifica, da el ejemplo numérico y reconcilia README/PILLAR-SEPARATION con esa semántica. Si el equipo editorial quisiera otra cosa, eso es un cambio al JSON en Cowork, no de este plan.
   - Criterios: ADR commiteado con la semántica ratificada, alternativas descartadas y ejemplo numérico · README y `architecture/PILLAR-SEPARATION.md` sin contradicción con los rangos · QA-03 lo referencia como precondición.
-- [ ] **MOTOR-08**: Soportar `standards_ref` en schema y propagarlo del JSON de reglas al output
+- [x] **MOTOR-08**: Soportar `standards_ref` en schema y propagarlo del JSON de reglas al output
   - La POBLACIÓN de valores (ISO/SOC2/NIST/ASVS) es editorial y queda fuera.
   - Criterios: schemas validan penalizadores con y sin el campo · passthrough al finding como `standards_refs` · cero valores inventados en código.
+  - **Adelantado de la Fase 4 a la Fase 3** (PR #19): la implementación del pilar DevOps necesitaba el passthrough para no inventar campos, así que se entregó en el mismo tren. Cubierto por los tests "MOTOR-08: …" de `cli/tests/devops.test.js` (con y sin el campo) y `cli/tests/us-multistate.test.js` (penalizador que no lo declara → `undefined`, no un valor inventado).
+- [ ] **MOTOR-09**: Normalizar `countries` dentro del motor, no solo en la capa de comandos *(origen: auditoría Fase 3, 2026-07-28)*
+  - `calculateScore()` y `calculateDualScore()` nunca llaman `normalizeCountries()`: el único call-site vive en `cli/src/commands/audit.ts` (rama `--config`). Un consumidor que pase `["br"]` en minúsculas obtiene **F_rigor 1.00 en vez de 1.15** y pierde el régimen estricto — subreporte silencioso de riesgo. Hoy es **inalcanzable** porque el wizard y `--config` son los dos únicos puntos de entrada y ambos normalizan antes; **DOCTOR-01 abre un tercero** y lo vuelve alcanzable. Asimetría a resolver: `countIntegralStates()` **sí** normaliza internamente (por eso `['ca','va']` → 1.12 pasa), así que hoy los estados y los países se comportan distinto ante la misma entrada.
+  - Criterios: `calculateScore({countries:["br"]})` y `calculateScore({countries:["BR"]})` producen F_rigor y `isStrictRegime` idénticos (test) · la normalización ocurre en un solo lugar del motor, no duplicada por call-site (grep) · un código de país inválido sigue fallando ruidosamente con el mismo criterio que hoy usa `--config` (exit 2), sin degradar a 1.00 · test de paridad países/estados que falle si una de las dos rutas deja de normalizar.
 
 ### CONTRATO — Contrato JSON v1.1 (CLI ↔ LLM)
 
@@ -67,8 +72,10 @@
 - [ ] **CONTRATO-03**: Consolidar `AGENT-CONTRACT.md` a v1.1 como fuente única del contrato
   - Hoy hay 3 fuentes divergentes (AGENT-CONTRACT v1.0, ejemplo de Fase 2.1, addendum H2).
   - Criterios: el ejemplo del doc coincide campo a campo con el output real (test de snapshot) · las otras dos fuentes remiten a él como superseded · grep de `schema_version` sin ejemplos divergentes.
+  - **⚠️ Advertencia de la auditoría Fase 3 (2026-07-28):** hay una cuarta divergencia, y es numérica, no redaccional. `architecture/ADR-001-devops-cap.md` documenta `combined = min(100, fe_score + be_score)` con **cap 50 por pilar antes de sumar**, mientras el motor implementa el **pool plano** de `score-formula.json` (`min(100, round((c_base + penalizersSum + devopsSubtotal) × F_rigor))`). Las funciones `calculateBackendScore`/`calculateFrontendScore` sí implementan la fórmula del ADR pero **siguen sin call-site** (código muerto). La divergencia es **preexistente a la Fase 3** y su dirección es conservadora: el pool plano siempre da ≥ que `min(100, fe+be)`, así que nunca subreporta. **Cablear hoy la fórmula del ADR bajaría scores** — el fixture "salud + CO + sin cumplimiento" pasaría de 100 a 80. Por eso **no es un fix de código**: es una decisión editorial/de producto que exige bump de `schema_version` y comunicación a los consumidores. Este ticket debe resolverla explícitamente (alinear el ADR al motor, o el motor al ADR con el bump), no dejarla implícita.
 - [ ] **CONTRATO-04**: Mitigador T4: distinguir `unknown` de `absent` y etiquetar el score como cota superior
   - Criterios: llaves sin responder → `score_basis: upper_bound` (o `score_range`) + lista de llaves unknown, visible en --json y en el render · config completa → score puntual sin etiqueta · la skill reproduce la etiqueta.
+  - **Constancia de la auditoría Fase 3 (2026-07-28):** hoy, bajo `--config`, una llave ausente **desactiva su penalizador en silencio** — el score sale más bajo de lo que corresponde y nada en el output lo señala. Es exactamente el subreporte de riesgo que este ticket debe cerrar, y aplica a las 9 llaves nuevas de la Fase 3B además de las clásicas. **Mitigación provisional ya implementada:** solo las **3 llaves de régimen estricto** (`has_dpo`, `has_legal_basis`, `has_breach_plan`) fallan con **exit 2** nombrando lo que falta cuando el proyecto es de régimen estricto (commit `cd92c8c`, tests en `cli/tests/config-mode.test.js`). El resto sigue degradando en silencio hasta que este ticket entregue `score_basis: upper_bound`.
 - [ ] **CONTRATO-05**: Exponer `review_status` en el output: nada no-validado se presenta como autoritativo
   - Criterios: finding basado en regla `pending_legal_validation` lleva etiqueta en --json y render humano · flag global `pending_legal_validation` en el contrato · `/audit` reproduce el disclaimer.
 
@@ -76,6 +83,10 @@
 
 - [ ] **DOCTOR-01**: `doctor` como wrapper delgado del MISMO engine que audit (prohibido un segundo camino — B5)
   - Criterios: misma config → `doctor --json` y `audit --config --json` idénticos (byte-a-byte tras normalizar timestamp) · revisión de imports: cero lógica de scoring propia · exit codes 0/1/2 con tests.
+  - **Añadido por la auditoría Fase 3 (2026-07-28) — dos alcances extra:**
+    1. **Unificar los exit codes.** Hoy `audit --config` con el archivo de configuración **ausente** sale con **1**, no con 2, pese a que 2 es el código de "configuración inválida" que ya usan `normalizeCountries()` y el gate de llaves estrictas. La tabla de exit codes vive bajo este ticket, así que aquí se congela: criterio observable → cada código (0/1/2) tiene un caso de test que lo produce, config ausente y config inválida comparten el 2, y ningún camino de error sale con 0.
+    2. **Validación tipada de `legalskills.config.json`**, cubriendo `countries`, `us_states` y las **9 llaves nuevas** de la Fase 3B. Criterio: un config con un tipo equivocado (p. ej. `countries` como string, o una llave DevOps con `"true"` en vez de `true`) falla con exit 2 y mensaje que nombra la llave — nunca se ignora ni se coacciona en silencio.
+  - **Dependencia que este ticket crea:** abrir un segundo punto de entrada al motor vuelve **alcanzable** el defecto de MOTOR-09 (`countries` sin normalizar). MOTOR-09 debería aterrizar antes o en el mismo tren.
 - [ ] **DOCTOR-02**: `--topic` y `--baseline` con persistencia en `.legalskills/last-audit.json`
   - Criterios: `--topic consentimiento` filtra al topic · tras corregir una llave, `--baseline` reporta delta por tema · cada corrida escribe last-audit.json válido contra el schema · topic fuera del enum → error claro + exit 2.
 - [ ] **DOCTOR-03**: Render estilo react-doctor (capa de presentación; no altera el contrato)
@@ -87,6 +98,9 @@
 - [ ] **SKILL-01**: Reescribir `/audit` como máquina de estados **S0–S7** (loop accionable con planeación explícita)
   - Protocolo del diseño v4 (`architecture/SKILL-AUDIT-V4-DESIGN.md`): S0-DETECTAR, S1-EVALUAR, S2-DIAGNOSTICAR, **S3-PLANEAR** (plan concreto por topic + aprobación explícita del usuario), **S4-CORREGIR** (ediciones reales; config_key solo con corrección material — nunca voltear la llave para bajar el score), S5-RE-EVALUAR (`doctor --baseline`), S6-DECIDIR (4 criterios de parada duros; escalamiento SIEMPRE corta hacia abogado), S7-REPORTAR. Supersede el "S0–S6" de Fase 2.3.
   - Criterios: protocolo completo con los criterios de parada · fallback etiquetado "estimado, no verificado" solo sin Node.js · Content Isolation intacto (diff) · la skill nunca recalcula si la CLI respondió · **acciones externas quedan pendientes con `evidence_needed`, jamás como resueltas sin evidencia**.
+  - **Añadido por la auditoría Fase 3 (2026-07-28) — dos precisiones sobre cómo la skill lee a la CLI:**
+    - **`--fail-on` es opt-in por diseño.** No existe ningún umbral 71 implícito: sin `--fail-on`, un score de 95 sale con **exit 0**, y eso es correcto. La skill debe documentarlo y **nunca inferir el veredicto del exit code**: el criterio de escalamiento se lee de `escalation_required` y `final_score` en el JSON, no de que el proceso haya salido con 0. Criterio observable: la documentación de la skill enuncia el opt-in, y una eval con score ≥71 sin `--fail-on` verifica que la skill escala igualmente pese al exit 0.
+    - **Alinear la tabla de exit codes con la real, una vez DOCTOR-01 los congele** (ver el alcance añadido a DOCTOR-01). Criterio: cero divergencias entre los códigos que la skill documenta y los que produce la CLI, verificado caso por caso; este punto **depende de DOCTOR-01** y no debe resolverse antes, para no congelar una tabla que va a cambiar.
 - [ ] **SKILL-02**: Sincronizar el fallback de SKILL.md y QUESTIONS.md con la escala nueva de F_rigor y strict_regimes
   - Criterios: cero condiciones "F_rigor = 1.25" (grep) · tabla del fallback coincide valor a valor con `region-factors.json` · QUESTIONS.md refleja strict_regimes y el matiz CL≥2026-12-01 · tratamiento de Ecuador según MOTOR-05.
 - [ ] **SKILL-03**: Wiring del bloque USA en `/audit` y `/risk-score` (penalizadores usa-federal + matices H3)
@@ -119,8 +133,13 @@
 - [ ] **QA-03**: Golden tests del contrato con inyección de reloj (resuelve `generated_at`)
   - Precondiciones: MOTOR-07 (ADR) y REL-01 (renombre) — no congelar strings viejos.
   - Criterios: dos corridas → JSON byte-a-byte idéntico bajo reloj inyectado (`LLS_FAKE_NOW` o clock inyectable) · golden files de los 4 fixtures en CI · grep: ningún golden contiene la marca vieja · mecanismo documentado en AGENT-CONTRACT.md.
-- [ ] **QA-04**: Tests unitarios de F_rigor por bloque, escalado multi-estatal y strict_regimes
+  - **Añadido por la auditoría Fase 3 (2026-07-28) — higiene del reloj y frontera exacta de Chile:**
+    - **Frontera de Chile.** QA-04 dejó cubiertos instantes a **12 h** de cada lado del corte, no el instante exacto. Hoy **mutar `>=` a `>` en la comparación de `strict_from` pasa en verde**. Criterio observable: tests en `2026-11-30T23:59:59.999Z` (no estricto), `2026-12-01T00:00:00.000Z` (**estricto** — el corte es inclusivo) y `2026-12-01T00:00:00.001Z` (estricto), de modo que invertir el operador rompa la suite.
+    - **Higiene del reloj.** Todo test cuyo resultado dependa de la fecha debe inyectar `LLS_FAKE_NOW` explícitamente; criterio: la suite produce el mismo resultado corrida antes y después del 2026-12-01 (verificable ejecutándola con dos `LLS_FAKE_NOW` distintos). Documentar que `LLS_FAKE_NOW` con valor inválido cae a la fecha real por diseño (dirección fail-safe) y que ese contrato es intencional, no un bug.
+- [x] **QA-04**: Tests unitarios de F_rigor por bloque, escalado multi-estatal y strict_regimes
   - Criterios: mono/multi-bloque, 1/3/6+ estados, BR, CL antes/después de 2026-12-01, EC según MOTOR-05 · regresión T1 explícita: input LGPD activa DPO/base legal/brechas · `npm test` verde en CI.
+  - **Verificado criterio por criterio el 2026-07-28 sobre `develop` (77/77 verdes):** mono-bloque ("US solo → F_rigor 1.10", "EC solo → F_rigor 1.00 pero isStrictRegime true", "Brasil usa F_rigor 1.15 desde region-factors.json") y multi-bloque ("CO+BR+EU … → F_rigor 1.25 (peor caso)", "US+BR con 6 estados → 1.20", "US+EU → 1.25") · 1/3/6+ estados y cap a 8 (`cli/tests/us-scaling.test.js`) · BR y la regresión T1 explícita con su dirección negativa ("MOTOR-04 dirección negativa…", en los dos sitios: `calculateScore()` y `getBackendPenalizers()`) · CL antes y después del corte con `LLS_FAKE_NOW` · EC con el guard de invariante de MOTOR-05 · job `cli-tests` en `.github/workflows/validate.yml` (build + tests del CLI en PR y en push a `main` con `paths` sobre `cli/`).
+  - **Refinamiento diferido a QA-03**, no gate de este ticket: la frontera exacta `2026-12-01T00:00:00Z` de Chile no está cubierta (los tests usan mediodías de cada lado).
 - [ ] **QA-05**: Test de gate: ninguna regla no-validada se presenta como autoritativa
   - Criterios: fixture con reglas pending → assert del flag global y etiquetas por finding · test negativo con regla validated · REL-03 lo lista como gate obligatorio.
 - [ ] **QA-06**: Tests de convergencia del loop: ≤5 iteraciones y corte por escalamiento en el caso alto
@@ -129,6 +148,15 @@
   - Criterios: evals de adherencia estado-por-estado sobre ≥2 fixtures · score de la skill = `final_score` de la CLI · los 17 casos de inyección existentes pasan · **eval negativa: la skill rechaza "ya lo arreglé" sin evidencia (no voltea config_keys por declaración)**.
 - [ ] **QA-08**: Check de CI: todo `legal_ref` emitido existe en los archivos de reglas (candado anti-alucinación)
   - Criterios: el job extrae los legal_refs de los fixtures y verifica existencia textual en `cli/rules/` · ref inventada de prueba rompe el job · integrado al workflow de QA-01.
+- [ ] **QA-09**: Schema propio para `cli/rules/risk-engine/*.json` (hoy `no-schema`) *(origen: auditoría Fase 3, 2026-07-28)*
+  - `node scripts/validate.js` reporta 0 errores, pero los 6 archivos de `risk-engine/` salen con la advertencia "sin schema (backlog)": **solo se verifica que parseen**. Son justamente los JSON que gobiernan el motor — su cobertura real hoy son los tests, no la validación. Defensa en profundidad que complementa (no reemplaza) el fail-loud ya implementado en los loaders.
+  - Criterios: `region-factors.json` y `devops-penalizers.json` dejan de aparecer como `no-schema` en la salida de `validate.js` · el schema **exige `strict_regimes.members` no vacío y con BR y EU presentes** (borrar cualquiera de los dos hace fallar la validación) · exige `scoring_rules.max_total` **numérico** (ponerlo como string `"30"` o como `null` hace fallar) · un JSON de prueba que viole cada una de esas tres reglas rompe `validate.js` con exit ≠ 0 y mensaje que nombra el campo · el conteo de advertencias del resumen baja en consecuencia.
+- [ ] **QA-10**: Test data-driven de la invariante fail-safe de `strict_regimes` *(origen: auditoría Fase 3, 2026-07-28)*
+  - MOTOR-05 dejó la invariante correcta para Ecuador, pero verificada con un test específico de EC. Cuando el editorial añada otro miembro con decisión pendiente (Panamá, Perú…), nada garantiza que herede el default seguro.
+  - Criterios: un solo test recorre **todos** los miembros de `strict_regimes` en `region-factors.json` y afirma que cada uno con `status: pending_editorial_decision` sale con `strict === true` **O** con `assumptions.length > 0` · el test se alimenta del JSON, sin lista de países hardcodeada (grep: cero códigos de país literales en el caso) · añadir al JSON un miembro pendiente que quede no-estricto y sin assumption hace fallar la suite (verificado rompiéndolo a propósito).
+- [ ] **QA-11**: Derivar el F_rigor esperado de los tests desde `region-factors.json` *(origen: auditoría Fase 3, 2026-07-28)*
+  - Los tests hoy hardcodean 1.25 / 1.15 / 1.10 como valores esperados. Eso los vuelve ciegos al fallo que MOTOR-01 pretendía hacer imposible: **una tabla duplicada en `cli/src` que divergiera del JSON pasaría build + tests + CI sin alarma**, porque test y código estarían de acuerdo entre sí y en desacuerdo con la fuente de verdad.
+  - Criterios: los casos de F_rigor leen el valor esperado de `cli/rules/risk-engine/region-factors.json` en vez de literales · editar un factor en el JSON **sin tocar código ni tests** deja la suite verde (hoy la rompe), y en cambio introducir a mano una tabla divergente en `cli/src` la rompe (verificado en ambas direcciones) · se conserva al menos un test de anclaje con el valor literal, para que un JSON corrupto que devuelva 1.00 en todo no pase inadvertido.
 
 ### WEB — Sitio Astro como espejo del repo
 
@@ -196,19 +224,20 @@
 | ESTR-02 | Phase 2 | Complete |
 | ESTR-03 | Phase 2 | Complete |
 | QA-01 | Phase 2 | Complete |
-| MOTOR-01 | Phase 3 | Pending |
-| MOTOR-02 | Phase 3 | Pending |
-| MOTOR-03 | Phase 3 | Pending |
-| MOTOR-04 | Phase 3 | Pending |
-| MOTOR-05 | Phase 3 | Pending |
-| MOTOR-06 | Phase 3 | Pending |
-| QA-04 | Phase 3 | Pending |
+| MOTOR-01 | Phase 3 | Complete |
+| MOTOR-02 | Phase 3 | Complete |
+| MOTOR-03 | Phase 3 | Complete |
+| MOTOR-04 | Phase 3 | Complete |
+| MOTOR-05 | Phase 3 | Complete |
+| MOTOR-06 | Phase 3 | Complete |
+| MOTOR-08 | Phase 3 | Complete — adelantado desde la Phase 4 (PR #19) |
+| QA-04 | Phase 3 | Complete |
 | CONTRATO-01 | Phase 4 | Pending |
 | CONTRATO-02 | Phase 4 | Pending |
 | CONTRATO-03 | Phase 4 | Pending |
 | CONTRATO-04 | Phase 4 | Pending |
 | CONTRATO-05 | Phase 4 | Pending |
-| MOTOR-08 | Phase 4 | Pending |
+| MOTOR-09 | Phase 4 | Pending — abierto por la auditoría Fase 3 |
 | DOCTOR-01 | Phase 5 | Pending |
 | DOCTOR-02 | Phase 5 | Pending |
 | DOCTOR-03 | Phase 5 | Pending |
@@ -217,6 +246,9 @@
 | QA-05 | Phase 5 | Pending |
 | QA-06 | Phase 5 | Pending |
 | QA-08 | Phase 5 | Pending |
+| QA-09 | Phase 5 | Pending — abierto por la auditoría Fase 3 |
+| QA-10 | Phase 5 | Pending — abierto por la auditoría Fase 3 |
+| QA-11 | Phase 5 | Pending — abierto por la auditoría Fase 3 |
 | SKILL-01 | Phase 6 | Pending |
 | SKILL-02 | Phase 6 | Pending |
 | SKILL-03 | Phase 6 | Pending |
@@ -236,10 +268,13 @@
 | REL-04 | Phase 8 | Pending |
 
 **Coverage:**
-- v1 requirements: 50 total
-- Mapped to phases: 50
+- v1 requirements: **54 total** (50 iniciales + 4 abiertos por la auditoría de la Fase 3: MOTOR-09, QA-09, QA-10, QA-11)
+- Mapped to phases: 54
 - Unmapped: 0
+- Completos: **20** (Fases 1–3) · Pendientes: **34** (Fases 4–8)
+
+Por fase: Phase 1 → 8/8 · Phase 2 → 4/4 · Phase 3 → 8/8 (incluye MOTOR-08, adelantado desde la Phase 4) · Phase 4 → 0/6 · Phase 5 → 0/11 · Phase 6 → 0/10 · Phase 7 → 0/5 · Phase 8 → 0/2.
 
 ---
 *Requirements defined: 2026-07-23*
-*Last updated: 2026-07-23 tras workflow multi-agente (tickets + fact-check + crítico de completitud)*
+*Last updated: 2026-07-28 — cierre de la Fase 3: 8 tickets entregados y verificados sobre `develop` (77/77 tests, `validate.js` 14/14 sin errores), más los 4 tickets y las 6 anotaciones derivados de la auditoría adversarial de cierre (`.planning/AUDITORIA-FASE-3-2026-07-28.md`).*

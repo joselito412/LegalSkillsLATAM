@@ -18,6 +18,13 @@
 | VIG-05 | Panamá: localizar texto oficial de ANTAI-DG-003-2026 (🟡→✅) | Media | 🔄 Intento fallido 2026-07-28 — sigue 🟡 |
 | VIG-06 | Ecuador: consolidar la ola SPDP 2026 como insumo de `ecuador.json` | Media | ✅ Hecho 2026-07-28 |
 | VIG-07 | Fuentes ancla §2: CL/EC/PA | Alta | ✅ Hecho 2026-07-28 |
+| AUD-01 | USA: `legal_refs`/`fix_hint`/`config_key` en `usa-federal.json` | Alta | 🆕 Abierto 2026-07-28 |
+| AUD-02 | USA: bendecir o sustituir la llave `us_state_laws_mapped` | Media | 🆕 Abierto 2026-07-28 |
+| AUD-03 | Ecuador: ratificar `strict_regimes` (→ VIG-06) | Alta | 🔗 Enlazado a VIG-06 |
+| AUD-04 | Brasil: `assumption` al suprimir por adecuación BR→UE | Media | 🆕 Abierto 2026-07-28 |
+| AUD-05 | Motor: step/cap del escalado USA a campos estructurados | Baja | 🆕 Abierto 2026-07-28 |
+
+> Los **AUD-\*** provienen de la auditoría del motor (Fase 3) y se detallan al final del documento. A diferencia de los VIG-\*, no nacen de una ronda de vigilancia normativa sino de campos que el motor necesita y el contenido aún no declara.
 
 ---
 
@@ -109,6 +116,67 @@ Ejecutado 2026-07-28 en `docs/VIGILANCIA-NORMATIVA.md` §2: Ecuador ahora apunta
 - **Capa transversal de IA en el motor:** EDPB Guidelines 02/2026 (anonimización) y 03/2026 (web scraping para IA generativa) en consulta; NT ANPD 1/2026 (output de IA puede ser dato personal); SPDP EC 0009-R vigente. Cuando dos de las tres consoliden, amerita diseño de topic/penalizadores propios.
 - **México:** publicación del Reglamento de la LFPDPPP 2025 — afecta el plazo de notificación de vulneraciones a la autoridad (hoy documentado como no exigido por la ley).
 - **Chile:** primeras instrucciones generales de la APDP (ventana jun-nov 2026, prioridad máxima).
+
+---
+
+# Insumos de la auditoría del motor (Fase 3, 2026-07-28)
+
+**Origen:** auditoría adversarial de cierre de la Fase 3 (`.planning/AUDITORIA-FASE-3-2026-07-28.md`), PRs #18 y #19.
+
+> Estos cinco items son **decisiones del editor**, no tareas de código. Aparecen aquí porque el motor ya está cableado y funcionando, y en cada caso topó con un campo que el JSON no declara o con un criterio que solo el editor puede fijar. **La sesión de código tiene prohibido resolverlos escribiendo en `cli/rules/**`**: mientras no haya decisión editorial, el motor se comporta como está descrito abajo, que es el default seguro.
+
+## AUD-01 — Poblar `legal_refs`, `fix_hint` y `config_key` en `usa-federal.json`
+
+**Archivo:** `cli/rules/us/usa-federal.json` → empezando por el penalizador `us_multistate_exposure`.
+
+MOTOR-03 cableó el penalizador y funciona: se activa con 2+ estados sin mapear y no con 1. Pero el JSON declara solo `id`, `description`, `score`, `applies_when` y `pillar` — **no declara `legal_refs`, `fix_hint` ni `config_key`**. El motor hace passthrough fiel y tiene **prohibido inventarlos**, así que hoy el finding llega al usuario con puntos y descripción pero **sin fundamento normativo citado y sin llave de corrección**. Hay un test que blinda la ausencia actual precisamente para que nadie la "resuelva" desde código.
+
+**Criterios de aceptación:**
+- El penalizador declara `legal_refs` con norma, artículo y URL oficial, en el mismo formato que usan los penalizadores de los JSON LATAM ya poblados.
+- Declara un `fix_hint` accionable (qué debe hacer el equipo, no qué dice la ley) y un `config_key` que el motor pueda leer.
+- Se revisa el resto de penalizadores de `usa-federal.json` con el mismo criterio: el ticket no se cierra dejando otros con el mismo vacío sin al menos inventariarlos.
+- Tras poblarlos, el test que hoy blinda la ausencia debe **actualizarse** (es señal esperada de que el vacío se cerró, no una regresión).
+
+## AUD-02 — Bendecir o sustituir la llave `us_state_laws_mapped`
+
+**Archivo:** `cli/rules/us/usa-federal.json`.
+
+La condición de activación de `us_multistate_exposure` depende hoy de una llave llamada `us_state_laws_mapped` que **es wiring del motor, no vocabulario editorial**: el JSON no declara `config_key` para ese penalizador, así que el nombre lo puso el código por necesidad. Es la única llave del sistema en esa situación.
+
+**Criterios de aceptación:**
+- El editor confirma el nombre (y entonces se declara explícitamente como `config_key` en el JSON, de modo que la fuente de verdad pase del código al contenido) **o** lo sustituye por el término que prefiera.
+- La semántica queda escrita sin ambigüedad: qué significa exactamente que un equipo tenga "mapeadas" las leyes estatales, ya que de eso depende que el penalizador se apague.
+- Cualquiera de las dos salidas queda reflejada en la documentación de llaves de configuración que consumirá CONTRATO-04.
+
+## AUD-03 — Ratificar la decisión sobre Ecuador en `strict_regimes`
+
+**Ya trackeado en VIG-06** (ver arriba, con el insumo `knowledge/insumos/ecuador-spdp-2026.md` y la recomendación razonada del Arquitecto). Se enlaza desde aquí en vez de duplicarlo: la auditoría no aporta evidencia jurídica nueva, solo confirma que la decisión sigue abierta y que el motor la está esperando.
+
+**Conducta correcta mientras tanto:** el default seguro implementado por MOTOR-05 —Ecuador queda estricto **y** el output emite un `assumptions[]` visible que nombra la decisión pendiente y su fuente— es lo que debe seguir haciendo el motor. No se debilita el rigor en silencio, y el usuario ve que hay un supuesto en juego. **El ticket se cierra con la decisión de VIG-06**, no con un cambio de código.
+
+## AUD-04 — Evaluar una `assumption` al suprimir el penalizador de transferencia por adecuación BR→UE
+
+**Archivo:** `cli/rules/latam/brasil.json` → `international_transfer`.
+
+VIG-01 hizo lo correcto: una transferencia BR→UE con adecuación vigente ya no se marca en rojo. Pero el registro editorial de esa misma adecuación deja constancia de **exclusiones** (seguridad pública, defensa nacional, seguridad del Estado e investigación penal) que **el motor no modela**: no tiene cómo saber si el tratamiento del usuario cae en alguna de ellas. Hoy, por tanto, **suprime el penalizador sin dejar rastro** de que la supresión descansa en un supuesto.
+
+**Criterios de aceptación:**
+- El editor decide si conviene emitir una `assumption` visible al suprimir por adecuación, del tipo "se asume que la transferencia no cae en las exclusiones registradas para esta decisión de adecuación", y redacta su texto con las citas que correspondan.
+- Queda explícito que **esto no cambia el score** — solo añade trazabilidad sobre por qué el penalizador no aparece.
+- Se evalúa si el mismo criterio aplica a futuras decisiones de adecuación de otras jurisdicciones, para no resolverlo caso por caso.
+- **El mecanismo ya existe y no requiere trabajo de código nuevo:** es el mismo `assumptions[]` que MOTOR-05 usa para Ecuador, alimentado desde el JSON.
+
+## AUD-05 — Decidir si el step y el cap del escalado USA pasan a campos estructurados
+
+**Archivo:** `cli/rules/risk-engine/region-factors.json` → hoy la información vive en prosa, en `blocks.us.scaling_note`.
+
+El escalado multi-estatal de MOTOR-02 (**+0.02 por estado adicional con ley integral, tope 1.20**) es **el único parámetro numérico del motor sin un campo JSON que lo respalde**: el JSON lo describe en una nota de texto y el código lo implementa como dos constantes. Todos los demás factores se leen del JSON, de modo que cambiar la política no exige tocar código — este no.
+
+**Criterios de aceptación:**
+- El editor decide si el step y el cap se promueven a campos estructurados (p. ej. junto al bloque `us`) o si se mantienen como nota en prosa por ser política del motor y no contenido normativo.
+- Si se promueven: los valores nuevos deben ser **idénticos a los actuales** (0.02 y 1.20) — es una migración de forma, no una recalibración; cualquier cambio de valor es una decisión aparte, con su propio análisis de impacto en scores.
+- La `scaling_note` en prosa se conserva o se reescribe para no contradecir los campos nuevos.
+- Queda anotado como insumo de QA-11 (derivar los valores esperados de los tests desde el JSON) y de QA-09 (schema de `risk-engine/`).
 
 ---
 
