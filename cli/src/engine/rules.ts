@@ -209,3 +209,26 @@ export function resolveStrictRegime(
 export function isStrictRegime(countries: string[], now: Date = currentDate()): boolean {
   return resolveStrictRegime(countries, now).strict;
 }
+
+/**
+ * Resuelve F_rigor (peor caso / máximo) entre los bloques regulatorios aplicables
+ * a los países seleccionados, leyendo cli/rules/risk-engine/region-factors.json.
+ * - "EU" → blocks.eu.f_rigor
+ * - "US" → blocks.us.f_rigor
+ *   // MOTOR-02 (PR 3B): escalado multi-estatal se aplica aquí
+ * - cualquier otro código → blocks.latam.per_country_overrides[code]?.f_rigor ?? blocks.latam.f_rigor
+ * - lista vacía → 1.0
+ */
+export function resolveRigorFactor(countries: string[]): number {
+  if (countries.length === 0) return 1.0;
+
+  const { blocks } = loadRegionFactors();
+  const applicable = countries.map((code) => {
+    if (code === "EU") return blocks.eu.f_rigor;
+    if (code === "US") return blocks.us.f_rigor;
+    return blocks.latam.per_country_overrides?.[code]?.f_rigor ?? blocks.latam.f_rigor;
+  });
+
+  // Peor caso: el F_rigor más alto entre los bloques/países aplicables.
+  return Math.max(1.0, ...applicable);
+}

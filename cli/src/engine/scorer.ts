@@ -1,4 +1,4 @@
-import { loadFormula, isStrictRegime } from "./rules.js";
+import { loadFormula, isStrictRegime, resolveRigorFactor } from "./rules.js";
 import { getFrontendPenalizers } from "./frontend-scorer.js";
 import { getBackendPenalizers } from "./backend-scorer.js";
 
@@ -55,7 +55,10 @@ export interface ScoreResult {
  * Formula: min(100, (C_base + ΣPenalizers) × F_rigor)
  * - C_base: base score from data category (public=10, personal=40, sensitive=80)
  * - Penalizers: additive points for each missing compliance control
- * - F_rigor: 1.25× multiplier for strict-regime jurisdictions (BR, EU, EC)
+ * - F_rigor: viene de cli/rules/risk-engine/region-factors.json (peor caso / máximo
+ *   entre los bloques regulatorios aplicables a los países seleccionados)
+ * - Los penalizadores reforzados (no_dpo, no_legal_basis, no_breach_plan) se activan
+ *   por pertenencia a strict_regimes (fix T1, MOTOR-04), no por el valor de F_rigor
  */
 export function calculateScore(input: AuditInput): ScoreResult {
   const formula = loadFormula();
@@ -133,8 +136,7 @@ export function calculateScore(input: AuditInput): ScoreResult {
 
   const activePenalizers = penalizerResults.filter((p) => p.active);
   const penalizersSum = activePenalizers.reduce((sum, p) => sum + p.score, 0);
-  const rigorKey = strict ? "strict_regime" : "latam_standard";
-  const fRigor = formula.rigor_factors[rigorKey]?.multiplier ?? (strict ? 1.25 : 1.0);
+  const fRigor = resolveRigorFactor(input.countries);
   const rawScore = (cBase + penalizersSum) * fRigor;
   const finalScore = Math.min(100, Math.round(rawScore));
 

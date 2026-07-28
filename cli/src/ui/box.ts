@@ -29,7 +29,7 @@ export function renderScoreBox(result: ScoreResult): string {
 
   const activePenalizers = result.penalizers.filter((p) => p.active);
   const countryList = result.countries.map(getCountryName).join(", ");
-  const rigorLabel = result.isStrictRegime ? "× 1.25 (régimen estricto)" : "× 1.00 (régimen estándar)";
+  const rigorLabel = `× ${result.fRigor.toFixed(2)} (${result.isStrictRegime ? "régimen estricto" : "régimen estándar"})`;
   const bar = progressBar(result.finalScore);
 
   const lines: string[] = [];
@@ -89,7 +89,7 @@ export function renderDualScoreBox(result: DualScoreResult): string {
   const color = scoreColor(result.finalScore);
   const lColor = levelColor(result);
   const countryList = result.countries.map(getCountryName).join(", ");
-  const rigorLabel = result.isStrictRegime ? "× 1.25 (régimen estricto)" : "× 1.00 (régimen estándar)";
+  const rigorLabel = `× ${result.fRigor.toFixed(2)} (${result.isStrictRegime ? "régimen estricto" : "régimen estándar"})`;
   const bar = progressBar(result.finalScore);
 
   const lines: string[] = [];
