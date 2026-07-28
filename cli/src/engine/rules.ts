@@ -263,6 +263,26 @@ export function getCountryName(isoCode: string): string {
 }
 
 /**
+ * Normaliza (.trim().toUpperCase()) una lista de códigos de país y valida que
+ * todos existan en COUNTRIES. Lanza si encuentra algún código inválido — el
+ * caller (audit.ts, ruta --config) atrapa el error y sale con código 2
+ * (configuración inválida) en vez de degradar en silencio a F_rigor 1.00.
+ */
+export function normalizeCountries(raw: string[]): string[] {
+  const normalized = raw.map((c) => c.trim().toUpperCase());
+  const validCodes = new Set(COUNTRIES.map((c) => c.code));
+  const invalid = normalized.filter((c) => !validCodes.has(c));
+
+  if (invalid.length > 0) {
+    throw new Error(
+      `Código(s) de país inválido(s): ${invalid.join(", ")}. Válidos: ${COUNTRIES.map((c) => c.code).join(", ")}.`
+    );
+  }
+
+  return normalized;
+}
+
+/**
  * Resuelve la pertenencia a régimen estricto consultando strict_regimes.members
  * de region-factors.json (fix T1, MOTOR-04) — nunca por comparación numérica de F_rigor.
  *
@@ -290,11 +310,14 @@ export function resolveStrictRegime(
     if (member.status === "pending_editorial_decision") {
       if (member.engine_default === "strict") {
         strict = true;
-        if (code === "EC") {
-          assumptions.push(
-            "Ecuador se trata como régimen estricto por defecto seguro del motor (decisión editorial T1 pendiente — ver knowledge/insumos/ecuador-spdp-2026.md §4): los penalizadores reforzados LOPDP se activan y el F_rigor aplicado es el de region-factors.json."
-          );
-        }
+        // Assumption genérica (fix post-validación Opus del PR 3A): CUALQUIER
+        // miembro pendiente con engine_default "strict" emite una entrada, no
+        // solo EC. El texto deriva del `basis` del JSON — el motor no redacta
+        // sustancia legal nueva, solo la hace visible en el output.
+        const countryName = COUNTRIES.find((c) => c.code === code)?.name ?? code;
+        assumptions.push(
+          `${countryName} se trata como régimen estricto por defecto seguro del motor (decisión editorial pendiente — ${member.basis ?? "ver region-factors.json"}). Los penalizadores reforzados se activan y el F_rigor aplicado es el de region-factors.json.`
+        );
       }
       continue;
     }
@@ -353,15 +376,18 @@ export function getAdequacyDecisions(isoCode: string): AdequacyDecision[] {
   return loadCountry(isoCode)?.international_transfer?.adequacy_decisions ?? [];
 }
 
-// Un destino declarado cuenta como bloque UE/EEE si (normalizado, sin espacios,
-// case-insensitive) es exactamente uno de estos códigos cortos, o si contiene
-// "europ" (cubre "Unión Europea", "União Europeia", "European Union", "Europa").
+// Un destino declarado cuenta como bloque UE/EEE solo si, tras trim, hace match
+// EXACTO con un código corto o un nombre completo del bloque (fix post-validación
+// Opus del PR 3A). Se eliminó el "contains europ": destinos compuestos como
+// "US via European DC" o "Europe, US" mencionan Europa sin ser un destino UE/EEE
+// puro y antes suprimían indebidamente el penalizador de transferencia — un falso
+// negativo que falla hacia el lado inseguro. Ante la duda, el motor NO suprime.
 const EU_DESTINATION_SHORT_CODES = /^(eu|ue|eea|eee)$/i;
+const EU_DESTINATION_FULL_NAMES = /^(uni[oó]n europea|uni[aã]o europeia|european union|europa|europe)$/i;
 
 function isEuDestination(destination: string): boolean {
   const normalized = destination.trim();
-  if (EU_DESTINATION_SHORT_CODES.test(normalized)) return true;
-  return /europ/i.test(normalized);
+  return EU_DESTINATION_SHORT_CODES.test(normalized) || EU_DESTINATION_FULL_NAMES.test(normalized);
 }
 
 // Matcher conservador: reconoce menciones del bloque UE/EEE en destination/scope_detail

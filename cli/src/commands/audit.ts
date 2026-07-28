@@ -4,7 +4,7 @@ import { resolve } from "path";
 import chalk from "chalk";
 import { calculateDualScore, type AuditInput, type DataCategory } from "../engine/scorer.js";
 import { classifyText } from "../engine/classifier.js";
-import { COUNTRIES, isStrictRegime, loadStateMatrix, countIntegralStates } from "../engine/rules.js";
+import { COUNTRIES, isStrictRegime, loadStateMatrix, countIntegralStates, normalizeCountries } from "../engine/rules.js";
 import { renderDualScoreBox } from "../ui/box.js";
 
 interface ConfigFile {
@@ -59,6 +59,18 @@ export async function runAuditWizard(options: { config?: boolean; json?: boolean
     }
     configData = JSON.parse(readFileSync(configPath, "utf8")) as ConfigFile;
     console.log(chalk.dim(`\nLeyendo configuración desde legalskills.config.json...\n`));
+
+    // Endurecimiento post-validación (fix): --config con códigos de país
+    // inválidos debe fallar ruidosamente (exit 2), no degradar en silencio a
+    // F_rigor 1.00. El wizard interactivo usa checkbox() y no lo necesita.
+    if (configData.countries) {
+      try {
+        configData.countries = normalizeCountries(configData.countries);
+      } catch (e) {
+        console.error(chalk.red(`❌ ${(e as Error).message}`));
+        process.exit(2);
+      }
+    }
   }
 
   if (!options.config) {

@@ -59,7 +59,7 @@ test("guard T1: BR sin DPO/base legal/plan de brechas activa los 3 penalizadores
   assert.equal(noBreachPlan?.active, true);
 });
 
-test("MOTOR-05: Ecuador sin DPO activa no_dpo y emite exactamente un assumption con Ecuador y T1", () => {
+test("MOTOR-05/fix post-validación: Ecuador sin DPO activa no_dpo y emite un assumption GENÉRICO (deriva de member.basis, no un hardcode 'if EC') con Ecuador, T1 y la fuente ecuador-spdp-2026.md", () => {
   const result = calculateScore({
     projectName: "EC sin DPO",
     countries: ["EC"],
@@ -80,6 +80,7 @@ test("MOTOR-05: Ecuador sin DPO activa no_dpo y emite exactamente un assumption 
   assert.equal(result.assumptions.length, 1);
   assert.ok(result.assumptions[0].includes("Ecuador"));
   assert.ok(result.assumptions[0].includes("T1"));
+  assert.ok(result.assumptions[0].includes("ecuador-spdp-2026.md"));
 });
 
 test("MOTOR-05 guard: EC nunca puede quedar no-estricto y sin assumption", () => {
