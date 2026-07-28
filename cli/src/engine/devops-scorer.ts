@@ -37,6 +37,9 @@ export function getDevopsPenalizers(input: AuditInput): PenalizerResult[] {
     const inverted = def.inverted === true;
     const active = value === undefined ? false : inverted ? value === true : value === false;
 
+    // MOTOR-08 — passthrough fiel: solo se puebla si el JSON lo declara.
+    const standardsRefs = def.standards_refs ?? (def.standards_ref ? [def.standards_ref] : undefined);
+
     return {
       id: def.id,
       label: (def.label as string | undefined) ?? def.description ?? def.id,
@@ -44,6 +47,10 @@ export function getDevopsPenalizers(input: AuditInput): PenalizerResult[] {
       active,
       pillar: "devops",
       description: def.description,
+      legalRefs: def.legal_refs,
+      fixHint: def.fix_hint,
+      configKey: def.config_key,
+      standardsRefs,
     };
   });
 }

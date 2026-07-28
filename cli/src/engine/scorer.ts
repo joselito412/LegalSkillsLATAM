@@ -176,6 +176,9 @@ export function calculateScore(input: AuditInput): ScoreResult {
   if (input.countries.includes("US")) {
     const def = getUsaFederalPenalizer("us_multistate_exposure");
     if (def) {
+      // MOTOR-08 — passthrough fiel: usa-federal.json no declara standards_ref(s)
+      // para este penalizador → standardsRefs queda undefined (nada inventado).
+      const standardsRefs = def.standards_refs ?? (def.standards_ref ? [def.standards_ref] : undefined);
       penalizerResults.push({
         id: def.id,
         label: def.description ?? def.id, // el label sale del JSON, no se inventa
@@ -183,6 +186,10 @@ export function calculateScore(input: AuditInput): ScoreResult {
         active: countIntegralStates(input.usStates) >= 2 && input.usStateLawsMapped !== true,
         pillar: (def.pillar as PenalizerResult["pillar"]) ?? "both",
         description: def.description,
+        legalRefs: def.legal_refs,
+        fixHint: def.fix_hint,
+        configKey: def.config_key,
+        standardsRefs,
       });
     }
   }

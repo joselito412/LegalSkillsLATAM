@@ -191,3 +191,25 @@ test("candado de no-invención: scores y labels del resultado coinciden con devo
     assert.equal(p.label, jsonDef.label);
   }
 });
+
+test("MOTOR-08: do_no_staging_env → standardsRefs/fixHint/configKey/legalRefs coinciden con el JSON", () => {
+  const result = calculateScore(baseCompliantInput({ hasStagingEnv: false }));
+  const p = result.devopsPenalizers.find((x) => x.id === "do_no_staging_env");
+  const jsonDef = devopsJson.penalizers.find((x) => x.id === "do_no_staging_env");
+
+  assert.ok(p);
+  assert.deepEqual(p.standardsRefs, jsonDef.standards_refs);
+  assert.equal(p.fixHint, jsonDef.fix_hint);
+  assert.equal(p.configKey, jsonDef.config_key);
+  assert.deepEqual(p.legalRefs, jsonDef.legal_refs);
+});
+
+test("MOTOR-08: do_no_ci_risk_gate → legalRefs === [] (passthrough fiel, el JSON declara legal_refs: [])", () => {
+  const result = calculateScore(baseCompliantInput({ hasCiRiskGate: false }));
+  const p = result.devopsPenalizers.find((x) => x.id === "do_no_ci_risk_gate");
+  const jsonDef = devopsJson.penalizers.find((x) => x.id === "do_no_ci_risk_gate");
+
+  assert.ok(p);
+  assert.deepEqual(jsonDef.legal_refs, []);
+  assert.deepEqual(p.legalRefs, []);
+});

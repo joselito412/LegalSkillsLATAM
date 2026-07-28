@@ -65,6 +65,8 @@ export function getBackendPenalizers(input: AuditInput, isStrict: boolean): Pena
   if (input.countries.includes("US")) {
     const def = getUsaFederalPenalizer("us_multistate_exposure");
     if (def) {
+      // MOTOR-08 — passthrough fiel (ver mismo cableado en scorer.ts).
+      const standardsRefs = def.standards_refs ?? (def.standards_ref ? [def.standards_ref] : undefined);
       result.push({
         id: def.id,
         label: def.description ?? def.id,
@@ -72,6 +74,10 @@ export function getBackendPenalizers(input: AuditInput, isStrict: boolean): Pena
         active: countIntegralStates(input.usStates) >= 2 && input.usStateLawsMapped !== true,
         pillar: (def.pillar as PenalizerResult["pillar"]) ?? "both",
         description: def.description,
+        legalRefs: def.legal_refs,
+        fixHint: def.fix_hint,
+        configKey: def.config_key,
+        standardsRefs,
       });
     }
   }

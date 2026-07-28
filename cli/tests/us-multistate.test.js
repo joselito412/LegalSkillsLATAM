@@ -74,3 +74,18 @@ test("proyecto sin US → el penalizador no aparece en la lista", () => {
 test("loadCountry('US') !== null", () => {
   assert.notEqual(loadCountry("US"), null);
 });
+
+test("MOTOR-08: us_multistate_exposure → sin standardsRefs/legalRefs/fixHint/configKey (el JSON no los declara)", () => {
+  const result = calculateScore(
+    baseCompliantInput({ countries: ["US"], usStates: ["CA", "VA"], usStateLawsMapped: false })
+  );
+  const p = result.penalizers.find((x) => x.id === "us_multistate_exposure");
+
+  assert.ok(p);
+  assert.equal(jsonDef.standards_ref, undefined);
+  assert.equal(jsonDef.standards_refs, undefined);
+  assert.equal(p.standardsRefs, undefined);
+  assert.equal(p.legalRefs, undefined);
+  assert.equal(p.fixHint, undefined);
+  assert.equal(p.configKey, undefined);
+});
