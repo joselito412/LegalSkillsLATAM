@@ -11,6 +11,7 @@ import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { calculateScore } from "../dist/engine/scorer.js";
+import { getBackendPenalizers } from "../dist/engine/backend-scorer.js";
 import { loadCountry } from "../dist/engine/rules.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -88,4 +89,19 @@ test("MOTOR-08: us_multistate_exposure → sin standardsRefs/legalRefs/fixHint/c
   assert.equal(p.legalRefs, undefined);
   assert.equal(p.fixHint, undefined);
   assert.equal(p.configKey, undefined);
+});
+
+test("O-4: candado de ruta única — el objeto us_multistate_exposure de calculateScore() y de getBackendPenalizers() es deep-equal", () => {
+  const input = baseCompliantInput({
+    countries: ["US"],
+    usStates: ["CA", "VA"],
+    usStateLawsMapped: false,
+  });
+
+  const fromScorer = calculateScore(input).penalizers.find((x) => x.id === "us_multistate_exposure");
+  const fromBackend = getBackendPenalizers(input, false).find((x) => x.id === "us_multistate_exposure");
+
+  assert.ok(fromScorer);
+  assert.ok(fromBackend);
+  assert.deepEqual(fromScorer, fromBackend);
 });

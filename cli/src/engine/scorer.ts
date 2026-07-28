@@ -3,13 +3,12 @@ import {
   resolveStrictRegime,
   resolveRigorFactor,
   transferDestinationsCovered,
-  getUsaFederalPenalizer,
-  countIntegralStates,
   loadDevopsPenalizers,
 } from "./rules.js";
 import { getFrontendPenalizers } from "./frontend-scorer.js";
 import { getBackendPenalizers } from "./backend-scorer.js";
 import { getDevopsPenalizers } from "./devops-scorer.js";
+import { buildUsMultistatePenalizer } from "./us-scorer.js";
 
 export type DataCategory = "public" | "personal_general" | "sensitive";
 
@@ -169,30 +168,11 @@ export function calculateScore(input: AuditInput): ScoreResult {
     },
   ];
 
-  // MOTOR-03 — cableado de us_multistate_exposure: la definición (score, description,
-  // pillar) vive SOLO en usa-federal.json, el motor no la duplica. La llave
-  // `us_state_laws_mapped` es wiring del motor (el JSON no declara config_key para
-  // este penalizador), pendiente de bendición editorial.
-  if (input.countries.includes("US")) {
-    const def = getUsaFederalPenalizer("us_multistate_exposure");
-    if (def) {
-      // MOTOR-08 — passthrough fiel: usa-federal.json no declara standards_ref(s)
-      // para este penalizador → standardsRefs queda undefined (nada inventado).
-      const standardsRefs = def.standards_refs ?? (def.standards_ref ? [def.standards_ref] : undefined);
-      penalizerResults.push({
-        id: def.id,
-        label: def.description ?? def.id, // el label sale del JSON, no se inventa
-        score: def.score,
-        active: countIntegralStates(input.usStates) >= 2 && input.usStateLawsMapped !== true,
-        pillar: (def.pillar as PenalizerResult["pillar"]) ?? "both",
-        description: def.description,
-        legalRefs: def.legal_refs,
-        fixHint: def.fix_hint,
-        configKey: def.config_key,
-        standardsRefs,
-      });
-    }
-  }
+  // MOTOR-03/O-4 — cableado de us_multistate_exposure: ruta única compartida con
+  // backend-scorer.ts (ver us-scorer.ts). Fail-loud si usa-federal.json no está
+  // disponible (obs. O-2).
+  const usMultistatePenalizer = buildUsMultistatePenalizer(input);
+  if (usMultistatePenalizer) penalizerResults.push(usMultistatePenalizer);
 
   const activePenalizers = penalizerResults.filter((p) => p.active);
   const penalizersSum = activePenalizers.reduce((sum, p) => sum + p.score, 0);

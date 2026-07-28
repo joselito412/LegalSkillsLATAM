@@ -1,5 +1,6 @@
 import type { AuditInput, PenalizerResult } from "./scorer.js";
-import { transferDestinationsCovered, getUsaFederalPenalizer, countIntegralStates } from "./rules.js";
+import { transferDestinationsCovered } from "./rules.js";
+import { buildUsMultistatePenalizer } from "./us-scorer.js";
 
 /**
  * Returns the Backend penalizers (pillar: "backend" | "both") for an audit input.
@@ -58,29 +59,12 @@ export function getBackendPenalizers(input: AuditInput, isStrict: boolean): Pena
     },
   ];
 
-  // MOTOR-03 — mismo cableado que calculateScore(): la definición vive SOLO en
-  // usa-federal.json. Pilar "both" se muestra completo en el panel BE
-  // (consistente con no_arco_backend): el split FE/BE no se inventa aquí — el
-  // mapeo normativo multi-estatal es trabajo de backend/legal-ops.
-  if (input.countries.includes("US")) {
-    const def = getUsaFederalPenalizer("us_multistate_exposure");
-    if (def) {
-      // MOTOR-08 — passthrough fiel (ver mismo cableado en scorer.ts).
-      const standardsRefs = def.standards_refs ?? (def.standards_ref ? [def.standards_ref] : undefined);
-      result.push({
-        id: def.id,
-        label: def.description ?? def.id,
-        score: def.score,
-        active: countIntegralStates(input.usStates) >= 2 && input.usStateLawsMapped !== true,
-        pillar: (def.pillar as PenalizerResult["pillar"]) ?? "both",
-        description: def.description,
-        legalRefs: def.legal_refs,
-        fixHint: def.fix_hint,
-        configKey: def.config_key,
-        standardsRefs,
-      });
-    }
-  }
+  // MOTOR-03/O-4 — ruta única compartida con scorer.ts (ver us-scorer.ts). Pilar
+  // "both" se muestra completo en el panel BE (consistente con no_arco_backend):
+  // el split FE/BE no se inventa aquí — el mapeo normativo multi-estatal es
+  // trabajo de backend/legal-ops.
+  const usMultistatePenalizer = buildUsMultistatePenalizer(input);
+  if (usMultistatePenalizer) result.push(usMultistatePenalizer);
 
   return result;
 }
