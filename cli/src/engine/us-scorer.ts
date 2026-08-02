@@ -37,5 +37,9 @@ export function buildUsMultistatePenalizer(input: AuditInput): PenalizerResult |
     fixHint: def.fix_hint,
     configKey: def.config_key,
     standardsRefs,
+    // CONTRATO-01 (paso 1) — passthrough fiel: usa-federal.json no declara
+    // topic para us_multistate_exposure, así que queda undefined. Es un vacío
+    // editorial ya trackeado (AUD-01) — el motor no lo rellena.
+    topic: def.topic,
   };
 }

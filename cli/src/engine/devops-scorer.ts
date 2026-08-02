@@ -51,6 +51,10 @@ export function getDevopsPenalizers(input: AuditInput): PenalizerResult[] {
       fixHint: def.fix_hint,
       configKey: def.config_key,
       standardsRefs,
+      // CONTRATO-01 (paso 1) — passthrough fiel: solo se puebla si el JSON lo
+      // declara. devops-penalizers.json declara topic: "devops" en sus 7
+      // penalizadores; si algún día no lo declarara, queda undefined.
+      topic: def.topic,
     };
   });
 }

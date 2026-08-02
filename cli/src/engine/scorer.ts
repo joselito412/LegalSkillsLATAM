@@ -53,6 +53,11 @@ export interface PenalizerResult {
   fixHint?: string;
   configKey?: string;
   standardsRefs?: string[];
+  /** Passthrough fiel del `topic` declarado en el JSON de reglas (CONTRATO-01,
+   *  paso 1). Se deja como `string` a propósito: el enum cerrado de 12 valores
+   *  (architecture/AGENT-CONTRACT-V1.1-DESIGN.md §D3) se tipa en el
+   *  serializador del contrato (paso 4), no aquí. */
+  topic?: string;
 }
 
 export interface DualScoreResult extends ScoreResult {

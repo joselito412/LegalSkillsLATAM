@@ -91,6 +91,17 @@ test("MOTOR-08: us_multistate_exposure → sin standardsRefs/legalRefs/fixHint/c
   assert.equal(p.configKey, undefined);
 });
 
+test("CONTRATO-01 (paso 1): us_multistate_exposure → topic undefined (usa-federal.json no lo declara, el motor no lo inventa)", () => {
+  const result = calculateScore(
+    baseCompliantInput({ countries: ["US"], usStates: ["CA", "VA"], usStateLawsMapped: false })
+  );
+  const p = result.penalizers.find((x) => x.id === "us_multistate_exposure");
+
+  assert.ok(p);
+  assert.equal(jsonDef.topic, undefined);
+  assert.equal(p.topic, undefined);
+});
+
 test("O-4: candado de ruta única — el objeto us_multistate_exposure de calculateScore() y de getBackendPenalizers() es deep-equal", () => {
   const input = baseCompliantInput({
     countries: ["US"],

@@ -220,3 +220,25 @@ test("score nunca supera 100", () => {
   assert.ok(result.finalScore <= 100);
   assert.equal(result.finalScore, 100);
 });
+
+test("CONTRATO-01 (paso 1): no_granular_consent (hardcodeado) → topic undefined por ahora", () => {
+  // Los pasos 2-3 de CONTRATO-01 (colapsar la duplicación y cablear scorer.ts
+  // a score-formula.json.penalizers) son los que poblarán topic para los 9
+  // penalizadores clásicos hardcodeados. Hasta entonces, topic queda undefined
+  // — no se inventa un valor.
+  const result = calculateScore({
+    projectName: "Test",
+    countries: ["CO"],
+    dataCategory: "sensitive",
+    hasMinors: false,
+    hasGranularConsent: false,
+    serverRegion: "inadequate",
+    thirdPartyTransfers: true,
+    hasPrivacyPolicy: false,
+    hasArcoProcedure: false,
+  });
+
+  const p = result.penalizers.find((x) => x.id === "no_granular_consent");
+  assert.ok(p);
+  assert.equal(p.topic, undefined);
+});

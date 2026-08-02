@@ -77,6 +77,7 @@ export interface RulePenalizer {
   config_key?: string;
   standards_ref?: string;
   standards_refs?: string[];
+  topic?: string;
   [key: string]: unknown;
 }
 

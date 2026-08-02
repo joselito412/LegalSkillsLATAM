@@ -213,3 +213,25 @@ test("MOTOR-08: do_no_ci_risk_gate → legalRefs === [] (passthrough fiel, el JS
   assert.deepEqual(jsonDef.legal_refs, []);
   assert.deepEqual(p.legalRefs, []);
 });
+
+test("CONTRATO-01 (paso 1): los 7 penalizadores DevOps traen topic === 'devops', igual que el JSON", () => {
+  const result = calculateScore(
+    baseCompliantInput({
+      hasStagingEnv: false,
+      usesProdDataOutsideProd: true,
+      hasSecretsManager: false,
+      logsContainPii: true,
+      hasDependencyScanning: false,
+      hasTestedBackups: false,
+      hasCiRiskGate: false,
+    })
+  );
+
+  assert.equal(devopsJson.penalizers.length, 7);
+  for (const jsonDef of devopsJson.penalizers) {
+    const p = result.devopsPenalizers.find((x) => x.id === jsonDef.id);
+    assert.ok(p, `falta el penalizador ${jsonDef.id} en el resultado`);
+    assert.equal(p.topic, jsonDef.topic, `topic no coincide para ${jsonDef.id}`);
+    assert.equal(p.topic, "devops");
+  }
+});
