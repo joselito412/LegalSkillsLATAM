@@ -62,6 +62,11 @@
 - [ ] **MOTOR-09**: Normalizar `countries` dentro del motor, no solo en la capa de comandos *(origen: auditoría Fase 3, 2026-07-28)*
   - `calculateScore()` y `calculateDualScore()` nunca llaman `normalizeCountries()`: el único call-site vive en `cli/src/commands/audit.ts` (rama `--config`). Un consumidor que pase `["br"]` en minúsculas obtiene **F_rigor 1.00 en vez de 1.15** y pierde el régimen estricto — subreporte silencioso de riesgo. Hoy es **inalcanzable** porque el wizard y `--config` son los dos únicos puntos de entrada y ambos normalizan antes; **DOCTOR-01 abre un tercero** y lo vuelve alcanzable. Asimetría a resolver: `countIntegralStates()` **sí** normaliza internamente (por eso `['ca','va']` → 1.12 pasa), así que hoy los estados y los países se comportan distinto ante la misma entrada.
   - Criterios: `calculateScore({countries:["br"]})` y `calculateScore({countries:["BR"]})` producen F_rigor y `isStrictRegime` idénticos (test) · la normalización ocurre en un solo lugar del motor, no duplicada por call-site (grep) · un código de país inválido sigue fallando ruidosamente con el mismo criterio que hoy usa `--config` (exit 2), sin degradar a 1.00 · test de paridad países/estados que falle si una de las dos rutas deja de normalizar.
+- [ ] **MOTOR-10**: Decidir el destino de los 60 penalizadores por jurisdicción que el motor no consume *(origen: re-verificación ciega, 2026-08-03 — el hallazgo de mayor alcance del milestone)*
+  - **Medido:** los JSON de reglas declaran **68 penalizadores** y el motor consume **8** — los 7 de `devops-penalizers.json` y `us_multistate_exposure` de `usa-federal.json`. Los **60 restantes nunca influyen en ningún score**: `gdpr.json` (8), `brasil.json` (7), `colombia.json` (8), `mexico.json` (7), `chile.json` (6), los otros 7 de `usa-federal.json`, `fe-penalizers.json` (5) y `be-penalizers.json` (6). *(Ojo: los 6 de `score-formula.json` tampoco están cableados — sus ids coinciden con literales escritos en TypeScript, pero el bloque `penalizers` del JSON no se lee. Verificarlo por coincidencia de ids da un falso positivo.)*
+  - **Consecuencia observable:** el score de un proyecto es hoy **casi ciego a la jurisdicción**. Lo único que varía por país es `F_rigor`, la pertenencia a `strict_regimes` (3 penalizadores), la supresión de transferencias por adecuación y el penalizador multi-estatal de USA. Dos proyectos idénticos en Colombia y en la UE reciben los mismos hallazgos, con distinto multiplicador. Es la brecha más grande entre lo que el repo promete (cobertura UE · USA · LATAM con sustancia por jurisdicción) y lo que el motor calcula.
+  - **Por qué es un ticket propio y NO parte de CONTRATO-01:** cablear 60 penalizadores **cambiaría los scores de forma masiva** — es una decisión de producto con impacto numérico, no una tarea de contrato. CONTRATO-01 solo debe heredar `legal_refs` para los penalizadores que el motor **ya** emite.
+  - Criterios: decisión documentada (ADR) sobre si los penalizadores por país entran al motor, se marcan como catálogo editorial no-ejecutable, o se fusionan con los genéricos · si entran, análisis de impacto sobre los fixtures **antes** de cablear, con bump de `schema_version` si cambia la escala · si no entran, los JSON lo declaran explícitamente (p. ej. `scoring_treatment.generates_penalizer: false`, como ya hace `colombia.json` en `adjacent_regimes`) para que nadie los lea como activos · `docs/` y README dejan de sugerir cobertura por jurisdicción que el motor no ejerce.
 
 ### CONTRATO — Contrato JSON v1.1 (CLI ↔ LLM)
 
@@ -246,6 +251,7 @@
 | CONTRATO-04 | Phase 4 | Pending |
 | CONTRATO-05 | Phase 4 | Pending |
 | MOTOR-09 | Phase 4 | Pending — abierto por la auditoría Fase 3 |
+| MOTOR-10 | Phase 4 | Pending — abierto por la re-verificación del 2026-08-03 (decisión de producto, precede a SKILL-03/06) |
 | DOCTOR-01 | Phase 5 | Pending |
 | DOCTOR-02 | Phase 5 | Pending |
 | DOCTOR-03 | Phase 5 | Pending |
@@ -276,12 +282,12 @@
 | REL-04 | Phase 8 | Pending |
 
 **Coverage:**
-- v1 requirements: **54 total** (50 iniciales + 4 abiertos por la auditoría de la Fase 3: MOTOR-09, QA-09, QA-10, QA-11)
-- Mapped to phases: 54
+- v1 requirements: **55 total** (50 iniciales + 4 abiertos por la auditoría de la Fase 3 —MOTOR-09, QA-09, QA-10, QA-11— y 1 por la re-verificación del 2026-08-03: MOTOR-10)
+- Mapped to phases: 55
 - Unmapped: 0
-- Completos: **20** (Fases 1–3) · Pendientes: **34** (Fases 4–8)
+- Completos: **20** (Fases 1–3) · Pendientes: **35** (Fases 4–8)
 
-Por fase: Phase 1 → 8/8 · Phase 2 → 4/4 · Phase 3 → 8/8 (incluye MOTOR-08, adelantado desde la Phase 4) · Phase 4 → 0/6 · Phase 5 → 0/11 · Phase 6 → 0/10 · Phase 7 → 0/5 · Phase 8 → 0/2.
+Por fase: Phase 1 → 8/8 · Phase 2 → 4/4 · Phase 3 → 8/8 (incluye MOTOR-08, adelantado desde la Phase 4) · Phase 4 → 0/7 · Phase 5 → 0/11 · Phase 6 → 0/10 · Phase 7 → 0/5 · Phase 8 → 0/2.
 
 ---
 *Requirements defined: 2026-07-23*
