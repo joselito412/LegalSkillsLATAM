@@ -81,26 +81,36 @@ Ampliar un enum es aditivo. La única condición es que `SKILL.md` (Fase 6) cono
 
 | Medición | Resultado |
 |---|---|
-| Combinaciones que cambian de nivel de riesgo | **36,14 %** |
-| Dirección de esos cambios | **100 % alto → medio**; cero en sentido contrario |
-| Delta máximo | **50 puntos** |
-| Causa estructural del delta máximo | `c_base` = 80 (`sensitive`) satura `be_score` en 50 **sin un solo penalizador activo** |
+| Combinaciones que cambian de nivel de riesgo | **~35 %** — 34,58 % en un barrido de 86.016 combinaciones y 36,14 % en otro de 217.728. La cifra exacta depende del espacio que se enumere; lo robusto es el orden de magnitud |
+| Dirección de esos cambios | **100 % alto → medio** en ambos barridos; cero en sentido contrario |
+| Delta máximo | **50 puntos** (coincide en ambos barridos) |
+| Causa estructural del delta máximo | El pilar **BE carga `c_base` + sus penalizadores + *todo* el sub-panel DevOps**, así que satura en 50 mucho antes que FE, cuyos 4 penalizadores suman 45 como máximo. **No es exclusivo de `sensitive`:** se reprodujo con `personal_general` (CO, c_base 40 + 35 de penalizadores BE + 25 de DevOps → `be_raw` 100 → `be_score` 50, mientras el pool plano da 100). Con `sensitive` basta el propio `c_base` = 80 para saturar, pero es un caso particular, no la causa |
 | Caso límite verificado | UE + dato sensible + **cumplimiento total** → vivo **100** (alto, escala a abogado) vs. ADR **50** (medio, no escala) |
-| ¿El ADR siempre da ≤ que el pool plano? | **No.** En 0,32 % de los casos da **+1** por redondeo independiente; magnitud siempre 1, ningún cambio de nivel |
+| ¿El ADR siempre da ≤ que el pool plano? | **No.** En 0,3–1,2 % de los casos (según el espacio enumerado) da **+1** por redondeo independiente de `fe_raw` y `be_raw`; magnitud siempre exactamente 1, ningún cambio de nivel |
+
+> **Nota de método.** Los dos barridos usan las funciones reales compiladas (`calculateScore` para la fórmula viva, `calculateFrontendScore`/`calculateBackendScore` para la del ADR), no reimplementaciones. Los porcentajes son estimaciones sobre enumeraciones arbitrarias del espacio de inputs y **no deben citarse con precisión de dos decimales** como si fueran una propiedad del motor: lo que sí es robusto y se reprodujo de forma independiente es la dirección (siempre alto → medio), el delta máximo (50) y la existencia del contraejemplo de +1.
 
 Cablear la fórmula del ADR haría al motor **estrictamente menos sensible al riesgo**, y la pérdida recae de forma desproporcionada sobre `sensitive`, la categoría de mayor riesgo. Peor aún: esos casos son sensibles **sin** menores, así que pierden el gate por score sin activar el gate alterno — quedan sin ningún disparador de revisión humana.
 
 Para una herramienta de riesgo legal, esa dirección es inaceptable sin una decisión editorial explícita que la asuma. **Se recomienda que CONTRATO-03 corrija `ADR-001` para que documente la fórmula viva**, dejando constancia de que la variante capada por pilar se evaluó y se descartó con estos números.
 
-**Si el equipo decidiera lo contrario**, `escalation_required` debe rediseñarse en el mismo cambio con un gate explícito por categoría de dato. No es negociable: sin él, el 36 % de casos que dejan de escalar se quedan sin ninguna vía de revisión humana.
+**Si el equipo decidiera lo contrario**, `escalation_required` debe rediseñarse en el mismo cambio con un gate explícito por categoría de dato. No es negociable: sin él, ese ~35 % de casos que dejan de escalar se queda sin ninguna vía de revisión humana.
 
 **Destino de las funciones muertas.** `calculateFrontendScore` y `calculateBackendScore` están tipadas para recibir exactamente lo que necesitarían y no las llama nadie: son código «a punto de ser cableado por accidente» por cualquier PR futuro que note la pieza faltante. CONTRATO-03 debe fijar su destino — borrarlas, o marcarlas como solo-diagnóstico con un comentario que remita a este documento.
 
 ### D8 — Colapsar la duplicación antes de añadirle campos
 
-**Decisión.** Los 9 penalizadores del grupo clásico están hardcodeados **dos veces** —en `scorer.ts` y otra vez en `frontend-scorer.ts`/`backend-scorer.ts`— y sus labels **ya divergieron** (`unstructured_international_transfer` y `no_breach_plan` tienen textos distintos en cada copia, con el mismo id y score). CONTRATO-01 colapsa esas dos copias a una sola fuente **antes** de añadirles los campos del contrato.
+**Decisión.** CONTRATO-01 colapsa la duplicación a una sola fuente **antes** de añadir los campos del contrato.
 
-**Por qué.** Es el mismo patrón que produjo el bug T1: dos sitios que divergen en silencio. Añadir `legal_refs`, `fix_hint` y `topic` a dos copias duplica el problema en vez de resolverlo, y multiplica por dos la superficie donde un futuro cambio puede desincronizarse.
+**El detalle importa, y la primera medición lo simplificó de más.** Verificado campo a campo entre `scorer.ts` y `frontend-scorer.ts`/`backend-scorer.ts`:
+
+- **7 ids están duplicados literalmente** (mismo id, mismo score, en ambos sitios): `no_granular_consent`, `no_privacy_policy`, `non_adequate_servers`, `unstructured_international_transfer`, `no_dpo`, `no_legal_basis`, `no_breach_plan`.
+- **De esos 7, dos ya tienen labels divergentes:** `no_breach_plan` («Sin plan de respuesta a brechas de seguridad» vs. «…a brechas (LGPD/GDPR)») y `unstructured_international_transfer` («…sin cláusulas contractuales» vs. «…sin DPA / cláusulas contractuales»).
+- **2 ids NO están duplicados sino descompuestos:** `minors_data` (30) existe solo en `scorer.ts` y en los scorers de pilar aparece como `minors_data_fe` (15) + `minors_data_be` (15); igual `no_arco_procedure` (10) → `no_arco_ui` (5) + `no_arco_backend` (5).
+
+**Consecuencia para la implementación.** No es un *dedupe* mecánico. Los 7 duplicados sí se colapsan a una definición única; los 2 descompuestos **deben conservar su descomposición**, porque el desglose por pilar es deliberado: el control de menores en la UI (flujo de consentimiento parental) y en el backend (restricciones técnicas) son remediaciones distintas con dueños distintos. Colapsarlos a uno solo perdería información que el render por pilar necesita.
+
+**Por qué hacerlo antes.** Es el mismo patrón que produjo el bug T1: dos sitios que divergen en silencio, y aquí ya divergieron. Añadir `legal_refs`, `fix_hint` y `topic` a dos copias duplica el problema en vez de resolverlo.
 
 ### D9 — `config_key` no siempre existe, y el contrato debe admitirlo
 
