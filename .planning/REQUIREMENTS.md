@@ -72,6 +72,14 @@
 
 - [ ] **CONTRATO-01**: Contrato v1.1 en `audit --json`: findings con fix_hint, config_key, evidence_needed, legal_refs
   - Criterios: output valida contra el JSON Schema del contrato commiteado · legal_refs provienen textualmente de `cli/rules/` (test) · `escalation_required=true` con score ≥71 o sensibles+menores · consumidores del --json v0.2 no se rompen (aditivo).
+  - **🔄 En curso — 3 de los 4 pasos previos hechos** (orden en `architecture/AGENT-CONTRACT-V1.1-DESIGN.md` §2):
+    - ✅ *Paso 1* (`ee0d2c7`): passthrough de `topic` desde los JSON. Los 7 de DevOps lo traen; `us_multistate_exposure` queda `undefined` porque su JSON no lo declara.
+    - ✅ *Paso 2* (`45f6ee3`): una sola definición por penalizador en `cli/src/engine/penalizer-catalog.ts`. Cierra la duplicación de 7 ids (2 con labels ya divergentes, unificados hacia la versión más específica) conservando la descomposición deliberada de `minors_data` y `no_arco_procedure`.
+    - ✅ *Paso 3* (`91e3834`): los 6 penalizadores declarados en `score-formula.json` heredan sus `legal_refs`; los 4 descompuestos las toman del concepto padre (ver §D4.1). Los 3 de régimen estricto siguen sin refs porque no existen en ningún JSON.
+    - ✅ *Endurecimiento* (`45c8951`): tras la verificación adversarial, el candado de fuente única compara también `active` —el campo que corrompió el bug T1, que antes pasaba en verde con un predicado invertido—, se añade un candado de coherencia entre los `score` del JSON y los del motor, y `legalRefs`/`standardsRefs` se entregan como copia defensiva para que un `push` de un consumidor no inyecte una referencia fabricada en la caché de reglas del proceso.
+    - ⬜ *Paso 4 (pendiente, el grueso):* serializador del contrato, `schema_version`, `findings[]` y el **JSON Schema nuevo** — no existe ninguno hoy, se autora desde cero.
+  - **Alcance acotado por MOTOR-10:** este ticket solo hereda `legal_refs` para los penalizadores que el motor **ya emite**. Los 60 declarados en las reglas y no consumidos son decisión de producto, no de contrato.
+  - **Deriva de labels a saldar en la Fase 6 (SKILL-06):** `45f6ee3` unificó dos labels y quedaron **3 referencias vivas al texto retirado** — `skills/risk-score/SKILL.md:66`, `skills/audit/SKILL.md:160` y `prompts/auditor-privacidad.md:66`. Las tablas de las skills citan textos que el motor ya no emite, lo que contradice «la CLI es la única implementación; las skills solo interpretan».
 - [ ] **CONTRATO-02**: Campos aditivos `jurisdictions[]` y `recipe_ref` en el finding (v1.1)
   - Criterios: finding USA multiestatal lista estados en `jurisdictions[]` · `recipe_ref` nullable en el schema (gancho de la Fase AP v0.5) · `schema_version` = 1.1.
 - [ ] **CONTRATO-03**: Consolidar `AGENT-CONTRACT.md` a v1.1 como fuente única del contrato

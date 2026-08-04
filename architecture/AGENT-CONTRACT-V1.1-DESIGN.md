@@ -61,6 +61,14 @@ Ampliar un enum es aditivo. La única condición es que `SKILL.md` (Fase 6) cono
 - *Pista código (esta fase):* cablear `scorer.ts` a `score-formula.json.penalizers` para los **6** penalizadores clásicos que ya tienen sus `legal_refs` ahí. Es estructura, no sustancia — permitido.
 - *Pista editorial (Cowork, backlog AUD):* los penalizadores que no tienen refs en ningún JSON, empezando por los tres de régimen estricto (`no_dpo`, `no_legal_basis`, `no_breach_plan`) y `us_multistate_exposure`.
 
+**D4.1 — Los 4 ids descompuestos heredan las `legal_refs` de su concepto padre.** `minors_data_fe` y `minors_data_be` heredan de `minors_data`; `no_arco_ui` y `no_arco_backend`, de `no_arco_procedure`. Ninguno de los cuatro está declarado en un JSON, así que la herencia se decide en código mediante un mapa explícito (`DECOMPOSED_LEGAL_REFS_PARENT` en `penalizer-catalog.ts`).
+
+*Por qué no es inventar sustancia, que es la pregunta legítima:* la descomposición 30 → 15 + 15 y 10 → 5 + 5 es **estructural, no sustantiva**. Son la misma obligación legal vista desde dos ángulos de implementación — el consentimiento parental en la UI y las restricciones técnicas en el backend responden ambos al mismo artículo. Atribuir a cada mitad las referencias de su obligación no añade una norma que el equipo editorial no haya escrito; omitirlas dejaría dos hallazgos sin fundamento jurídico visible pese a existir en el JSON. Es distinto del caso de `no_dpo`, donde **ninguna** norma está declarada en parte alguna y por eso queda vacío.
+
+*Constancia:* esta es una decisión de arquitectura, no del implementador. Si el equipo editorial prefiere declarar los cuatro ids por separado en un JSON con sus propias referencias, el mapa desaparece y la herencia se vuelve innecesaria.
+
+**D4.2 — Estado interino hasta el paso 4.** Hoy los penalizadores sin refs emiten `legalRefs: undefined`, lo que hace que **el campo desaparezca del JSON** — exactamente el vacío invisible que esta decisión prohíbe. Es un interino aceptable solo porque `refs_status` llega en el paso 4 del orden de ejecución; cuando llegue, el candado anti-invención que hoy asserta `undefined` debe reescribirse para asertar `refs_status: "pending_editorial"`. Queda anotado aquí para que no se descubra entonces.
+
 ### D5 — `escalation_required` se computa en el motor, con sus insumos expuestos
 
 **Decisión.** El motor computa `escalation_required` y `escalation_reason`, y expone además `data_category` y `has_minors` en el contrato.
