@@ -13,7 +13,16 @@
 
 import { test } from "node:test";
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
+import { dirname, join } from "node:path";
 import { calculateDualScore } from "../dist/engine/scorer.js";
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const formulaJson = JSON.parse(
+  readFileSync(join(__dirname, "../rules/risk-engine/score-formula.json"), "utf8")
+);
+const formulaPenalizersById = new Map(formulaJson.penalizers.map((p) => [p.id, p]));
 
 function testInput(overrides) {
   return {
@@ -91,5 +100,70 @@ test("CONTRATO-01 (paso 2): las 4 variantes descompuestas son EXCLUSIVAS de las 
       undefined,
       `${id}: no debería estar en la lista combinada (result.penalizers)`
     );
+  }
+});
+
+// ─── CONTRATO-01, paso 3 (§D4, pista código): legal_refs heredadas de ──────
+// score-formula.json.penalizers ──────────────────────────────────────────
+
+// Los 6 ids que score-formula.json.penalizers declara con legal_refs.
+const FORMULA_SOURCED_IDS = [
+  "no_granular_consent",
+  "minors_data",
+  "non_adequate_servers",
+  "unstructured_international_transfer",
+  "no_privacy_policy",
+  "no_arco_procedure",
+];
+
+test("CONTRATO-01 (paso 3): candado de passthrough fiel — legalRefs de los 6 ids clásicos es deep-equal a score-formula.json.penalizers[].legal_refs (leído directo con readFileSync, mismo patrón que MOTOR-08)", () => {
+  const result = calculateDualScore(testInput());
+
+  for (const id of FORMULA_SOURCED_IDS) {
+    const penalizer = result.penalizers.find((p) => p.id === id);
+    assert.ok(penalizer, `${id}: ausente en result.penalizers`);
+
+    const expected = formulaPenalizersById.get(id)?.legal_refs;
+    assert.ok(expected, `${id}: score-formula.json no declara legal_refs — fixture del test desactualizado`);
+
+    assert.deepEqual(penalizer.legalRefs, expected, `${id}: legalRefs no es deep-equal a score-formula.json`);
+  }
+});
+
+test("CONTRATO-01 (paso 3): los 4 ids descompuestos heredan legalRefs de su concepto padre (mapeo explícito: minors_data_fe/be ← minors_data, no_arco_ui/backend ← no_arco_procedure)", () => {
+  const result = calculateDualScore(testInput());
+
+  const minorsData = result.penalizers.find((p) => p.id === "minors_data");
+  const noArcoProcedure = result.penalizers.find((p) => p.id === "no_arco_procedure");
+  const minorsDataFe = result.fePenalizers.find((p) => p.id === "minors_data_fe");
+  const minorsDataBe = result.bePenalizers.find((p) => p.id === "minors_data_be");
+  const noArcoUi = result.fePenalizers.find((p) => p.id === "no_arco_ui");
+  const noArcoBackend = result.bePenalizers.find((p) => p.id === "no_arco_backend");
+
+  assert.ok(minorsData?.legalRefs, "minors_data debe traer legalRefs (es el padre)");
+  assert.ok(noArcoProcedure?.legalRefs, "no_arco_procedure debe traer legalRefs (es el padre)");
+
+  assert.deepEqual(minorsDataFe.legalRefs, minorsData.legalRefs, "minors_data_fe debe heredar legalRefs de minors_data");
+  assert.deepEqual(minorsDataBe.legalRefs, minorsData.legalRefs, "minors_data_be debe heredar legalRefs de minors_data");
+  assert.deepEqual(noArcoUi.legalRefs, noArcoProcedure.legalRefs, "no_arco_ui debe heredar legalRefs de no_arco_procedure");
+  assert.deepEqual(
+    noArcoBackend.legalRefs,
+    noArcoProcedure.legalRefs,
+    "no_arco_backend debe heredar legalRefs de no_arco_procedure"
+  );
+});
+
+test("CONTRATO-01 (paso 3): candado anti-invención — no_dpo, no_legal_basis y no_breach_plan no existen en ningún JSON de reglas, así que legalRefs es undefined (nunca fabricado)", () => {
+  const result = calculateDualScore(testInput());
+
+  for (const id of ["no_dpo", "no_legal_basis", "no_breach_plan"]) {
+    const combined = result.penalizers.find((p) => p.id === id);
+    const backend = result.bePenalizers.find((p) => p.id === id);
+
+    assert.ok(combined, `${id}: ausente en result.penalizers`);
+    assert.ok(backend, `${id}: ausente en result.bePenalizers`);
+
+    assert.equal(combined.legalRefs, undefined, `${id}: legalRefs debe ser undefined en la lista combinada`);
+    assert.equal(backend.legalRefs, undefined, `${id}: legalRefs debe ser undefined en bePenalizers`);
   }
 });
