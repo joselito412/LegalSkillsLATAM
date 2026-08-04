@@ -2,13 +2,13 @@ import {
   loadFormula,
   resolveStrictRegime,
   resolveRigorFactor,
-  transferDestinationsCovered,
   loadDevopsPenalizers,
 } from "./rules.js";
 import { getFrontendPenalizers } from "./frontend-scorer.js";
 import { getBackendPenalizers } from "./backend-scorer.js";
 import { getDevopsPenalizers } from "./devops-scorer.js";
 import { buildUsMultistatePenalizer } from "./us-scorer.js";
+import { resolveCatalogPenalizers } from "./penalizer-catalog.js";
 
 export type DataCategory = "public" | "personal_general" | "sensitive";
 
@@ -106,72 +106,24 @@ export function calculateScore(input: AuditInput): ScoreResult {
   // C_base
   const cBase = formula.data_categories[input.dataCategory]?.base_score ?? 40;
 
-  // Evaluate each penalizer
-  const penalizerResults: PenalizerResult[] = [
-    {
-      id: "no_granular_consent",
-      label: "Sin consentimiento granular por finalidad",
-      score: 15,
-      active: !input.hasGranularConsent,
-      pillar: "frontend",
-    },
-    {
-      id: "minors_data",
-      label: "Datos de menores de edad sin proceso verificado",
-      score: 30,
-      active: input.hasMinors,
-      pillar: "both",
-    },
-    {
-      id: "non_adequate_servers",
-      label: "Servidores fuera de jurisdicción sin garantías",
-      score: 20,
-      active: input.serverRegion !== "adequate",
-      pillar: "backend",
-    },
-    {
-      id: "unstructured_international_transfer",
-      label: "Transferencia a terceros sin cláusulas contractuales",
-      score: 15,
-      active: input.thirdPartyTransfers && !transferDestinationsCovered(input.countries, input.transferDestinations),
-      pillar: "backend",
-    },
-    {
-      id: "no_privacy_policy",
-      label: "Sin política de privacidad publicada",
-      score: 10,
-      active: !input.hasPrivacyPolicy,
-      pillar: "frontend",
-    },
-    {
-      id: "no_arco_procedure",
-      label: "Sin canal ARCO/ARSOP documentado",
-      score: 10,
-      active: !input.hasArcoProcedure,
-      pillar: "both",
-    },
-    {
-      id: "no_dpo",
-      label: "Sin DPO/Encarregado designado (LGPD/GDPR)",
-      score: 15,
-      active: strict && input.hasDpo === false,
-      pillar: "backend",
-    },
-    {
-      id: "no_legal_basis",
-      label: "Sin base legal documentada por finalidad",
-      score: 20,
-      active: strict && input.hasLegalBasisPerPurpose === false,
-      pillar: "backend",
-    },
-    {
-      id: "no_breach_plan",
-      label: "Sin plan de respuesta a brechas de seguridad",
-      score: 15,
-      active: strict && input.hasBreachResponsePlan === false,
-      pillar: "backend",
-    },
-  ];
+  // Evaluate each penalizer — seleccionados de penalizer-catalog.ts (D8: una
+  // sola fuente para los 9 penalizadores clásicos). `isStrict: strict` es el
+  // contexto explícito calculado arriba por resolveStrictRegime(); el
+  // catálogo nunca lo recalcula (fix T1).
+  const penalizerResults: PenalizerResult[] = resolveCatalogPenalizers(
+    [
+      "no_granular_consent",
+      "minors_data",
+      "non_adequate_servers",
+      "unstructured_international_transfer",
+      "no_privacy_policy",
+      "no_arco_procedure",
+      "no_dpo",
+      "no_legal_basis",
+      "no_breach_plan",
+    ],
+    { input, isStrict: strict }
+  );
 
   // MOTOR-03/O-4 — cableado de us_multistate_exposure: ruta única compartida con
   // backend-scorer.ts (ver us-scorer.ts). Fail-loud si usa-federal.json no está
