@@ -34,7 +34,7 @@ Privacy Compliance Skills se construye con dos manos: **abogados** que aportan n
    ```
    **País / Jurisdicción:** Colombia
    **Tipo de aporte:** [ ] Norma faltante  [ ] Corrección  [ ] Actualización  [ ] Nueva interpretación
-   **Archivo afectado (si lo identificas):** cli/rules/countries/colombia.json
+   **Archivo afectado (si lo identificas):** cli/rules/latam/colombia.json
    **Fuente normativa exacta:** Ley 1581 de 2012, art. 9 + Decreto 1377 de 2013, art. 3
    **Texto relevante de la fuente:** "[cita literal]"
    **Cambio propuesto:** [descripción en lenguaje natural — no necesitas escribir código]
@@ -42,6 +42,8 @@ Privacy Compliance Skills se construye con dos manos: **abogados** que aportan n
    ```
 
 4. Envía. El equipo editorial te responderá en 7–14 días hábiles. Si la propuesta es válida, **alguien del equipo técnico la implementará** y te acreditará como autor/a en el PR.
+
+> 🔍 **¿Quieres verificar una regla ya publicada contra su fuente primaria?** Ese es un flujo distinto y más formal: el **flujo de validación de pares** (`pending_legal_validation → verified_editorial → under_review → validated`), con su propio [issue template](../.github/ISSUE_TEMPLATE/revision-legal.md). Está documentado completo en [`GOVERNANCE.md` § "Flujo de validación de pares"](GOVERNANCE.md#flujo-de-validación-de-pares) — no lo repetimos aquí.
 
 ### Opción B — Editar texto directamente desde el navegador
 
@@ -64,7 +66,7 @@ Eso es todo. No tocas la terminal, no instalas nada.
 | `knowledge/pillar-frontend/checklists/*.md` | Listas de verificación legales | ✅ Sí |
 | `knowledge/pillar-backend/checklists/*.md` | Listas de verificación de seguridad | ✅ Sí |
 | `skills/**/SKILL.md` | Instrucciones que recibe el agente de IA | ⚠️ Edición sugerida vía Issue (impacto alto) |
-| `cli/rules/countries/*.json` | Reglas legales en formato máquina | ❌ Mejor vía Issue — requiere validación de schema |
+| `cli/rules/latam/*.json` | Reglas legales en formato máquina | ❌ Mejor vía Issue — requiere validación de schema |
 
 ### Estándar editorial mínimo
 
@@ -91,7 +93,7 @@ Si tu aporte es interpretativo (no literal de la ley), márcalo claramente como 
 - Traducciones técnicas (inglés, portugués)
 
 **Con revisión editorial obligatoria** (porque el contenido es normativo):
-- `cli/rules/countries/*.json` y `cli/rules/international/*.json`
+- `cli/rules/latam/*.json` y `cli/rules/eu/*.json`
 - `knowledge/pillar-*/matrices/`, `knowledge/pillar-*/checklists/`, `knowledge/pillar-*/patterns/`, `knowledge/pillar-backend/architecture/`
 - `skills/**/SKILL.md`
 - `cli/rules/risk-engine/score-formula*.json`
@@ -104,7 +106,7 @@ Si tu aporte es interpretativo (no literal de la ley), márcalo claramente como 
 | Cifrado, RBAC, retención, DPA, transferencias | Backend | `knowledge/pillar-backend/` |
 | Skills de auditoría FE | Frontend | `skills/frontend-privacy/` |
 | Skills de auditoría BE | Backend | `skills/backend-security/` |
-| Reglas JSON por país | Ambos | `cli/rules/countries/` (campo `pillar` por penalizador) |
+| Reglas JSON por país | Ambos | `cli/rules/latam/` (campo `pillar` por penalizador) |
 
 ### Proceso
 

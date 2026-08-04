@@ -22,7 +22,8 @@
     "regulator": {
       "name": "Agencia de Protección de Datos Personales",
       "acronym": "APDP",
-      "note": "Autoridad de control dedicada creada por la Ley 21.719 (nueva; en implementación hacia la vigencia)."
+      "note": "Autoridad de control creada por la Ley 21.719. Verificado 2026-07-09: la APDP ya opera de forma adelantada; entre jun y nov de 2026 dicta sus primeras instrucciones generales y criterios de fiscalización, con potestad sancionatoria plena desde el 01-12-2026. Tiene potestad regulatoria e interpretativa con consulta pública previa.",
+      "transition_relief": "Empresas de menor tamaño (Ley 20.416): durante los primeros 12 meses de vigencia (dic-2026 a dic-2027), las primeras infracciones reciben amonestación escrita en lugar de multa — ventana de adaptación antes del régimen sancionatorio pleno. Verificar alcance exacto en revisión de pares."
     },
     "gdpr_alignment": "high",
     "notes": "Introduce principios GDPR-like (licitud, finalidad, proporcionalidad, minimización, calidad, responsabilidad proactiva), bases de licitud, DPO en ciertos casos, notificación de brechas y régimen sancionatorio por tramos según ingresos."

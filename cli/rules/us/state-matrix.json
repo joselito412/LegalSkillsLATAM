@@ -3,7 +3,7 @@
   "as_of": "2026-07-09",
   "review_status": "pending_legal_validation",
   "count": 19,
-  "editorial_note": "Matriz de las leyes estatales integrales de privacidad del consumidor vigentes en EE.UU. a jul-2026 (19 leyes integrales; el ecosistema suele citar '~20' según cómo se cuenten los casos límite). NO incluye leyes exclusivamente sectoriales: Washington (MHMDA) es de salud y Florida (FDBR) es de alcance acotado, por lo que se rastrean por separado. Fechas de vigencia, umbrales y periodos de subsanación (cure period) son aproximados y DEBEN verificarse contra el texto vigente de cada estado en la revisión de pares; varias leyes tienen cure periods que expiran (temporary). Ningún estado, salvo California para brechas, otorga private right of action. No constituye asesoría jurídica.",
+  "editorial_note": "Matriz de las leyes estatales integrales de privacidad del consumidor vigentes en EE.UU. a jul-2026 (19 leyes integrales; el ecosistema suele citar '~20' según cómo se cuenten los casos límite). NO incluye leyes exclusivamente sectoriales: Washington (MHMDA) es de salud y Florida (FDBR) es de alcance acotado, por lo que se rastrean por separado. VERIFICACIÓN OLA 2 (2026-07-09): confirmado que IN (ICDPA), KY (KCDPA) y RI (RIDTPPA) entraron en vigencia el 01-01-2026 elevando el total en vigor a 19 (fuente IAPP/firmas); sanciones IN/KY hasta $7,500 por violación con cure de 30 días, RI sin cure y hasta $10,000; MD (MODPA) vigente 01-10-2025 pero aplica a tratamientos desde el 01-04-2026 — minimización exigible INCLUSO con consentimiento y primera prohibición absoluta de venta de datos sensibles. Resto de fechas/umbrales pendientes de verificación estado por estado contra fuente oficial en revisión de pares. Ningún estado, salvo California para brechas, otorga private right of action. No constituye asesoría jurídica.",
   "dimensions": [
     "effective (fecha de vigencia)",
     "applicability (umbral de aplicabilidad)",
@@ -13,6 +13,45 @@
     "universal_opt_out (reconoce señal GPC/UOOM)"
   ],
   "baseline_reference": "us/usa-federal.json (CCPA/CPRA)",
+  "pending_verification": {
+    "opened": "2026-07-28",
+    "ticket": "VIG-04 (docs/VIGILANCIA-NORMATIVA.md · .planning/EDITORIAL-BACKLOG.md)",
+    "why_count_stays_19": "El ecosistema reporta ~20 leyes integrales en vigor en 2026, pero esta matriz solo declara las 19 entradas que están efectivamente modeladas y trazadas. NO se sube el número sin la entrada verificada que lo respalde — un conteo sin fila detrás es un dato huérfano.",
+    "gaps": [
+      {
+        "id": "gap_arkansas",
+        "state": "AR",
+        "candidate_law": "Arkansas Personal Data Protection Act (APDPA)",
+        "status": "🟡 PROBABLE — muy probablemente la entrada #20 que falta en esta matriz",
+        "data_found": "Umbral reportado: 25,000 consumidores de Arkansas, o >50% de ingresos por venta de datos procesando datos de 10,000+ consumidores. Cure period de 60 días que expira el 01-01-2027.",
+        "conflict": "Las fuentes discrepan en la fecha de vigencia: unas indican 01-07-2025 y otras 01-07-2026. Además Arkansas tiene una ley sectorial de menores/adolescentes vigente 01-07-2026 que puede estar contaminando los conteos.",
+        "next_step": "Verificar contra la legislatura de Arkansas y el IAPP tracker antes de crear la fila. Si la vigencia fue 2025, la matriz llevaba una omisión desde su creación (no es novedad de 2026)."
+      },
+      {
+        "id": "gap_ct_threshold_2026",
+        "state": "CT",
+        "issue": "Enmiendas a la CTDPA vigentes el 01-07-2026 habrían reducido significativamente el umbral de aplicabilidad (reportado: −65%). La fila de CT en esta matriz refleja el umbral ANTERIOR (100k consumidores, o 25k + 25% ingresos por venta) y por tanto puede estar desactualizada.",
+        "impact": "Un proyecto pequeño podría quedar cubierto por CT sin que la matriz lo advierta — falso negativo.",
+        "next_step": "Verificar el texto de la enmienda y actualizar `applicability` de CT."
+      },
+      {
+        "id": "gap_ut_amendments_2026",
+        "state": "UT",
+        "issue": "Se reportan enmiendas a la UCPA vigentes el 01-07-2026 — alcance por confirmar.",
+        "next_step": "Verificar y ajustar la fila de UT si corresponde."
+      },
+      {
+        "id": "gap_enacted_not_effective",
+        "issue": "Se reportan ~24 leyes estatales integrales PROMULGADAS a mediados de 2026 (candidatas: Alabama, Luisiana, Oklahoma, Vermont), varias aún sin entrar en vigor.",
+        "rule": "Esta matriz solo lista leyes EN VIGOR. Las promulgadas sin vigencia se rastrean aquí hasta su fecha de entrada, momento en el que se crea su fila."
+      }
+    ],
+    "sources_consulted": [
+      "https://iapp.org/resources/article/us-state-privacy-legislation-tracker",
+      "https://www.multistate.us/insider/2026/2/4/all-of-the-comprehensive-privacy-laws-that-take-effect-in-2026",
+      "https://iapp.org/news/a/new-year-new-rules-us-state-privacy-requirements-coming-online-as-2026-begins"
+    ]
+  },
   "states": [
     { "code": "CA", "name": "California", "law": "CCPA/CPRA", "effective": "2020-01-01 (CPRA 2023-01-01)", "applicability": "$26.625M ingresos, o 100k consumidores/hogares, o 50% ingresos por venta/share", "sensitive_data": "opt-out", "private_right_of_action": true, "cure_period": "none", "universal_opt_out": true, "regulator": "CPPA + OAG", "note": "Única con acción privada (solo brechas); regulador dedicado.", "verify": true },
     { "code": "VA", "name": "Virginia", "law": "Virginia Consumer Data Protection Act", "acronym": "VCDPA", "effective": "2023-01-01", "applicability": "100k consumidores, o 25k + 50% ingresos por venta", "sensitive_data": "opt-in", "private_right_of_action": false, "cure_period": "permanent", "universal_opt_out": false, "regulator": "VA Attorney General", "verify": true },

@@ -1,10 +1,10 @@
 {
   "$schema": "../schema/country-rules.schema.json",
-  "version": "1.1.0",
-  "last_reviewed": "2026-07-08",
-  "review_status": "pending_legal_validation",
+  "version": "1.2.0",
+  "last_reviewed": "2026-07-09",
+  "review_status": "verified_editorial",
   "reviewed_by": null,
-  "editorial_note": "Actualizado 2026-07-08: nueva LFPDPPP (DOF 20-03-2025) que abroga la ley de 2010; autoridad ahora es la Secretaría Anticorrupción y Buen Gobierno (INAI extinto); sanciones en UMA. IMPORTANTE: las secciones de consentimiento, aviso de privacidad, derechos ARCO y transferencias fueron redactadas bajo la ley de 2010 — sus reglas generales se mantienen en la nueva ley, pero la numeración de artículos y detalles deben re-validarse contra el texto de 2025 en la revisión de pares. No constituye asesoría jurídica.",
+  "editorial_note": "Ola 1 de validación (2026-07-09): claims clave verificados contra el TEXTO OFICIAL de la LFPDPPP 2025 (Diputados, última reforma DOF 14-11-2025): consentimiento tácito regla general (Art. 7), sensibles expreso y por escrito (Art. 8), aviso Arts. 14-17, seguridad Art. 18, vulneraciones Art. 19 ('de forma inmediata' a TITULARES — la notificación a la autoridad no consta en la ley), ARCO 20+15 días (Art. 31), sanciones escalonadas 100-160,000 / 200-320,000 UMA (+reiteración, x2 sensibles, Arts. 58-61), delitos Arts. 62-63. Pendiente revisión de pares (validated requiere abogado). Transferencias aún por re-verificar contra el texto 2025. No constituye asesoría jurídica.",
   "country": {
     "code": "MX",
     "name": "México",
@@ -88,8 +88,8 @@
       ],
       "base_score": 80,
       "consent_required": true,
-      "consent_must_be": "expreso y por escrito (Art. 9 LFPDPPP)",
-      "legal_reference": "Arts. 3 frac. VI, 9 y 10 LFPDPPP",
+      "consent_must_be": "expreso y por escrito, vía firma autógrafa, firma electrónica o cualquier mecanismo de autenticación (Art. 8, LFPDPPP 2025 — verificado)",
+      "legal_reference": "Art. 8, LFPDPPP 2025 (antes Art. 9 en la ley de 2010)",
       "note": "El consentimiento para datos sensibles debe ser EXPRESO (no puede ser tácito) y debe constar por escrito, ya sea en papel o en medios electrónicos con firma."
     },
     "financial": {
@@ -135,7 +135,7 @@
       "procedure": "El responsable debe establecer mecanismos sencillos y gratuitos para revocar el consentimiento",
       "effect": "No tiene efectos retroactivos sobre el tratamiento pasado"
     },
-    "legal_reference": "Arts. 8, 9 y 16 LFPDPPP"
+    "legal_reference": "Arts. 7 y 8, LFPDPPP 2025 (verificado: tácito válido por regla general, Art. 7; financieros/patrimoniales requieren expreso, Art. 7; sensibles expreso y por escrito, Art. 8; revocación vía mecanismos del aviso, Art. 7 in fine)"
   },
   "privacy_notice": {
     "required": true,
@@ -171,10 +171,10 @@
       }
     ],
     "timing": "En el momento en que se recaben los datos o antes del tratamiento",
-    "legal_reference": "Arts. 15-18 LFPDPPP y Lineamientos del Aviso de Privacidad"
+    "legal_reference": "Arts. 14-17, LFPDPPP 2025 (verificado: contenido mínimo Art. 15; puesta a disposición Art. 16; datos no obtenidos del titular Art. 17) + Lineamientos del Aviso de Privacidad (verificar vigencia)"
   },
   "data_subject_rights": {
-    "framework": "Derechos ARCO (Arts. 22-36 LFPDPPP)",
+    "framework": "Derechos ARCO — LFPDPPP 2025. Plazo verificado (Art. 31): respuesta en 20 días + 15 días para hacerla efectiva, ampliables una sola vez por periodo igual. Rectificación exige indicar modificaciones y aportar documentación (Art. 30).",
     "acronym_meaning": {
       "A": "Acceso",
       "R": "Rectificación",
@@ -251,14 +251,10 @@
   },
   "breach_notification": {
     "required": true,
-    "notify_authority": {
-      "entity": "Secretaría Anticorrupción y Buen Gobierno (SABG)",
-      "deadline": "No hay plazo específico en horas. La ley indica 'a la brevedad posible'. Referencia de buena práctica: 72 horas.",
-      "condition": "vulneraciones de seguridad que afecten de forma significativa los derechos patrimoniales o morales de los titulares"
-    },
     "notify_subjects": {
       "required": true,
-      "condition": "cuando la vulneración afecte significativamente sus derechos",
+      "deadline": "De forma inmediata (Art. 19: 'le serán informadas de forma inmediata por el responsable')",
+      "condition": "vulneraciones de seguridad en cualquier fase del tratamiento que afecten de forma significativa los derechos patrimoniales o morales de las personas titulares",
       "content": [
         "naturaleza del incidente",
         "datos personales comprometidos",
@@ -266,7 +262,12 @@
         "acciones correctivas realizadas"
       ]
     },
-    "legal_reference": "Art. 20 LFPDPPP"
+    "notify_authority": {
+      "entity": "Secretaría Anticorrupción y Buen Gobierno (SABG)",
+      "note": "⚠️ El Art. 19 de la ley solo obliga a informar a las PERSONAS TITULARES. La notificación a la Secretaría no aparece como obligación expresa en el texto legal verificado — confirmar en el Reglamento vigente durante la revisión de pares.",
+      "deadline": "No establecido en la ley para la autoridad. Buena práctica de mercado: 72 horas."
+    },
+    "legal_reference": "Art. 19, LFPDPPP 2025 (verificado contra texto oficial, reforma DOF 14-11-2025)"
   },
   "security_measures": {
     "required": true,
@@ -275,25 +276,28 @@
       "Físicas: control de acceso a instalaciones, destrucción segura de documentos",
       "Técnicas: cifrado, control de acceso lógico, auditorías de sistemas"
     ],
-    "principle": "Las medidas deben ser proporcionales al tipo de datos y riesgos del tratamiento",
-    "legal_reference": "Arts. 19 y 20 LFPDPPP"
+    "principle": "Las medidas deben ser proporcionales al riesgo, las posibles consecuencias para los titulares, la sensibilidad de los datos y el desarrollo tecnológico; nunca menores a las usadas para la información propia",
+    "legal_reference": "Art. 18, LFPDPPP 2025 (verificado contra texto oficial)"
   },
   "sanctions": {
     "authority": "Secretaría Anticorrupción y Buen Gobierno (SABG)",
     "types": [
-      "apercibimiento (advertencia)",
-      "multa de 100 a 320,000 veces el valor diario de la UMA (Unidad de Medida y Actualización)",
-      "multa duplicable cuando la infracción involucra datos personales sensibles"
+      "apercibimiento (Art. 59-I, para infracciones del Art. 58-I)",
+      "multa de 100 a 160,000 UMA (Art. 59-II, infracciones Art. 58 fracc. II a VII)",
+      "multa de 200 a 320,000 UMA (Art. 59-III, infracciones Art. 58 fracc. VIII a XVIII)",
+      "multa adicional de 100 a 320,000 UMA por reiteración (Art. 59-IV)",
+      "tratándose de datos sensibles, las sanciones podrán incrementarse hasta por dos veces los montos establecidos (Art. 59, párrafo final)"
     ],
     "criminal_sanctions": {
       "applicable": true,
       "conditions": [
-        "tratamiento de datos mediante engaño o con ánimo de lucro indebido"
+        "vulneración de seguridad provocada con ánimo de lucro por quien está autorizado a tratar los datos (Art. 62): 3 meses a 3 años de prisión",
+        "tratamiento de datos mediante engaño con fin de lucro indebido (Art. 63): 6 meses a 5 años de prisión"
       ],
-      "penalty": "Pena de prisión de hasta 5 años según la nueva LFPDPPP (artículo exacto por confirmar en revisión de pares)"
+      "penalty": "Hasta 5 años de prisión (Art. 63); penas se duplican con datos sensibles según el propio capítulo — verificar alcance exacto en revisión de pares"
     },
-    "max_fine_reference": "320,000 UMA ≈ MXN $37.5 millones (UMA 2026: $117.31 diarios); duplicable con datos sensibles",
-    "legal_reference": "Arts. 58-64, LFPDPPP (DOF 20-03-2025)",
+    "max_fine_reference": "320,000 UMA ≈ MXN $37.5 millones (UMA 2026: $117.31 diarios); duplicable con datos sensibles → tope efectivo ~MXN $75 millones",
+    "legal_reference": "Arts. 58-61 (infracciones y sanciones) y 62-63 (delitos), LFPDPPP 2025 — verificado contra texto oficial (Diputados, reforma DOF 14-11-2025)",
     "deprecated_reference_note": "La ley de 2010 expresaba multas en días de salario mínimo (SMG del DF), unidad sustituida por la UMA desde 2016 y ya no aplicable."
   },
   "penalizers": [

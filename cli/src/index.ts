@@ -1,14 +1,18 @@
 #!/usr/bin/env node
 
 import { Command } from "commander";
+import { createRequire } from "node:module";
 import { runAuditWizard } from "./commands/audit.js";
+
+const require = createRequire(import.meta.url);
+const { version } = require("../package.json") as { version: string };
 
 const program = new Command();
 
 program
-  .name("legalskills-latam")
-  .description("Legal risk auditor for LATAM developers")
-  .version("0.2.0-beta.1");
+  .name("privacy-compliance-skills")
+  .description("Legal risk auditor for EU, US and LATAM compliance")
+  .version(version);
 
 program
   .command("audit")

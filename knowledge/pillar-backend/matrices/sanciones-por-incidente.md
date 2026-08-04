@@ -18,7 +18,7 @@
 | 🇨🇱 Chile | Ley 21.719 | APDP | Pendiente regulación secundaria (ley vigente 2026) | — |
 | 🇪🇨 Ecuador | LOPDP | DINARDAP | $500K USD máximo | $500K USD |
 | 🇦🇷 Argentina | Ley 25.326 | AAIP | ARS variable | ~$100K USD (regulación antigua) |
-| 🇵🇪 Perú | Ley 29733 | ANPD | 100 UIT (~$120K USD) | ~$120K USD |
+| 🇵🇪 Perú | Ley 29733 + Reglamento D.S. 016-2024-JUS + **RD 100-2025-JUS/DGTAIPD** | ANPD (DGTAIPD) | 100 UIT (~$120K USD) — **nueva metodología de cálculo de multas** vigente por RD 100-2025 (El Peruano 31-12-2025) | ~$120K USD |
 
 ---
 

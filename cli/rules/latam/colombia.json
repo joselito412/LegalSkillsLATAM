@@ -3,11 +3,11 @@
   "country": "Colombia",
   "iso_code": "CO",
   "flag": "🇨🇴",
-  "version": "1.0.0",
-  "last_reviewed": "2026-01-01",
-  "review_status": "pending_legal_validation",
+  "version": "1.1.0",
+  "last_reviewed": "2026-07-28",
+  "review_status": "verified_editorial",
   "reviewed_by": null,
-  "editorial_note": "Generado por equipo editorial Privacy Compliance Skills. Pendiente de validación por abogado experto en derecho colombiano. No constituye asesoría jurídica.",
+  "editorial_note": "Generado por equipo editorial Privacy Compliance Skills. VIG-02 (2026-07-28): añadida la Ley Estatutaria 2573 de 2026 (suplantación de identidad digital) como RÉGIMEN ADYACENTE de alcance sectorial — no reforma la Ley 1581, que sigue siendo la norma general de protección de datos. Pendiente de validación por abogado experto en derecho colombiano. No constituye asesoría jurídica.",
 
   "primary_law": {
     "name": "Ley Estatutaria 1581 de 2012",
@@ -20,6 +20,39 @@
     },
     "implementing_decrees": ["Decreto 1377 de 2013", "Decreto 1074 de 2015"]
   },
+
+  "adjacent_regimes": [
+    {
+      "id": "co_ley_2573_2026_suplantacion",
+      "name": "Ley Estatutaria 2573 de 2026",
+      "subject": "Protección frente a la suplantación de identidad en el ecosistema digital; desarrolla habeas data, intimidad y buen nombre",
+      "promulgated": "2026-05-19",
+      "official_gazette": "Diario Oficial 53496 del 20-05-2026",
+      "enforcement_date": "2026-11-19",
+      "enforcement_note": "Régimen general en vigor ~6 meses después de la promulgación. VENTANA DE PREPARACIÓN ABIERTA — verificar la fecha exacta contra el texto oficial antes de emitir plazos a un usuario.",
+      "applies_to": [
+        "operadores de telecomunicaciones",
+        "entidades financieras y de crédito",
+        "establecimientos de comercio facultados para ofrecer productos que generen obligaciones crediticias"
+      ],
+      "scope_rule": "SECTORIAL: no aplica a proyectos fuera de esas tres categorías. Un software que no sea telco, financiero/crediticio ni comercio con crédito NO queda cubierto por este régimen — no debe penalizarse por él.",
+      "core_obligations": [
+        "Implementar medidas de seguridad digital que permitan verificar de forma efectiva la identidad de quien adquiere el producto o servicio (refuerza los procesos de KYC)",
+        "Entregar al titular los documentos recibidos al momento de aprobar el producto o servicio objeto de reclamación",
+        "Traslado de la carga de la prueba: deja de recaer en el ciudadano víctima de fraude y pasa a la empresa"
+      ],
+      "scoring_treatment": {
+        "generates_penalizer": false,
+        "rationale": "No se crea penalizador en el motor v0.4: (a) el alcance es sectorial y estrecho frente al universo de proyectos que audita la herramienta, y (b) el régimen aún no está en vigor. Se modela como CONTEXTO informativo que la skill debe advertir cuando el proyecto declare actividad de telco, financiera/crediticia o comercio con crédito en Colombia. Reevaluar tras el 19-11-2026 con evidencia de enforcement (criterio: si la SIC u otra autoridad sanciona, pasa a penalizador)."
+      },
+      "sources": [
+        "https://dapre.presidencia.gov.co/normativa/normativa/LEY%20No.%202573%20DEL%2019%20DE%20MAYO%20DE%202026.pdf",
+        "https://www.funcionpublica.gov.co/eva/gestornormativo/norma.php?i=277136"
+      ],
+      "verified": "2026-07-28 (VIG-02; hallazgo ✅ CONFIRMADO de la ronda 2026-07 2ª pasada)",
+      "related": "Ley 2502 de 2025 (suplantación) — verificar articulación entre ambas en la revisión de pares"
+    }
+  ],
 
   "data_categories": {
     "public": {

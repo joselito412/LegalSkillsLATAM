@@ -1,12 +1,22 @@
 #!/usr/bin/env node
 
 /**
- * LegalSkillsLATAM — JSON Schema Validator
- * Validates all rules/*.json files against country-rules.schema.json
+ * Privacy Compliance Skills — JSON Schema Validator
+ * Valida TODOS los JSON de cli/rules/ contra su schema correspondiente:
+ *   - cli/rules/eu/*.json, cli/rules/us/usa-federal.json, cli/rules/latam/*.json
+ *       → cli/rules/schema/country-rules.schema.json
+ *   - cli/rules/us/state-matrix.json
+ *       → cli/rules/schema/us-state-matrix.schema.json
+ *   - cli/rules/risk-engine/*.json
+ *       → sin schema propio (backlog): solo se verifica que sea JSON parseable
+ *   - archivos con prefijo "_" (ej. _template.json) son plantillas de autor:
+ *       se listan mas no se validan contra schema (contienen placeholders nulos
+ *       a propósito, ej. "YYYY-MM-DD", que no cumplirían tipos reales).
+ * Cobertura completa: todo archivo recorrido aparece en el output con su resultado.
  * Run: npm run validate
  */
 
-import { readFileSync, readdirSync, statSync } from "fs";
+import { readFileSync, readdirSync } from "fs";
 import { resolve, join, relative } from "path";
 import { createRequire } from "module";
 
@@ -15,42 +25,22 @@ const { default: Ajv2020 } = await import("ajv/dist/2020.js");
 const addFormats = require("ajv-formats");
 
 const ROOT = resolve(process.cwd());
-const SCHEMA_PATH = join(ROOT, "cli/rules/schema/country-rules.schema.json");
-const RULES_DIRS = [
-  join(ROOT, "cli/rules/countries"),
-  join(ROOT, "cli/rules/international"),
-];
-const SKIP_FILES = ["_template.json"];
+const COUNTRY_SCHEMA_PATH = join(ROOT, "cli/rules/schema/country-rules.schema.json");
+const STATE_MATRIX_SCHEMA_PATH = join(ROOT, "cli/rules/schema/us-state-matrix.schema.json");
 
 // --- Setup AJV (draft 2020-12) ---
 const ajv = new Ajv2020({ allErrors: true, strict: false });
 addFormats(ajv);
 
-const schema = JSON.parse(readFileSync(SCHEMA_PATH, "utf8"));
-const validate = ajv.compile(schema);
+const countrySchema = JSON.parse(readFileSync(COUNTRY_SCHEMA_PATH, "utf8"));
+const validateCountry = ajv.compile(countrySchema);
 
-// --- Collect files ---
-function collectJsonFiles(dirs) {
-  const files = [];
-  for (const dir of dirs) {
-    try {
-      for (const file of readdirSync(dir)) {
-        if (!file.endsWith(".json")) continue;
-        if (SKIP_FILES.includes(file)) continue;
-        files.push(join(dir, file));
-      }
-    } catch {
-      // dir doesn't exist yet — skip
-    }
-  }
-  return files;
-}
+const stateMatrixSchema = JSON.parse(readFileSync(STATE_MATRIX_SCHEMA_PATH, "utf8"));
+const validateStateMatrix = ajv.compile(stateMatrixSchema);
 
-// --- Integrity checks (beyond schema) ---
-function integrityChecks(data, filePath) {
+// --- Integrity checks (beyond schema; only meaningful for country-rules docs) ---
+function integrityChecks(data) {
   const warnings = [];
-  const rel = relative(ROOT, filePath);
-
   if (!data.version) warnings.push("falta campo 'version'");
   if (!data.last_reviewed) warnings.push("falta campo 'last_reviewed'");
   if (!data.review_status) warnings.push("falta campo 'review_status'");
@@ -64,19 +54,48 @@ function integrityChecks(data, filePath) {
   return warnings;
 }
 
-// --- Run validation ---
-const files = collectJsonFiles(RULES_DIRS);
+function listJsonFiles(dirPath) {
+  try {
+    return readdirSync(dirPath)
+      .filter((f) => f.endsWith(".json"))
+      .sort();
+  } catch {
+    return []; // el directorio no existe (aún) — no rompe la corrida
+  }
+}
 
-if (files.length === 0) {
+// --- Build the full task list: cada archivo recorrido + cómo se valida ---
+// kind: "country" | "state-matrix" | "no-schema" | "template"
+const tasks = [];
+
+for (const f of listJsonFiles(join(ROOT, "cli/rules/eu"))) {
+  tasks.push({ path: join(ROOT, "cli/rules/eu", f), kind: f.startsWith("_") ? "template" : "country" });
+}
+
+for (const f of listJsonFiles(join(ROOT, "cli/rules/us"))) {
+  if (f === "state-matrix.json") {
+    tasks.push({ path: join(ROOT, "cli/rules/us", f), kind: "state-matrix" });
+  } else {
+    tasks.push({ path: join(ROOT, "cli/rules/us", f), kind: f.startsWith("_") ? "template" : "country" });
+  }
+}
+
+for (const f of listJsonFiles(join(ROOT, "cli/rules/latam"))) {
+  tasks.push({ path: join(ROOT, "cli/rules/latam", f), kind: f.startsWith("_") ? "template" : "country" });
+}
+
+for (const f of listJsonFiles(join(ROOT, "cli/rules/risk-engine"))) {
+  tasks.push({ path: join(ROOT, "cli/rules/risk-engine", f), kind: "no-schema" });
+}
+
+if (tasks.length === 0) {
   console.log("⚠️  No se encontraron archivos JSON en cli/rules/");
   process.exit(0);
 }
 
-let totalErrors = 0;
-let totalWarnings = 0;
 const results = [];
 
-for (const filePath of files) {
+for (const { path: filePath, kind } of tasks) {
   const rel = relative(ROOT, filePath);
   let data;
 
@@ -84,18 +103,33 @@ for (const filePath of files) {
     data = JSON.parse(readFileSync(filePath, "utf8"));
   } catch (e) {
     results.push({ file: rel, status: "ERROR", errors: [`JSON inválido: ${e.message}`], warnings: [] });
-    totalErrors++;
     continue;
   }
 
-  const valid = validate(data);
-  const schemaErrors = valid ? [] : validate.errors.map(
-    (e) => `${e.instancePath || "(raíz)"} ${e.message}`
-  );
-  const warnings = integrityChecks(data, filePath);
+  if (kind === "template") {
+    results.push({
+      file: rel,
+      status: "SKIP",
+      errors: [],
+      warnings: ["plantilla de autor (prefijo '_') — JSON válido, no se valida contra schema"],
+    });
+    continue;
+  }
 
-  totalErrors += schemaErrors.length;
-  totalWarnings += warnings.length;
+  if (kind === "no-schema") {
+    results.push({
+      file: rel,
+      status: "OK",
+      errors: [],
+      warnings: ["sin schema (backlog) — solo se verificó que sea JSON parseable"],
+    });
+    continue;
+  }
+
+  const validator = kind === "state-matrix" ? validateStateMatrix : validateCountry;
+  const valid = validator(data);
+  const schemaErrors = valid ? [] : validator.errors.map((e) => `${e.instancePath || "(raíz)"} ${e.message}`);
+  const warnings = kind === "country" ? integrityChecks(data) : [];
 
   results.push({
     file: rel,
@@ -105,14 +139,21 @@ for (const filePath of files) {
   });
 }
 
+// Totales derivados directamente de `results` — cada entrada (ERROR/SKIP/no-schema
+// incluidas) ya trae sus propios errors/warnings, así el conteo nunca diverge de lo impreso.
+const totalErrors = results.reduce((acc, r) => acc + r.errors.length, 0);
+const totalWarnings = results.reduce((acc, r) => acc + r.warnings.length, 0);
+
 // --- Output ---
 console.log("\n╔══════════════════════════════════════════════════════╗");
-console.log("║    LegalSkillsLATAM — JSON Schema Validator           ║");
+console.log("║    Privacy Compliance Skills — JSON Schema Validator  ║");
 console.log("╚══════════════════════════════════════════════════════╝\n");
 
+const ICONS = { OK: "✅", FAIL: "❌", ERROR: "❌", SKIP: "⏭️ " };
+
 for (const r of results) {
-  const icon = r.status === "OK" ? "✅" : "❌";
-  console.log(`${icon}  ${r.file}`);
+  const icon = ICONS[r.status] ?? "❔";
+  console.log(`${icon} [${r.status}]  ${r.file}`);
 
   for (const err of r.errors) {
     console.log(`     🔴 ERROR: ${err}`);
@@ -124,9 +165,9 @@ for (const r of results) {
 
 console.log("\n─────────────────────────────────────────────────────");
 const allOk = totalErrors === 0;
-console.log(`Archivos validados : ${files.length}`);
-console.log(`Errores de schema  : ${totalErrors}`);
-console.log(`Advertencias       : ${totalWarnings}`);
+console.log(`Archivos recorridos : ${results.length}`);
+console.log(`Errores de schema    : ${totalErrors}`);
+console.log(`Advertencias         : ${totalWarnings}`);
 console.log(allOk
   ? "\n✅  Todos los archivos pasan la validación de schema.\n"
   : "\n❌  Hay errores de schema. Corrige antes de hacer merge.\n"

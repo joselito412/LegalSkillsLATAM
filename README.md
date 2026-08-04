@@ -71,6 +71,8 @@ El conocimiento del proyecto está organizado en **dos pilares explícitos**:
 
 > Regla rápida: **Si el usuario lo ve → Frontend. Si el sistema lo hace por dentro → Backend.**
 
+> ⚙️ El eje operativo **DevOps** (staging, secretos, backups, CI) es un sub-panel dentro de Backend, no un tercer pilar: cap propio de 30 pts que se suma a BE *antes* de su tope de 50 — ver [`architecture/ADR-001-devops-cap.md`](architecture/ADR-001-devops-cap.md).
+
 - Documentación de pilares: [`architecture/PILLAR-SEPARATION.md`](architecture/PILLAR-SEPARATION.md)
 - Índice de skills por caso de uso: [`skills/_SKILLS-INDEX.md`](skills/_SKILLS-INDEX.md)
 - Árbol de decisión de skills: [`skills/_routing.md`](skills/_routing.md)
@@ -146,9 +148,9 @@ Tres bloques. La columna **Nivel** es honesta sobre la profundidad real de cada 
 | 🇲🇽 México | **Nueva LFPDPPP (DOF 20-03-2025)** — abroga la ley de 2010; autoridad SABG (ex-INAI); multas en UMA | ✅ Reglas propias *(actualizado jul-2026)* |
 | 🇧🇷 Brasil | LGPD 2018 + Resoluciones ANPD *(techo regional; incidentes: 3 días hábiles, Res. 15/2024)* | ✅ Reglas propias *(actualizado jul-2026)* |
 | 🇨🇱 Chile | Ley 19.628 → **Ley 21.719 vigente 01-12-2026** (APDP, multas hasta 20,000 UTM) | ✅ Reglas propias ⏳ *(vigencia dic-2026)* |
-| 🇦🇷 Argentina | Ley 25.326 *(reformas en debate legislativo 2025-2026)* | ✅ Reglas propias |
-| 🇵🇪 Perú | Ley 29733 + **Reglamento D.S. 016-2024-JUS** (vigente mar-2025; brechas: 48h) | ✅ Reglas propias *(actualizado jul-2026)* |
-| 🇪🇨 Ecuador | LOPDP 2021 + Reglamento DE-904/2023 (Superintendencia operativa) | ✅ Reglas propias |
+| 🇦🇷 Argentina | Ley 25.326 *(reformas en debate legislativo 2025-2026)* | 📄 Solo matrices — reglas JSON en investigación (Ola 3) |
+| 🇵🇪 Perú | Ley 29733 + **Reglamento D.S. 016-2024-JUS** (vigente mar-2025; brechas: 48h) | 📄 Solo matrices — reglas JSON en investigación (Ola 3) |
+| 🇪🇨 Ecuador | LOPDP 2021 + Reglamento DE-904/2023 (Superintendencia operativa) | 📄 Solo matrices — reglas JSON en investigación (Ola 3) |
 
 > Verificación de vigencia: [`docs/SOURCES-VALIDATION.md`](docs/SOURCES-VALIDATION.md) — ronda 2026-07-08.
 
