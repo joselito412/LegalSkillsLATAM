@@ -215,11 +215,14 @@ test("MOTOR-04 candado de duplicación: para BR (estricto) el trío reforzado de
     .map(({ id, score, active }) => ({ id, score, active }))
     .sort((a, b) => a.id.localeCompare(b.id));
 
-  // NOTA (deuda conocida, NO se corrige en este commit): los `label` divergen
-  // hoy entre scorer.ts ("Sin plan de respuesta a brechas de seguridad") y
-  // backend-scorer.ts ("Sin plan de respuesta a brechas (LGPD/GDPR)"). Unificar
-  // labels es cambio de producción con impacto en render — fuera de alcance de
-  // QA-04. El candado compara solo id/score/active, con label excluido a propósito.
+  // NOTA (actualizada tras 45f6ee3, CONTRATO-01 paso 2): los `label` YA están
+  // unificados — scorer.ts y backend-scorer.ts seleccionan ambos su definición
+  // de no_dpo/no_legal_basis/no_breach_plan desde la misma fuente única
+  // (penalizer-catalog.ts), así que ya no pueden divergir en silencio. El
+  // candado sigue comparando solo id/score/active (label excluido) porque esa
+  // garantía específica —que label sea deep-equal entre la lista combinada y
+  // la de pilar— ya la cubre el candado de fuente única dedicado en
+  // penalizer-catalog.test.js; no porque siga siendo deuda pendiente.
   assert.deepEqual(fromScorer, fromBackend);
 
   // Sanity check: en este caso estricto los 3 SÍ deben estar activos (evita

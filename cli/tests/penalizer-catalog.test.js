@@ -55,22 +55,66 @@ const SHARED_IDS_BY_PILLAR = {
   no_breach_plan: "be",
 };
 
-test("CONTRATO-01 (paso 2): candado de fuente única — los 7 ids compartidos son deep-equal (id/label/score/pillar) entre la lista combinada y el scorer de su pilar", () => {
-  const result = calculateDualScore(testInput());
+// Segundo input, CONTRASTANTE con testInput() (verificación adversarial, O1):
+// país NO estricto (CO) con los 4 controles compartidos "cumplidos" y los 3
+// campos de régimen reforzado en `false` pese al país no ser estricto. Esto
+// ejercita el guard `isStrict &&` en el sentido CONTRARIO a testInput() (BR,
+// estricto, mismos 3 campos en `false` → activo): aquí el campo por sí solo
+// diría "no cumple", pero el guard debe mantenerlo inactivo porque el país no
+// es de régimen estricto. Sin este segundo input con `active` en la
+// comparación, un predicado `active: () => true` constante pasaría igual
+// (con testInput() los 7 ya salen activos) y el guard `isStrict` no quedaría
+// ejercitado en ninguna dirección.
+function guardContrastInput(overrides) {
+  return {
+    projectName: "Catalog test (contraste)",
+    countries: ["CO"], // régimen NO estricto
+    dataCategory: "public",
+    hasMinors: false,
+    hasGranularConsent: true,
+    serverRegion: "adequate",
+    thirdPartyTransfers: false,
+    hasPrivacyPolicy: true,
+    hasArcoProcedure: true,
+    hasDpo: false,
+    hasLegalBasisPerPurpose: false,
+    hasBreachResponsePlan: false,
+    ...overrides,
+  };
+}
 
-  for (const [id, pillar] of Object.entries(SHARED_IDS_BY_PILLAR)) {
-    const combined = result.penalizers.find((p) => p.id === id);
-    const pillarList = pillar === "fe" ? result.fePenalizers : result.bePenalizers;
-    const fromPillar = pillarList.find((p) => p.id === id);
+test("CONTRATO-01 (paso 2, endurecido por O1): candado de fuente única — los 7 ids compartidos son deep-equal (id/label/score/pillar/active) entre la lista combinada y el scorer de su pilar, en dos inputs contrastantes", () => {
+  for (const input of [testInput(), guardContrastInput()]) {
+    const result = calculateDualScore(input);
 
-    assert.ok(combined, `${id}: ausente en la lista combinada (result.penalizers)`);
-    assert.ok(fromPillar, `${id}: ausente en la lista de pilar (${pillar === "fe" ? "fePenalizers" : "bePenalizers"})`);
+    for (const [id, pillar] of Object.entries(SHARED_IDS_BY_PILLAR)) {
+      const combined = result.penalizers.find((p) => p.id === id);
+      const pillarList = pillar === "fe" ? result.fePenalizers : result.bePenalizers;
+      const fromPillar = pillarList.find((p) => p.id === id);
 
-    assert.deepEqual(
-      { id: combined.id, label: combined.label, score: combined.score, pillar: combined.pillar },
-      { id: fromPillar.id, label: fromPillar.label, score: fromPillar.score, pillar: fromPillar.pillar },
-      `${id}: diverge entre la lista combinada y la de pilar (id/label/score/pillar deben ser deep-equal)`
-    );
+      assert.ok(combined, `${id}: ausente en la lista combinada (result.penalizers), input=${input.projectName}`);
+      assert.ok(
+        fromPillar,
+        `${id}: ausente en la lista de pilar (${pillar === "fe" ? "fePenalizers" : "bePenalizers"}), input=${input.projectName}`
+      );
+
+      assert.deepEqual(
+        { id: combined.id, label: combined.label, score: combined.score, pillar: combined.pillar, active: combined.active },
+        { id: fromPillar.id, label: fromPillar.label, score: fromPillar.score, pillar: fromPillar.pillar, active: fromPillar.active },
+        `${id}: diverge entre la lista combinada y la de pilar (id/label/score/pillar/active deben ser deep-equal), input=${input.projectName}`
+      );
+    }
+  }
+
+  // Candado anti-gaming: los dos inputs deben producir `active` distinto para
+  // los 7 ids — si no, la comparación de arriba no distinguiría un predicado
+  // constante (`active: () => true`) de uno real.
+  const activeInA = calculateDualScore(testInput()).penalizers;
+  const activeInB = calculateDualScore(guardContrastInput()).penalizers;
+  for (const id of Object.keys(SHARED_IDS_BY_PILLAR)) {
+    const a = activeInA.find((p) => p.id === id)?.active;
+    const b = activeInB.find((p) => p.id === id)?.active;
+    assert.notEqual(a, b, `${id}: los dos inputs contrastantes deben producir \`active\` distinto`);
   }
 });
 
@@ -166,4 +210,93 @@ test("CONTRATO-01 (paso 3): candado anti-invención — no_dpo, no_legal_basis y
     assert.equal(combined.legalRefs, undefined, `${id}: legalRefs debe ser undefined en la lista combinada`);
     assert.equal(backend.legalRefs, undefined, `${id}: legalRefs debe ser undefined en bePenalizers`);
   }
+});
+
+// ─── O2 (verificación adversarial): candado score vs. score-formula.json ───
+// Editar score-formula.json (ej. no_privacy_policy.score 10→25) cambiaba el
+// Legal Risk Score en silencio, y editar minors_data.score (30→99) no cambiaba
+// NADA — porque solo no_privacy_policy lee su score del JSON en tiempo de
+// ejecución; los otros 5 lo tienen pineado en penalizer-catalog.ts. Este
+// candado NO cambia esa arquitectura (el ticket prohíbe tocar código para
+// esto) — solo asserta que, HOY, los valores pineados coinciden con los del
+// JSON. Si algún día divergen (alguien edita uno de los dos sin el otro), el
+// test lo dice explícitamente en vez de dejar que el score se mueva en
+// silencio.
+
+test("O2: candado score — para los 6 ids declarados en score-formula.json, el score que emite el motor es igual al declarado en el JSON (leído directo con readFileSync)", () => {
+  const result = calculateDualScore(testInput());
+
+  for (const id of FORMULA_SOURCED_IDS) {
+    const penalizer = result.penalizers.find((p) => p.id === id);
+    assert.ok(penalizer, `${id}: ausente en result.penalizers`);
+
+    const expectedScore = formulaPenalizersById.get(id)?.score;
+    assert.equal(
+      typeof expectedScore,
+      "number",
+      `${id}: score-formula.json no declara un score numérico — fixture del test desactualizado`
+    );
+
+    assert.equal(
+      penalizer.score,
+      expectedScore,
+      `${id}: score del motor (${penalizer.score}) diverge de score-formula.json (${expectedScore})`
+    );
+  }
+});
+
+// ─── O6 (verificación adversarial): legalRefs/standardsRefs no comparten ───
+// referencia con la caché de reglas del proceso ─────────────────────────────
+// Antes de este fix, PenalizerResult.legalRefs era literalmente el array
+// loadFormula().penalizers[i].legal_refs — compartido, además, entre un
+// concepto padre (ej. minors_data) y sus variantes descompuestas heredadas
+// (minors_data_fe/be). Un `push` desde cualquier consumidor habría
+// contaminado la caché para todo el proceso: cualquier llamada posterior a
+// calculateDualScore() vería la referencia fabricada.
+
+test("O6: mutar el array legalRefs devuelto por una llamada a calculateDualScore() NO afecta el resultado de una llamada posterior (candado anti-contaminación de caché)", () => {
+  const first = calculateDualScore(testInput());
+  const firstNoGranular = first.penalizers.find((p) => p.id === "no_granular_consent");
+  assert.ok(firstNoGranular?.legalRefs?.length, "fixture inválido: no_granular_consent debe traer legalRefs");
+
+  // Simula un consumidor que muta el array devuelto (nunca lo hace hoy, pero
+  // nada en el tipo lo impide) — inyecta una referencia legal fabricada.
+  firstNoGranular.legalRefs.push("REFERENCIA FABRICADA — NO DEBE PROPAGARSE");
+
+  const second = calculateDualScore(testInput());
+  const secondNoGranular = second.penalizers.find((p) => p.id === "no_granular_consent");
+
+  assert.ok(
+    !secondNoGranular.legalRefs.includes("REFERENCIA FABRICADA — NO DEBE PROPAGARSE"),
+    "la mutación de la primera llamada contaminó una llamada posterior — legalRefs comparte referencia con la caché"
+  );
+  assert.notEqual(
+    firstNoGranular.legalRefs,
+    secondNoGranular.legalRefs,
+    "legalRefs de dos llamadas distintas no debe ser el mismo array (===) — debe ser una copia defensiva"
+  );
+});
+
+test("O6: legalRefs NO se comparte por identidad entre un concepto padre (minors_data) y sus variantes descompuestas heredadas (minors_data_fe/be)", () => {
+  const result = calculateDualScore(testInput());
+
+  const minorsData = result.penalizers.find((p) => p.id === "minors_data");
+  const minorsDataFe = result.fePenalizers.find((p) => p.id === "minors_data_fe");
+  const minorsDataBe = result.bePenalizers.find((p) => p.id === "minors_data_be");
+
+  // Deben seguir siendo iguales en CONTENIDO (candado del paso 3, arriba)...
+  assert.deepEqual(minorsDataFe.legalRefs, minorsData.legalRefs);
+  assert.deepEqual(minorsDataBe.legalRefs, minorsData.legalRefs);
+
+  // ...pero NO deben ser el mismo array: mutar el del hijo no puede contaminar
+  // al padre (ni a la caché que ambos heredan).
+  assert.notEqual(minorsDataFe.legalRefs, minorsData.legalRefs, "minors_data_fe no debe compartir referencia (===) con minors_data");
+  assert.notEqual(minorsDataBe.legalRefs, minorsData.legalRefs, "minors_data_be no debe compartir referencia (===) con minors_data");
+  assert.notEqual(minorsDataFe.legalRefs, minorsDataBe.legalRefs, "minors_data_fe y minors_data_be no deben compartir referencia (===) entre sí");
+
+  minorsDataFe.legalRefs.push("REFERENCIA FABRICADA — NO DEBE PROPAGARSE");
+  assert.ok(
+    !minorsData.legalRefs.includes("REFERENCIA FABRICADA — NO DEBE PROPAGARSE"),
+    "mutar legalRefs del hijo (minors_data_fe) contaminó al padre (minors_data)"
+  );
 });

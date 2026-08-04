@@ -102,6 +102,16 @@ test("CONTRATO-01 (paso 1): us_multistate_exposure → topic undefined (usa-fede
   assert.equal(p.topic, undefined);
 });
 
+// O6 (verificación adversarial): us-scorer.ts ahora copia legalRefs/standardsRefs
+// con spread antes de devolverlos (mismo fix que devops-scorer.ts y
+// penalizer-catalog.ts) — un consumidor que mutara el array no debe poder
+// contaminar la caché ni llamadas posteriores. NO hay un test de mutación
+// (`.push`) contra datos reales en este archivo porque usa-federal.json HOY no
+// declara legal_refs ni standards_refs para ningún penalizador (confirmado
+// arriba, línea ~86-89: ambos son undefined) — no hay array vivo que mutar. El
+// mismo patrón de copia SÍ se ejercita con datos reales en
+// devops.test.js ("O6: mutar legalRefs/standardsRefs...") y en
+// penalizer-catalog.test.js ("O6: mutar el array legalRefs...").
 test("O-4: candado de ruta única — el objeto us_multistate_exposure de calculateScore() y de getBackendPenalizers() es deep-equal", () => {
   const input = baseCompliantInput({
     countries: ["US"],

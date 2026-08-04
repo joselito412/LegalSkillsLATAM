@@ -24,7 +24,18 @@ export function buildUsMultistatePenalizer(input: AuditInput): PenalizerResult |
   }
 
   // MOTOR-08 — passthrough fiel: solo se puebla si el JSON lo declara.
-  const standardsRefs = def.standards_refs ?? (def.standards_ref ? [def.standards_ref] : undefined);
+  // O6 (verificación adversarial): `def.legal_refs`/`def.standards_refs` vienen
+  // de loadCountry("US") — mismo patrón de riesgo que devops-scorer.ts y
+  // penalizer-catalog.ts, aunque loadCountry() no cachea el JSON parseado hoy.
+  // Se copian igual, por consistencia: un `push` de cualquier consumidor sobre
+  // el array devuelto no debe poder afectar ninguna llamada futura, y el repo
+  // prohíbe fabricar sustancia legal (§D4).
+  const legalRefs = def.legal_refs ? [...def.legal_refs] : undefined;
+  const standardsRefs = def.standards_refs
+    ? [...def.standards_refs]
+    : def.standards_ref
+      ? [def.standards_ref]
+      : undefined;
 
   return {
     id: def.id,
@@ -33,7 +44,7 @@ export function buildUsMultistatePenalizer(input: AuditInput): PenalizerResult |
     active: countIntegralStates(input.usStates) >= 2 && input.usStateLawsMapped !== true,
     pillar: (def.pillar as PenalizerResult["pillar"]) ?? "both",
     description: def.description,
-    legalRefs: def.legal_refs,
+    legalRefs,
     fixHint: def.fix_hint,
     configKey: def.config_key,
     standardsRefs,

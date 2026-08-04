@@ -38,7 +38,20 @@ export function getDevopsPenalizers(input: AuditInput): PenalizerResult[] {
     const active = value === undefined ? false : inverted ? value === true : value === false;
 
     // MOTOR-08 — passthrough fiel: solo se puebla si el JSON lo declara.
-    const standardsRefs = def.standards_refs ?? (def.standards_ref ? [def.standards_ref] : undefined);
+    // O6 (verificación adversarial): `def.legal_refs`/`def.standards_refs` son
+    // la MISMA referencia que loadDevopsPenalizers() (cacheada en rules.ts)
+    // devuelve a todo el proceso. Se copian con spread al salir de esta
+    // función — el único punto donde el motor entrega el array a un
+    // consumidor externo — porque un `push` de cualquier llamador sobre el
+    // array devuelto contaminaría la caché para todas las auditorías
+    // siguientes del proceso, inyectando una referencia legal fabricada
+    // (el repo prohíbe fabricar sustancia legal, §D4).
+    const legalRefs = def.legal_refs ? [...def.legal_refs] : undefined;
+    const standardsRefs = def.standards_refs
+      ? [...def.standards_refs]
+      : def.standards_ref
+        ? [def.standards_ref]
+        : undefined;
 
     return {
       id: def.id,
@@ -47,7 +60,7 @@ export function getDevopsPenalizers(input: AuditInput): PenalizerResult[] {
       active,
       pillar: "devops",
       description: def.description,
-      legalRefs: def.legal_refs,
+      legalRefs,
       fixHint: def.fix_hint,
       configKey: def.config_key,
       standardsRefs,

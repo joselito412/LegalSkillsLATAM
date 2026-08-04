@@ -250,7 +250,16 @@ export function resolveCatalogPenalizer(id: string, ctx: CatalogContext): Penali
     score: entry.score,
     active: entry.active(ctx),
     pillar: entry.pillar,
-    legalRefs: entry.legalRefs,
+    // O6 (verificación adversarial): `entry.legalRefs` es la MISMA referencia
+    // que loadFormula().penalizers[i].legal_refs (la caché de reglas del
+    // proceso) — para los 4 ids descompuestos es además la misma referencia
+    // que su concepto padre (DECOMPOSED_LEGAL_REFS_PARENT). Se copia aquí
+    // (no antes) porque este es el único punto donde el catálogo entrega el
+    // array a un consumidor externo: un `push` de cualquier llamador sobre
+    // el array devuelto contaminaría la caché — y por tanto TODAS las
+    // auditorías siguientes del proceso — con una referencia legal fabricada
+    // que el repo prohíbe fabricar (§D4).
+    legalRefs: entry.legalRefs ? [...entry.legalRefs] : undefined,
   };
 }
 

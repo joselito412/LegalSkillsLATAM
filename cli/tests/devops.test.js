@@ -214,6 +214,31 @@ test("MOTOR-08: do_no_ci_risk_gate → legalRefs === [] (passthrough fiel, el JS
   assert.deepEqual(p.legalRefs, []);
 });
 
+// ─── O6 (verificación adversarial): legalRefs/standardsRefs no comparten ───
+// referencia con la caché de reglas del proceso (loadDevopsPenalizers()) ────
+test("O6: mutar legalRefs/standardsRefs de do_no_staging_env devuelto por una llamada NO afecta el resultado de una llamada posterior (candado anti-contaminación de caché)", () => {
+  const first = calculateScore(baseCompliantInput({ hasStagingEnv: false }));
+  const firstP = first.devopsPenalizers.find((x) => x.id === "do_no_staging_env");
+  assert.ok(firstP?.legalRefs?.length, "fixture inválido: do_no_staging_env debe traer legalRefs");
+  assert.ok(firstP?.standardsRefs?.length, "fixture inválido: do_no_staging_env debe traer standardsRefs");
+
+  // Simula un consumidor que muta los arrays devueltos (nunca lo hace hoy,
+  // pero nada en el tipo lo impide) — inyecta referencias fabricadas.
+  firstP.legalRefs.push("REFERENCIA LEGAL FABRICADA");
+  firstP.standardsRefs.push("REFERENCIA DE ESTÁNDAR FABRICADA");
+
+  const second = calculateScore(baseCompliantInput({ hasStagingEnv: false }));
+  const secondP = second.devopsPenalizers.find((x) => x.id === "do_no_staging_env");
+
+  assert.ok(!secondP.legalRefs.includes("REFERENCIA LEGAL FABRICADA"), "la mutación contaminó legalRefs de una llamada posterior");
+  assert.ok(
+    !secondP.standardsRefs.includes("REFERENCIA DE ESTÁNDAR FABRICADA"),
+    "la mutación contaminó standardsRefs de una llamada posterior"
+  );
+  assert.notEqual(firstP.legalRefs, secondP.legalRefs, "legalRefs de dos llamadas no debe ser el mismo array (===)");
+  assert.notEqual(firstP.standardsRefs, secondP.standardsRefs, "standardsRefs de dos llamadas no debe ser el mismo array (===)");
+});
+
 test("CONTRATO-01 (paso 1): los 7 penalizadores DevOps traen topic === 'devops', igual que el JSON", () => {
   const result = calculateScore(
     baseCompliantInput({
